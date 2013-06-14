@@ -4314,9 +4314,9 @@ function removeCategoriesForContents() {
 }
 
 $(document).ready(function () {
-    $('#NewTab').click(function () {
+    $('#content_url').click(function () {
         $(this).target = "_blank";
-        window.open($(this).prop('href'));
+        window.open($(this).prop(globalCatRedirectionURL));
         return false;
     });
 });​
