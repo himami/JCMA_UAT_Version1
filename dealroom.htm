@@ -5026,6 +5026,7 @@ function populatePollsForTags(space_url) {
            // $("#tag_sel").css("margin-left", '-75px');
 		   $("#tag_place").css("margin-top", "30px");
 			$("#selTag").css("margin-left", '200px');
+			$("#add_tag_button").css("margin-left", '390px');
             $("#selTag").text("Enter Tag");
             $("#tagTo").text("Assign tag to this content:").append('<br/>');
             document.getElementById("catTo").style.display = "inline";
@@ -5150,7 +5151,7 @@ function tagSel() {
 		alert("fromRequestAction = "+fromRequestAction);
 		if (fromRequestAction == 'fromGroupRequestAction'){
 			$("#tagTo").css("margin-left", '-75px');
-			$("#add_tag_button").css("margin-left", '390px');
+			//$("#add_tag_button").css("margin-left", '390px');
 		}
 		else if (fromRequestAction == 'fromSpaceRequestAction'){
 			$("#tagTo").css("margin-left", '235px');
