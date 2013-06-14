@@ -3898,10 +3898,10 @@ function startUpdatingCategories() {
 
     if (browserName == "MSIE") {
         var ieSpan = '<span id="ieSpan" style="font-family:Tahoma;font-size:12px;font-color:#3778C7;"></span>';
-        document.getElementById("startUpdatingCategories").innerHTML = ieSpan;
+        document.getElementById("selected_items_categories").innerHTML = ieSpan;
     } else {
         var iframe = '<iframe id="frame1"  style="width:650px;height:90px;margin-top:0px;font-family:Tahoma"></iframe>';
-        document.getElementById("startUpdatingCategories").innerHTML = iframe;
+        document.getElementById("selected_items_categories").innerHTML = iframe;
         $("#catTo").text("Updating this:");
     }
 
