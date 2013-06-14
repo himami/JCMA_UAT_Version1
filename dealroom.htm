@@ -3526,7 +3526,9 @@ function populateContent() {
 
         // writing the files table to the files tab.
         document.getElementById("files_div").innerHTML = files_row;
-        populateBlogContent(space_url, blog_url);
+		alert("after mainCheckedItems.length = "+mainCheckedItems.length);
+		alert("after mainUncheckItems.length = "+mainUncheckItems.length);
+      //  populateBlogContent(space_url, blog_url);
     });
 
 }
