@@ -4879,6 +4879,59 @@ function populatePollsForTags(space_url) {
             $("#tag_from_project").show();
         }
     });
+	
+	function tagSel() {
+
+    selected_cat = '';
+
+    var contentCheckedIndex = 0;
+    var contentUnCheckedIndex = 0;
+    var mainCheckedItems = new Array();
+    var mainUncheckItems = new Array();
+    addId = new Array();
+    catSelection = true;
+    var str = '';
+    if (document.getElementById("frame1") != null)
+        document.getElementById("frame1").contentDocument.body.innerHTML = "<br><br><span id='mySpan' style='font-weight:bold;'>" + str.fontcolor("#3778C7") + "</span>";
+
+    arrayIndex = 0;
+    //put the selected category to further use
+    selected_tag = $('#tag_sel').val();
+    if (selected_tag == "val1") {
+        $("#tag_select_items_button").hide();
+        $("#tagTo").hide();
+    } else {
+
+        $('#selTag').text("Tag");
+        //$("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 40 + 'px');
+       // $("#selTag").css("margin-left", '180px');
+        $('#selTag').show();
+       // $("#add_tag").css("margin-top", parseInt($("#selTag").css("margin-top")) + 20 + 'px');
+        //$("#tagTo").css("margin-top", parseInt($("#add_tag").css("margin-top")) + 30 + 'px');
+        //$("#tagTo").css("margin-left", parseInt($("#cmdu").css("margin-left")) - 20 + 'px');
+       // $("#tag_select_items_button").css("margin-top", parseInt($("#tagTo").css("margin-top")) + 30 + 'px');
+        $("#tagTo").text("Assign tag to this content:").append('<br/>');
+        $("#tagTo").show();
+        $("#tag_select_items_button").show();
+
+        $("#add_tag_button").hide();
+
+        $("#selTag").show();
+        $("#cmdu").hide();
+
+        $("#tag_sel").hide();
+        document.getElementById("add_tag").innerHTML = $('#tag_sel').val();
+       // $("#add_tag").css("margin-left", '250px');
+        $("#add_tag").show();
+        getDocs(space_url);
+        getFiles(space_url);
+        getDiscussions(space_url);
+        getIdeas(space_url);
+        getPolls(space_url);
+        getBlogs(blog_url);
+    }
+
+}
 
 }
 </script>
