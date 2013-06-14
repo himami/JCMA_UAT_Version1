@@ -3395,6 +3395,7 @@ function populateContent() {
     mainUncheckItems = new Array();
     alert("mainCheckedItems.length = "+mainCheckedItems.length);
     alert("mainUncheckItems.length = "+mainUncheckItems.length);
+	alert("selected_tag = "+selected_tag);
     alert("Please wait , as this operation may take some time . Press ok");
     osapi.jive.corev3.contents.get({
         type: 'file',
@@ -3528,7 +3529,7 @@ function populateContent() {
         document.getElementById("files_div").innerHTML = files_row;
 		alert("after mainCheckedItems.length = "+mainCheckedItems.length);
 		alert("after mainUncheckItems.length = "+mainUncheckItems.length);
-        populateBlogContent(space_url, blog_url);
+      //  populateBlogContent(space_url, blog_url);
     });
 
 }
