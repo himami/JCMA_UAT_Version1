@@ -4147,6 +4147,8 @@ function populatePolls(space_url) {
         }
         poll_row = poll_row + '</table>';
         document.getElementById("poll_div").innerHTML = poll_row;
+		alert("after mainCheckedItems.length = "+mainCheckedItems.length);
+		alert("after mainUncheckItems.length = "+mainUncheckItems.length);
         javascript: showTab();
         javascript: highlightTab();
     });
