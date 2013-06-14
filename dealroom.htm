@@ -5240,6 +5240,21 @@ function startUpdatingTags() {
 
     $("#selected_items").hide();
     $("#selected_items_categories").show();
+	$("#tag_from_space").hide();
+	$("#tag_from_group").hide();
+	$("#tag_from_project").hide();
+	if ($("#tag_from_space").text() != 'Manage Tags in Space')
+                $("#tag_from_space").show();
+            else
+                $("#tag_from_space").hide();
+            if ($("#tag_from_group").text() != 'Manage Tags in Group')
+                $("#tag_from_group").show();
+            else
+                $("#tag_from_group").hide();
+            if ($("#tag_from_project").text() != 'Manage Tags in Project')
+                $("#tag_from_project").show();
+            else
+                $("#tag_from_project").hide();
 
     if (browserName == "MSIE") {
         var ieSpan = '<span id="ieSpan" style="font-family:Tahoma;font-size:12px;font-color:#3778C7;"></span>';
@@ -5602,18 +5617,7 @@ function removeTagsForContents() {
              $("#refresh_app_button").show();
 			$("#refresh_app").show();
       
-			if ($("#tag_from_space").text() != 'Manage Tags in Space')
-                $("#tag_from_space").show();
-            else
-                $("#tag_from_space").hide();
-            if ($("#tag_from_group").text() != 'Manage Tags in Group')
-                $("#tag_from_group").show();
-            else
-                $("#tag_from_group").hide();
-            if ($("#tag_from_project").text() != 'Manage Tags in Project')
-                $("#tag_from_project").show();
-            else
-                $("#tag_from_project").hide();
+			
            /// $('#selTag').css("margin-top", "-200px");
            // $('#selTag').css("margin-left", "200px");
           //  $("#selTag").show();
