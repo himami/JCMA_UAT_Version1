@@ -3950,8 +3950,8 @@ function startUpdatingCategories() {
     //alert("mainUncheckItems.length = "+mainUncheckItems.length);
     //console.log("mainUncheckItems.length = "+mainUncheckItems.length);
     //***********************************
-	alert("url ="+document.referrer);
-    //filterCheckedUncheckCatgUrl1();
+	
+    filterCheckedUncheckCatgUrl1();
 
 
     catIndex = 0;
@@ -4311,6 +4311,9 @@ function removeCategoriesForContents() {
 
 
 }
+function startFromBeginning() {
+	alert("url ="+document.referrer);
+}
 //**********************End of code for catergories******************
 </script>
 </head>
@@ -4567,7 +4570,7 @@ style="display:none;margin-left:-80px;position:absolute; margin-top:90px;width:1
 <div id="selected_items_categories" style="display:none;margin-top:110px;font-family:Tahoma;overflow-y:auto;height:120px;">
 </div>
 <div id="refresh_app_button" style="display:none;margin-top:-50px;font-family:Tahoma;overflow-y:auto;height:120px;">
-	<input type="button" id="refresh_app" value="Start from the beginning" name="select_items" style="display:none;margin-left:-100px;font-weight:bold;position:absolute; margin-top:0px;" onclick=""/>
+	<input type="button" id="refresh_app" value="Start from the beginning" name="select_items" style="display:none;margin-left:-100px;font-weight:bold;position:absolute; margin-top:0px;" onclick="javascript:startFromBeginning()"/>
 </div>
 
 </div>
