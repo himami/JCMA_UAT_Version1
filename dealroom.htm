@@ -3395,7 +3395,6 @@ function populateContent() {
     mainUncheckItems = new Array();
     alert("mainCheckedItems.length = "+mainCheckedItems.length);
     alert("mainUncheckItems.length = "+mainUncheckItems.length);
-	alert("selected_tag = "+selected_tag);
     alert("Please wait , as this operation may take some time . Press ok");
     osapi.jive.corev3.contents.get({
         type: 'file',
@@ -3486,7 +3485,6 @@ function populateContent() {
                     var tags = postFiles.tags;
 					checkFlagItem == false
                     console.log("tags: " + tags);
-					console.log("tags.length: " + tags.length);
                     files_row = files_row + '<tr>' +
                         '<td style="border:1px ;border: 1px solid #000000;text-align:right;padding:2px;">' + '<input type="checkbox" id="file_cb' + index + '" name="file_cb" class="file_cb" onclick="javascript:checkUncheck(this.name);" value="' + postFiles.fileUrl + '">' + '</td>' +
                         '<td style="border:1px ;border: 1px solid #000000;padding: 2px;">' + postFiles.title + '</td>' +
@@ -3508,10 +3506,8 @@ function populateContent() {
                             checkFlagItem = true;
                         }
                         if (checkFlagItem == false && !(selected_tag == '')) {
-						    mainUncheckItems[contentUnCheckedIndex] = postFiles.fileUrl;
-							console.log("uncheck #####"+mainUncheckItems[contentUnCheckedIndex]);
+                            mainUncheckItems[contentUnCheckedIndex] = postFiles.fileUrl;
                             contentUnCheckedIndex++;
-							
                         }
 
                     }
@@ -3530,9 +3526,7 @@ function populateContent() {
 
         // writing the files table to the files tab.
         document.getElementById("files_div").innerHTML = files_row;
-		alert("after mainCheckedItems.length = "+mainCheckedItems.length);
-		alert("after mainUncheckItems.length = "+mainUncheckItems.length);
-      //  populateBlogContent(space_url, blog_url);
+        populateBlogContent(space_url, blog_url);
     });
 
 }
