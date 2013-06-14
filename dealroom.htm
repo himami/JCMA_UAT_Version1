@@ -5152,9 +5152,11 @@ function tagSel() {
        // $("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 40 + 'px');
         $("#selTag").css("margin-left", '180px');
         $('#selTag').show();
+		$("#tagTo").show();
+		$("#tagTo").hide();
 		alert("fromRequestAction = "+fromRequestAction);
 		if (fromRequestAction == 'fromGroupRequestAction'){
-			$("#tagTo").css("margin-left", '-75px');
+			$("#tagTo").css("margin-left", '235px');
 			//$("#add_tag_button").css("margin-left", '390px');
 		}
 		else if (fromRequestAction == 'fromSpaceRequestAction'){
