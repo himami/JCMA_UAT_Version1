@@ -130,7 +130,9 @@ function onPageLoad() {
 }
 /*
 	Triggered on changing the Bulk Action combobox. This function does the hide/show of the 
-	ui components for copy,move,delete,upload,download,Manage Tags,Manage Categories
+	ui components for copy,move,delete,upload,download,Manage Tags,Manage Categories, based
+	on the variable sel_action
+	
 */
 function selected_action() {
     // Check which action is selected by user copy/move/delete/upload/download &
@@ -832,6 +834,11 @@ function selected_action() {
     }
 }
 
+/*
+	This function is triggerd for copy/move. Based on the value of from_sel_place the 
+	#from_place is populated.
+	functionality : Upon Selecting place the combobox changes to "change place".
+*/
 function fromPlace() {
     // Identifies which space/group/project the user  has chosen the content to copy/move and calls the relevant method.
     var from_place = document.getElementById("from_place");
@@ -879,6 +886,10 @@ function fromPlace() {
     }
 }
 
+/**
+	This function is triggerd by #del_place onchange(). It takes the value passes it 
+	fromSpaceRequest(),fromGroupRequest(),fromProjectRequest() to accept the value
+*/
 function delFromPlace() {
     // Identifies which space/group/project the user  has chosen the content to delete from and calls the relevant method.
     var from_place = document.getElementById("del_place");
@@ -903,6 +914,10 @@ function delFromPlace() {
     }
 }
 
+/**
+	This function is triggerd by #dwn_place onchange() for download. It takes the value passes it 
+	fromSpaceRequest(),fromGroupRequest(),fromProjectRequest() to accept the value
+*/
 function dwnFromPlace() {
     // Identifies which space/group/project user has chosen to download content from and calls the appropriate method.
     var from_place = document.getElementById("dwn_place");
@@ -926,6 +941,11 @@ function dwnFromPlace() {
         document.getElementById("copyTo").style.visibility = "hidden";
     }
 }
+
+/**
+	This function is triggerd by #up_place onchange() for upload. It takes the value passes it 
+	fromSpaceRequest(),fromGroupRequest(),fromProjectRequest() to accept the value
+*/
 
 function upFromPlace() {
     // Identifies which space/group/project user has chosen to upload file to and calls the appropriate method.
@@ -951,6 +971,11 @@ function upFromPlace() {
     }
 }
 
+/**
+	This function is triggerd by #to_place onchange() for copy,move. It takes the value passes it 
+	fromSpaceRequest(),fromGroupRequest(),fromProjectRequest() to accept the value
+*/
+
 function toPlace() {
     // Identifies which space/group/project the user  has chosen to copy/move the selected content and calls the relevant method.
     var to_place = document.getElementById("to_place");
@@ -969,6 +994,10 @@ function toPlace() {
     }
 }
 
+/**
+	This function accepts the place url and opens as place-request picker dialog  box 
+	Base on the place selected it hide/shows the ui components
+*/
 function fromSpaceRequest() {
     // Handles user request to select the SPACE and then handle the response to fetch details about the selected SPACE.
 
