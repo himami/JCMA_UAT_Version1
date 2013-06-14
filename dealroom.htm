@@ -2337,6 +2337,16 @@ $(this).removeClass('borderadd');
 function showTab(){
 // actions when user choses to select content he wants to copy/move/delete/download.
 
+//for checking and unchecking the contents
+//checking of checkboxes
+console.log("array Len: "+addId.length);
+ for (var i=0; i<addId.length; i++) 
+ {
+ console.log("value: "+addId[i]);
+ document.getElementById(addId[i]).checked = true;
+ }
+//end checking of checkboxes
+
 $("#stylized").hide();
 $("#selection_menu").show();
 
