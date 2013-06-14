@@ -3893,14 +3893,15 @@ function startUpdatingCategories() {
 
 
 
-    $("#selected_items").show();
+    $("#selected_items").hide();
+    $("#startUpdatingCategories").show();
 
     if (browserName == "MSIE") {
         var ieSpan = '<span id="ieSpan" style="font-family:Tahoma;font-size:12px;font-color:#3778C7;"></span>';
-        document.getElementById("selected_items").innerHTML = ieSpan;
+        document.getElementById("startUpdatingCategories").innerHTML = ieSpan;
     } else {
         var iframe = '<iframe id="frame1"  style="width:650px;height:90px;margin-top:0px;font-family:Tahoma"></iframe>';
-        document.getElementById("selected_items").innerHTML = iframe;
+        document.getElementById("startUpdatingCategories").innerHTML = iframe;
         $("#catTo").text("Updating this:");
     }
 
@@ -4183,6 +4184,8 @@ style="display:none;margin-left:-80px;position:absolute; margin-top:90px;width:1
 </tr>
 <tr>
 </tr>
+</div>
+<div id="selected_items_categories" style="margin-top:150px;font-family:Tahoma;overflow-y:auto;height:120px;">
 </div>
 </div>
 
