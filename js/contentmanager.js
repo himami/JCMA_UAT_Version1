@@ -995,8 +995,8 @@ function toPlace() {
 }
 
 /**
-	This function accepts the place url and opens as place-request picker dialog  box 
-	Base on the place selected it hide/shows the ui components
+	This function accepts the place url and opens as place-request picker dialog  box for
+	Space .Base on the place selected it hide/shows the ui components
 */
 function fromSpaceRequest() {
     // Handles user request to select the SPACE and then handle the response to fetch details about the selected SPACE.
@@ -1220,6 +1220,10 @@ function fromSpaceRequest() {
     osapi.jive.corev3.places.requestPicker(params);
 }
 
+/**
+	This function accepts the place url and opens as place-request picker dialog  box for
+	Group .Base on the place selected it hide/shows the ui components
+*/
 function fromGroupRequest() {
     // Handles user request to select the GROUP and then handle the response to fetch details about the selected GROUP.
 
@@ -1442,6 +1446,10 @@ function fromGroupRequest() {
     osapi.jive.corev3.places.requestPicker(params);
 }
 
+/**
+	This function accepts the place url and opens as place-request picker dialog  box for
+	Project .Base on the place selected it hide/shows the ui components
+*/
 function fromProjectRequest() {
     // Handles user request to select the PROJECT and then handle the response to fetch details about the selected PROJECT.
 
@@ -1663,6 +1671,10 @@ function fromProjectRequest() {
     osapi.jive.corev3.places.requestPicker(params);
 }
 
+/**
+	This function accepts the place url and opens as place-request picker dialog  box for
+	to -space .Base on the place selected it hide/shows the ui components
+*/
 function toSpaceRequest() {
     var to_place_name = '';
     document.getElementById("to_project").innerHTML = msg2;
