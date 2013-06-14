@@ -4282,7 +4282,7 @@ function removeCategoriesForContents() {
             console.log("Category " + selected_cat + " succesfully updated");
             //alert("Category "+selected_cat+" succesfully updated");
             var tempRedirectionUrl = source_html_url + '/content?filterID=contentstatus[published]~category[' + selected_cat + ']';
-			globalCatRedirectionURL = tempRedirectionUrl
+			globalCatRedirectionURL = tempRedirectionUrl;
             console.log("temRedirectionUrl = " + tempRedirectionUrl);
            $("#refresh_app_button").show();
 			$("#refresh_app").show();
@@ -4314,7 +4314,7 @@ function removeCategoriesForContents() {
 }
 
 $(document).ready(function () {
-    $('#NewTab').click(function () {
+    $('#content_url').click(function () {
         $(this).target = "_blank";
         window.open($(this).prop('href'));
         return false;
