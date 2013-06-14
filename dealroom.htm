@@ -64,6 +64,10 @@ var global_from_place_name='';
 var site_url = document.referrer;
 var uploadContinueAction = false;
 var downloadContinueAction = false;
+ var contentCheckedIndex = 0;
+    var contentUnCheckedIndex = 0;
+    var mainCheckedItems = new Array();
+    var mainUncheckItems = new Array();
 //for categories
 var contentCheckedIndex =0;
 var contentUnCheckedIndex =0;
@@ -5159,10 +5163,10 @@ function tagSel() {
 
     selected_cat = '';
 
-    var contentCheckedIndex = 0;
-    var contentUnCheckedIndex = 0;
-    var mainCheckedItems = new Array();
-    var mainUncheckItems = new Array();
+     contentCheckedIndex = 0;
+     contentUnCheckedIndex = 0;
+     mainCheckedItems = new Array();
+     mainUncheckItems = new Array();
     addId = new Array();
     catSelection = true;
     var str = '';
