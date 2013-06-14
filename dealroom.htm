@@ -4315,6 +4315,12 @@ function startFromBeginning() {
 	alert("url ="+document.referrer);
 	window.location = document.referrer;
 }
+('#content_url').click(function() {
+			alert("opening in a new tab");
+	        $(this).target = "_blank";
+	        window.open($(this).prop(catRedirectUrl));
+	        return false;
+	   });
 //**********************End of code for catergories******************
 </script>
 </head>
