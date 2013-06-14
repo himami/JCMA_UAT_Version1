@@ -4989,8 +4989,8 @@ function startUpdatingTags() {
     $("#change_selection_div").show();
     $("#change_contents").hide();
     $("#start_copying_button").hide();
-    $("#refresh_app_button").show();
-    $("#refresh_app").show();
+    //$("#refresh_app_button").show();
+    //$("#refresh_app").show();
 
     $("#cmdu").show();
     $("#cmdu").text("Manage Tags");
@@ -5362,30 +5362,15 @@ function removeTagsForContents() {
         }
         if (errorReferenceCatArray.length > 0 || errorDeReferenceCatArray.length > 0) {
             alert('Message:\n\nYou have insufficient rights to update all the content selected.\n\nYou need to have group administration or space moderation rights to update content with restricted authorship (e.g. discussions started by other users).\n\nPlease contact your group or space admin to get the necessary rights.');
-            $("#cmdu").hide();
-            $("#src_place").show();
-            $("#tag_place").show();
-            $('#tag_place').css("margin-top", "-235px");
-            $('#tag_place').css("margin-left", "250px");
-            $("#tag_from_project").hide();
-            $('#selTag').css("margin-top", "-200px");
-            $('#selTag').css("margin-left", "200px");
-            $("#selTag").show();
-            $('#tag_sel').css("margin-top", "-190px");
-            $('#tag_sel').css("margin-left", "250px");
-            $("#tag_sel").show();
-            $('#add_tag_button').css("margin-top", "-190px");
-            $('#add_tag_button').css("margin-left", "390px");
-            $("#add_tag_button").show();
+           $("#refresh_app_button").show();
+			$("#refresh_app").show();
 
         } else {
             //alert("inside else ");
-            $("#cmdu").hide();
-            $("#src_place").show();
-            $("#tag_place").show();
-            $('#tag_place').css("margin-top", "-235px");
-            $('#tag_place').css("margin-left", "250px");
-            if ($("#tag_from_space").text() != 'Manage Tags in Space')
+             $("#refresh_app_button").show();
+			$("#refresh_app").show();
+      
+			if ($("#tag_from_space").text() != 'Manage Tags in Space')
                 $("#tag_from_space").show();
             else
                 $("#tag_from_space").hide();
