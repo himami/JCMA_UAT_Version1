@@ -5149,10 +5149,11 @@ function tagSel() {
         $('#selTag').show();
 		if (fromRequestAction == 'fromGroupRequestAction'){
 			$("#tagTo").css("margin-left", '-75px');
-		}
-		else if (fromRequestAction == 'fromGroupRequestAction'){{
-			$("#tagTo").css("margin-left", '235px');
 			$("#add_tag_button").css("margin-left", '390px');
+		}
+		else if (fromRequestAction == 'fromSpaceRequestAction'){{
+			$("#tagTo").css("margin-left", '235px');
+			//$("#add_tag_button").css("margin-left", '390px');
 		}
 		else {
 			$("#tagTo").css("margin-left", '235px');
