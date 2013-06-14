@@ -1,3282 +1,3070 @@
-var browserName='';
-var loggedUser='';
-var loggedUserName='';
+var browserName = '';
+var loggedUser = '';
+var loggedUserName = '';
 
-var space_url='';
-var to_url='';
-var redirection_url='';
-var source_html_url='';
+var space_url = '';
+var to_url = '';
+var redirection_url = '';
+var source_html_url = '';
 
-var files_row='';
-var docs_row='';
-var disc_row='';
-var idea_row='';
-var blog_row='';
-var poll_row='';
+var files_row = '';
+var docs_row = '';
+var disc_row = '';
+var idea_row = '';
+var blog_row = '';
+var poll_row = '';
 
-var src_space_name='';
-var dest_space_name='';
+var src_space_name = '';
+var dest_space_name = '';
 
-var to_place_blog_url='';
-var Grp_file_json='';
-var Grp_doc_json='';
-var Grp_idea_json='';
-var Grp_disc_json='';
-var Grp_blog_json='';
-var Grp_poll_json='';
+var to_place_blog_url = '';
+var Grp_file_json = '';
+var Grp_doc_json = '';
+var Grp_idea_json = '';
+var Grp_disc_json = '';
+var Grp_blog_json = '';
+var Grp_poll_json = '';
 var finalJSON = '';
-var sel_action_val='';
-var msg2='Please select a place.';
+var sel_action_val = '';
+var msg2 = 'Please select a place.';
 
 //variables for categories
 var errorReferenceCatArray = new Array();
 var errorDeReferenceCatArray = new Array();
-var referenceCatArrayIndex =0;
-var deReferenceCatArrayIndex =0;
-var dotIndex  =0;
+var referenceCatArrayIndex = 0;
+var deReferenceCatArrayIndex = 0;
+var dotIndex = 0;
 var tagPopulatList = new Array();
 var completeTagIndex = 0;
 var fromRequestAction = '';
-var global_from_place_name='';
+var global_from_place_name = '';
 var site_url = document.referrer;
 var uploadContinueAction = false;
 var downloadContinueAction = false;
- var contentCheckedIndex = 0;
-    var contentUnCheckedIndex = 0;
-    var mainCheckedItems = new Array();
-    var mainUncheckItems = new Array();
+var contentCheckedIndex = 0;
+var contentUnCheckedIndex = 0;
+var mainCheckedItems = new Array();
+var mainUncheckItems = new Array();
 //for categories
-var contentCheckedIndex =0;
-var contentUnCheckedIndex =0;
+var contentCheckedIndex = 0;
+var contentUnCheckedIndex = 0;
 var catSelection = false;
 var catIndex = 0;
-var catRedirectUrl='';
+var catRedirectUrl = '';
 //end
 //for tags
 var tagSelection = false;
 var tagIndex = 0;
-var tagRedirectUrl='';
+var tagRedirectUrl = '';
 //end
 
-var addId=new Array();
-var arrayIndex=0;
+var addId = new Array();
+var arrayIndex = 0;
 
-function showLoading() 
-{
-$("#maskLoad").mask("Please Wait...");
+function showLoading() {
+    $("#maskLoad").mask("Please Wait...");
 }
 
-function hideLoading() 
-{
+function hideLoading() {
 
-$("#maskLoad").unmask();
-}   
-
-function handleResponse(data) 
-{
-alert("Error in Application..!!");
-console.log(data);    		
+    $("#maskLoad").unmask();
 }
 
-function onPageLoad() 
-{
-
-// Detect the browser for adding different code when using IE.
-navigator.sayswho= (function(){    
-	var N= navigator.appName, ua= navigator.userAgent, tem;
-    var M= ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
-	M= M? [M[1]]: [N];
-	
-	browserName=M;
-})();
-
-// Set the margins and position for given elements while loading the page in IE.
-if(browserName=="MSIE")
-{
-$('#deleteFrom').css("margin-left", "200px");
-$('#del_place').css("margin-left", "245px");
-$('#deleteTo').css("margin-left", "262px");
-$('#del_select_items_button').css("margin-left", "240px");
-$('#dwn_place').css("margin-left", "250px");
-$('#dwnTo').css("margin-left", "255px");
-$('#dwn_select_items_button').css("margin-left", "245px");
+function handleResponse(data) {
+    alert("Error in Application..!!");
+    console.log(data);
 }
 
-// Identifying the logged-in user.
-osapi.people.get({
-userId : '@me'
-}).execute(function(response) {
-loggedUser =response.id; 
-loggedUserName=response.name.formatted;
-});
+function onPageLoad() {
+
+    // Detect the browser for adding different code when using IE.
+    navigator.sayswho = (function () {
+        var N = navigator.appName,
+            ua = navigator.userAgent,
+            tem;
+        var M = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
+        M = M ? [M[1]] : [N];
+
+        browserName = M;
+    })();
+
+    // Set the margins and position for given elements while loading the page in IE.
+    if (browserName == "MSIE") {
+        $('#deleteFrom').css("margin-left", "200px");
+        $('#del_place').css("margin-left", "245px");
+        $('#deleteTo').css("margin-left", "262px");
+        $('#del_select_items_button').css("margin-left", "240px");
+        $('#dwn_place').css("margin-left", "250px");
+        $('#dwnTo').css("margin-left", "255px");
+        $('#dwn_select_items_button').css("margin-left", "245px");
+    }
+
+    // Identifying the logged-in user.
+    osapi.people.get({
+        userId: '@me'
+    }).execute(function (response) {
+        loggedUser = response.id;
+        loggedUserName = response.name.formatted;
+    });
 
 }
 
-function selected_action()
-{
-// Check which action is selected by user copy/move/delete/upload/download &
-// hide show elements accordingly.
-var sel_action = document.getElementById("src_place");
-sel_action_val = sel_action.options[sel_action.selectedIndex].value;
+function selected_action() {
+    // Check which action is selected by user copy/move/delete/upload/download &
+    // hide show elements accordingly.
+    var sel_action = document.getElementById("src_place");
+    sel_action_val = sel_action.options[sel_action.selectedIndex].value;
 
-var dialog_obj3 = $("#uploadIE");
-dialog_obj3.dialog("close");
+    var dialog_obj3 = $("#uploadIE");
+    dialog_obj3.dialog("close");
 
-if(sel_action_val=="copy"){
+    if (sel_action_val == "copy") {
 
-src_space_name='';
-dest_space_name='';
-$("#cmdu").text("Copy");
-$("#to_space").hide();
-$("#from_place").show();
-$("#tab_items").show();
-$("#dwnFrom").hide();
-$("#dwn_from_space").hide();
-$("#dwn_from_group").hide();
-$("#dwn_from_project").hide();
-$("#dwn_place").hide();
-$("#dwnTo").hide();
-$("#dwn_select_items_button").hide();
-$("#to_group").hide();
-$("#to_project").hide();
-$("#from_space").hide();
-$("#from_group").hide();
-$("#from_project").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-$("#deleteFrom").hide();
-$("#upFrom").hide();
-$('#all_selected_items').css("margin-top", "0px");
-$('#selected_items').css("margin-top", "0px");
-document.getElementById("deleteTo").style.display="inline";
-$("#deleteTo").hide();
-$("#upTo").hide();
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#del_select_items_button").hide();
-$("#up_select_items_button").hide();
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("del_place").style.display="inline";
-document.getElementById("up_place").style.display="inline";
-$("#del_place").hide();
-$("#up_place").hide();
-$("#change_selection_div").hide();
-$("#stylized").show();
-$("#showDiv").show();
-$("#to_place").show();
-document.getElementById("to_place").disabled = true;
-$("#copyTo").show();
-$('#from_label').text("Copy From:");
-$('#to_label').text("Copy To:");
-$('#from_label').show();
-$('#to_label').show();
-$('#select_items_button').hide();
+        src_space_name = '';
+        dest_space_name = '';
+        $("#cmdu").text("Copy");
+        $("#to_space").hide();
+        $("#from_place").show();
+        $("#tab_items").show();
+        $("#dwnFrom").hide();
+        $("#dwn_from_space").hide();
+        $("#dwn_from_group").hide();
+        $("#dwn_from_project").hide();
+        $("#dwn_place").hide();
+        $("#dwnTo").hide();
+        $("#dwn_select_items_button").hide();
+        $("#to_group").hide();
+        $("#to_project").hide();
+        $("#from_space").hide();
+        $("#from_group").hide();
+        $("#from_project").hide();
+        $("#del_from_space").hide();
+        $("#del_from_group").hide();
+        $("#del_from_project").hide();
+        $("#up_from_space").hide();
+        $("#up_from_group").hide();
+        $("#up_from_project").hide();
+        $("#deleteFrom").hide();
+        $("#upFrom").hide();
+        $('#all_selected_items').css("margin-top", "0px");
+        $('#selected_items').css("margin-top", "0px");
+        document.getElementById("deleteTo").style.display = "inline";
+        $("#deleteTo").hide();
+        $("#upTo").hide();
+        document.getElementById("del_select_items_button").style.display = "inline";
+        document.getElementById("up_select_items_button").style.display = "inline";
+        $("#del_select_items_button").hide();
+        $("#up_select_items_button").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+        document.getElementById("del_place").style.display = "inline";
+        document.getElementById("up_place").style.display = "inline";
+        $("#del_place").hide();
+        $("#up_place").hide();
+        $("#change_selection_div").hide();
+        $("#stylized").show();
+        $("#showDiv").show();
+        $("#to_place").show();
+        document.getElementById("to_place").disabled = true;
+        $("#copyTo").show();
+        $('#from_label').text("Copy From:");
+        $('#to_label').text("Copy To:");
+        $('#from_label').show();
+        $('#to_label').show();
+        $('#select_items_button').hide();
 
-$("#copyTo").text("Copy this:").append('<br/>');
-$('#start_copying_button').val('Start Copying');
-//******************Hidiing all the items with reagard to categories
-$("#catShow").hide();
-$("#catFrom").hide();
-$("#cat_from_space").hide();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#cat_place").hide();
-$("#selCat").hide();
-$("#cat_sel").hide();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-$("#selected_items_categories").hide();
-//***********************End***************8
-//Hiding all the items with regard to tags
-$("#tagShow").hide();
-$("#tagFrom").hide();
-$("#tag_from_space").hide();
-$("#tag_from_group").hide();
-$("#tag_from_project").hide();
-$("#tag_place").hide();
-$("#selTag").hide();
-$("#tag_sel").hide();
-$("#add_tag_button").hide();
-$("#tagTo").hide();
-$("#tag_select_items_button").hide();
-//*********************End*********
+        $("#copyTo").text("Copy this:").append('<br/>');
+        $('#start_copying_button').val('Start Copying');
+        //******************Hidiing all the items with reagard to categories
+        $("#catShow").hide();
+        $("#catFrom").hide();
+        $("#cat_from_space").hide();
+        $("#cat_from_group").hide();
+        $("#cat_from_project").hide();
+        $("#cat_place").hide();
+        $("#selCat").hide();
+        $("#cat_sel").hide();
+        $("#catTo").hide();
+        $("#cat_select_items_button").hide();
+        $("#selected_items_categories").hide();
+        //***********************End***************8
+        //Hiding all the items with regard to tags
+        $("#tagShow").hide();
+        $("#tagFrom").hide();
+        $("#tag_from_space").hide();
+        $("#tag_from_group").hide();
+        $("#tag_from_project").hide();
+        $("#tag_place").hide();
+        $("#selTag").hide();
+        $("#tag_sel").hide();
+        $("#add_tag_button").hide();
+        $("#tagTo").hide();
+        $("#tag_select_items_button").hide();
+        //*********************End*********
 
-$('#start_copying_button').unbind('click').click(function(){startCopying();});		
-}
-else if(sel_action_val=="move"){
-document.getElementById("to_place").disabled = true;
-src_space_name='';
-dest_space_name='';
-$("#cmdu").text("Move");
-$("#dwn_from_space").hide();
-$("#dwn_from_group").hide();
-$("#dwn_from_project").hide();
-$("#dwn_place").hide();
-$("#dwn_select_items_button").hide();
-$("#dwnTo").hide();
-$('#all_selected_items').css("margin-top", "0px");
-$('#selected_items').css("margin-top", "0px");
-$("#to_space").hide();
-$("#from_place").show();
-$("#tab_items").show();
-$("#to_group").hide();
-$("#dwnFrom").hide();
-$("#to_project").hide();
-$("#from_space").hide();
-$("#from_group").hide();
-$("#from_project").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#deleteFrom").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-$("#upFrom").hide();
-document.getElementById("deleteTo").style.display="inline";
-document.getElementById("upTo").style.display="inline";
-$("#deleteTo").hide();
-$("#upTo").hide();
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#del_select_items_button").hide();
-$("#up_select_items_button").hide();
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("del_place").style.display="inline";
-document.getElementById("up_place").style.display="inline";
-$("#del_place").hide();
-$("#up_place").hide();
-$("#change_selection_div").hide();
-$("#stylized").show();
-$("#showDiv").show();
-$("#to_place").show();
-$("#copyTo").show();
-$('#from_label').text("Move From:");
-$('#to_label').text("Move To:");
-$('#from_label').show();
-$('#to_label').show();
-$('#select_items_button').hide();
-$("#copyTo").text("Move this:").append('<br/>');
-$('#start_copying_button').val('Start Moving');
-//******************Hidiing all the items with reagard to categories
-$("#catShow").hide();
-$("#catFrom").hide();
-$("#cat_from_space").hide();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#cat_place").hide();
-$("#selCat").hide();
-$("#cat_sel").hide();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-$("#selected_items_categories").hide();
-//***********************End***************8
-//Hiding all the items with regard to tags
-$("#tagShow").hide();
-$("#tagFrom").hide();
-$("#tag_from_space").hide();
-$("#tag_from_group").hide();
-$("#tag_from_project").hide();
-$("#tag_place").hide();
-$("#selTag").hide();
-$("#tag_sel").hide();
-$("#add_tag_button").hide();
-$("#tagTo").hide();
-$("#tag_select_items_button").hide();
-//*********************End*********
-$('#start_copying_button').unbind('click').click(function(){startMoving();});
-}
-else if(sel_action_val=="delete"){
-src_space_name='';
-dest_space_name='';
-$("#dwn_from_space").hide();
-$("#dwn_from_group").hide();
-$("#dwn_from_project").hide();
-$("#dwn_place").hide();
-$("#dwnTo").hide();
-$("#cmdu").text("Delete");
-$("#dwn_select_items_button").hide();
-$("#dwnFrom").hide();
-$("#tab_items").show();
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#change_selection_div").hide();
-$("#showDiv").hide();
-document.getElementById("del_place").style.display="inline";
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-document.getElementById("up_place").style.display="inline";
-$("#del_place").css("margin-top", "110px");
-$("#del_select_items_button").hide();
-$("#up_select_items_button").hide();
-$("#copyTo").hide();
-$("#up_place").hide();
-$("#delShow").show();
-$("#upShow").hide();
-$("#upTo").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-document.getElementById("deleteFrom").style.display="inline";
-document.getElementById("upFrom").style.display="inline";
-$('#upFrom').hide();
-$('#from_label').hide();
-$('#to_label').hide();
-$('#to_place').hide();
-$("#to_space").hide();
-$("#to_group").hide();
-$("#to_project").hide();
-$('#select_items_button').hide();	
-$('#start_copying_button').val('Start Deleting');
-//******************Hidiing all the items with reagard to categories
-$("#catShow").hide();
-$("#catFrom").hide();
-$("#cat_from_space").hide();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#cat_place").hide();
-$("#selCat").hide();
-$("#cat_sel").hide();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-$("#selected_items_categories").hide();
-//***********************End***************8
-//Hiding all the items with regard to tags
-$("#tagShow").hide();
-$("#tagFrom").hide();
-$("#tag_from_space").hide();
-$("#tag_from_group").hide();
-$("#tag_from_project").hide();
-$("#tag_place").hide();
-$("#selTag").hide();
-$("#tag_sel").hide();
-$("#add_tag_button").hide();
-$("#tagTo").hide();
-$("#tag_select_items_button").hide();
-//*********************End*********
-$('#start_copying_button').unbind('click').click(function(){startDeleting();});
-}
-else if(sel_action_val=="uploadd"){
-//******************Hidiing all the items with reagard to categories
-$("#catShow").hide();
-$("#catFrom").hide();
-$("#cat_from_space").hide();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#cat_place").hide();
-$("#selCat").hide();
-$("#cat_sel").hide();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-$("#selected_items_categories").hide();
-//***********************End***************8
-//Hiding all the items with regard to tags
-$("#tagShow").hide();
-$("#tagFrom").hide();
-$("#tag_from_space").hide();
-$("#tag_from_group").hide();
-$("#tag_from_project").hide();
-$("#tag_place").hide();
-$("#selTag").hide();
-$("#tag_sel").hide();
-$("#add_tag_button").hide();
-$("#tagTo").hide();
-$("#tag_select_items_button").hide();
-//*********************End*********
+        $('#start_copying_button').unbind('click').click(function () {
+            startCopying();
+        });
+    } else if (sel_action_val == "move") {
+        document.getElementById("to_place").disabled = true;
+        src_space_name = '';
+        dest_space_name = '';
+        $("#cmdu").text("Move");
+        $("#dwn_from_space").hide();
+        $("#dwn_from_group").hide();
+        $("#dwn_from_project").hide();
+        $("#dwn_place").hide();
+        $("#dwn_select_items_button").hide();
+        $("#dwnTo").hide();
+        $('#all_selected_items').css("margin-top", "0px");
+        $('#selected_items').css("margin-top", "0px");
+        $("#to_space").hide();
+        $("#from_place").show();
+        $("#tab_items").show();
+        $("#to_group").hide();
+        $("#dwnFrom").hide();
+        $("#to_project").hide();
+        $("#from_space").hide();
+        $("#from_group").hide();
+        $("#from_project").hide();
+        $("#del_from_space").hide();
+        $("#del_from_group").hide();
+        $("#del_from_project").hide();
+        $("#deleteFrom").hide();
+        $("#up_from_space").hide();
+        $("#up_from_group").hide();
+        $("#up_from_project").hide();
+        $("#upFrom").hide();
+        document.getElementById("deleteTo").style.display = "inline";
+        document.getElementById("upTo").style.display = "inline";
+        $("#deleteTo").hide();
+        $("#upTo").hide();
+        document.getElementById("del_select_items_button").style.display = "inline";
+        document.getElementById("up_select_items_button").style.display = "inline";
+        $("#del_select_items_button").hide();
+        $("#up_select_items_button").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+        document.getElementById("del_place").style.display = "inline";
+        document.getElementById("up_place").style.display = "inline";
+        $("#del_place").hide();
+        $("#up_place").hide();
+        $("#change_selection_div").hide();
+        $("#stylized").show();
+        $("#showDiv").show();
+        $("#to_place").show();
+        $("#copyTo").show();
+        $('#from_label').text("Move From:");
+        $('#to_label').text("Move To:");
+        $('#from_label').show();
+        $('#to_label').show();
+        $('#select_items_button').hide();
+        $("#copyTo").text("Move this:").append('<br/>');
+        $('#start_copying_button').val('Start Moving');
+        //******************Hidiing all the items with reagard to categories
+        $("#catShow").hide();
+        $("#catFrom").hide();
+        $("#cat_from_space").hide();
+        $("#cat_from_group").hide();
+        $("#cat_from_project").hide();
+        $("#cat_place").hide();
+        $("#selCat").hide();
+        $("#cat_sel").hide();
+        $("#catTo").hide();
+        $("#cat_select_items_button").hide();
+        $("#selected_items_categories").hide();
+        //***********************End***************8
+        //Hiding all the items with regard to tags
+        $("#tagShow").hide();
+        $("#tagFrom").hide();
+        $("#tag_from_space").hide();
+        $("#tag_from_group").hide();
+        $("#tag_from_project").hide();
+        $("#tag_place").hide();
+        $("#selTag").hide();
+        $("#tag_sel").hide();
+        $("#add_tag_button").hide();
+        $("#tagTo").hide();
+        $("#tag_select_items_button").hide();
+        //*********************End*********
+        $('#start_copying_button').unbind('click').click(function () {
+            startMoving();
+        });
+    } else if (sel_action_val == "delete") {
+        src_space_name = '';
+        dest_space_name = '';
+        $("#dwn_from_space").hide();
+        $("#dwn_from_group").hide();
+        $("#dwn_from_project").hide();
+        $("#dwn_place").hide();
+        $("#dwnTo").hide();
+        $("#cmdu").text("Delete");
+        $("#dwn_select_items_button").hide();
+        $("#dwnFrom").hide();
+        $("#tab_items").show();
+        $('#all_selected_items').css("margin-top", "80px");
+        $('#selected_items').css("margin-top", "80px");
+        $("#change_selection_div").hide();
+        $("#showDiv").hide();
+        document.getElementById("del_place").style.display = "inline";
+        document.getElementById("del_select_items_button").style.display = "inline";
+        document.getElementById("up_select_items_button").style.display = "inline";
+        document.getElementById("up_place").style.display = "inline";
+        $("#del_place").css("margin-top", "110px");
+        $("#del_select_items_button").hide();
+        $("#up_select_items_button").hide();
+        $("#copyTo").hide();
+        $("#up_place").hide();
+        $("#delShow").show();
+        $("#upShow").hide();
+        $("#upTo").hide();
+        $("#del_from_space").hide();
+        $("#del_from_group").hide();
+        $("#del_from_project").hide();
+        $("#up_from_space").hide();
+        $("#up_from_group").hide();
+        $("#up_from_project").hide();
+        document.getElementById("deleteFrom").style.display = "inline";
+        document.getElementById("upFrom").style.display = "inline";
+        $('#upFrom').hide();
+        $('#from_label').hide();
+        $('#to_label').hide();
+        $('#to_place').hide();
+        $("#to_space").hide();
+        $("#to_group").hide();
+        $("#to_project").hide();
+        $('#select_items_button').hide();
+        $('#start_copying_button').val('Start Deleting');
+        //******************Hidiing all the items with reagard to categories
+        $("#catShow").hide();
+        $("#catFrom").hide();
+        $("#cat_from_space").hide();
+        $("#cat_from_group").hide();
+        $("#cat_from_project").hide();
+        $("#cat_place").hide();
+        $("#selCat").hide();
+        $("#cat_sel").hide();
+        $("#catTo").hide();
+        $("#cat_select_items_button").hide();
+        $("#selected_items_categories").hide();
+        //***********************End***************8
+        //Hiding all the items with regard to tags
+        $("#tagShow").hide();
+        $("#tagFrom").hide();
+        $("#tag_from_space").hide();
+        $("#tag_from_group").hide();
+        $("#tag_from_project").hide();
+        $("#tag_place").hide();
+        $("#selTag").hide();
+        $("#tag_sel").hide();
+        $("#add_tag_button").hide();
+        $("#tagTo").hide();
+        $("#tag_select_items_button").hide();
+        //*********************End*********
+        $('#start_copying_button').unbind('click').click(function () {
+            startDeleting();
+        });
+    } else if (sel_action_val == "uploadd") {
+        //******************Hidiing all the items with reagard to categories
+        $("#catShow").hide();
+        $("#catFrom").hide();
+        $("#cat_from_space").hide();
+        $("#cat_from_group").hide();
+        $("#cat_from_project").hide();
+        $("#cat_place").hide();
+        $("#selCat").hide();
+        $("#cat_sel").hide();
+        $("#catTo").hide();
+        $("#cat_select_items_button").hide();
+        $("#selected_items_categories").hide();
+        //***********************End***************8
+        //Hiding all the items with regard to tags
+        $("#tagShow").hide();
+        $("#tagFrom").hide();
+        $("#tag_from_space").hide();
+        $("#tag_from_group").hide();
+        $("#tag_from_project").hide();
+        $("#tag_place").hide();
+        $("#selTag").hide();
+        $("#tag_sel").hide();
+        $("#add_tag_button").hide();
+        $("#tagTo").hide();
+        $("#tag_select_items_button").hide();
+        //*********************End*********
 
-if(browserName=="MSIE")
-{
+        if (browserName == "MSIE") {
 
-src_space_name='';
-dest_space_name='';
-$("#cmdu").text("Upload");
-$("#dwn_from_space").hide();
-$("#dwn_from_group").hide();
-$("#dwn_from_project").hide();
-$("#dwn_place").hide();
-$("#dwnTo").hide();
-$("#dwn_select_items_button").hide();
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#change_selection_div").hide();
-$("#showDiv").hide();
-$("#deleteFrom").hide();
-$("#dwnFrom").hide();
-document.getElementById("deleteTo").style.display="inline";
-$("#deleteTo").hide();
-document.getElementById("up_place").style.display="inline";
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#del_place").hide();
-$("#del_select_items_button").hide();
-$("#up_select_items_button").hide();
-$("#copyTo").hide();
-$("#delShow").hide();
-$("#upShow").hide();
-$("#up_place").hide();
-$('#up_place').css("margin-top", "90px");
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-document.getElementById("upFrom").style.display="inline";
-$('#from_label').hide();
-$('#to_label').hide();
-$('#to_place').hide();
-$("#to_space").hide();
-$("#to_group").hide();
-$("#to_project").hide();	
-$('#select_items_button').hide();
+            src_space_name = '';
+            dest_space_name = '';
+            $("#cmdu").text("Upload");
+            $("#dwn_from_space").hide();
+            $("#dwn_from_group").hide();
+            $("#dwn_from_project").hide();
+            $("#dwn_place").hide();
+            $("#dwnTo").hide();
+            $("#dwn_select_items_button").hide();
+            $('#all_selected_items').css("margin-top", "80px");
+            $('#selected_items').css("margin-top", "80px");
+            $("#change_selection_div").hide();
+            $("#showDiv").hide();
+            $("#deleteFrom").hide();
+            $("#dwnFrom").hide();
+            document.getElementById("deleteTo").style.display = "inline";
+            $("#deleteTo").hide();
+            document.getElementById("up_place").style.display = "inline";
+            document.getElementById("del_select_items_button").style.display = "inline";
+            document.getElementById("up_select_items_button").style.display = "inline";
+            $("#del_place").hide();
+            $("#del_select_items_button").hide();
+            $("#up_select_items_button").hide();
+            $("#copyTo").hide();
+            $("#delShow").hide();
+            $("#upShow").hide();
+            $("#up_place").hide();
+            $('#up_place').css("margin-top", "90px");
+            $("#del_from_space").hide();
+            $("#del_from_group").hide();
+            $("#del_from_project").hide();
+            $("#up_from_space").hide();
+            $("#up_from_group").hide();
+            $("#up_from_project").hide();
+            document.getElementById("upFrom").style.display = "inline";
+            $('#from_label').hide();
+            $('#to_label').hide();
+            $('#to_place').hide();
+            $("#to_space").hide();
+            $("#to_group").hide();
+            $("#to_project").hide();
+            $('#select_items_button').hide();
 
-$("#uploadIE").show();
-$("#uploadIE").dialog();
+            $("#uploadIE").show();
+            $("#uploadIE").dialog();
 
-$("#src_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#src_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#src_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            $("#src_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#src_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#src_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-}
-else
-{
-src_space_name='';
-dest_space_name='';
-$("#dwn_from_space").hide();
-$("#dwn_from_group").hide();
-$("#dwn_from_project").hide();
-$("#dwn_place").hide();
-$("#dwnTo").hide();
-$("#cmdu").text("Upload");
-$('#all_selected_items').css("margin-top", "80px");
-$("#dwnFrom").hide();
-$('#selected_items').css("margin-top", "80px");
-$("#change_selection_div").hide();
-$("#showDiv").hide();
-$("#deleteFrom").hide();
-document.getElementById("deleteTo").style.display="inline";
-$("#deleteTo").hide();
-document.getElementById("up_place").style.display="inline";
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#del_place").hide();
-$("#del_select_items_button").hide();
-$("#up_select_items_button").hide();
-$("#copyTo").hide();
-$("#delShow").hide();
-$("#upShow").show();
-$("#dwn_select_items_button").hide();
-$("#up_place").show();
-$('#up_place').css("margin-top", "90px");
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-document.getElementById("upFrom").style.display="inline";
-$('#from_label').hide();
-$('#to_label').hide();
-$('#to_place').hide();
-$("#to_space").hide();
-$("#to_group").hide();
-$("#to_project").hide();	
-$('#select_items_button').hide();
-}
-}
-else if(sel_action_val=="download"){
-src_space_name='';
-dest_space_name='';
-$("#cmdu").text("Download");
-$("#tab_items").hide();
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#change_selection_div").hide();
-$("#showDiv").hide();
-document.getElementById("del_place").style.display="inline";
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-document.getElementById("up_place").style.display="inline";
-$("#del_place").css("margin-top", "110px");
-$("#del_select_items_button").hide();
-$("#up_select_items_button").hide();
-$("#copyTo").hide();
-$("#up_place").hide();
-$("#dwn_select_items_button").hide();
-$("#deleteTo").hide();
-$("#delShow").hide();
-$("#dwnShow").show();
-$("#upShow").hide();
-$("#upTo").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-document.getElementById("deleteFrom").style.display="inline";
-document.getElementById("upFrom").style.display="inline";
+        } else {
+            src_space_name = '';
+            dest_space_name = '';
+            $("#dwn_from_space").hide();
+            $("#dwn_from_group").hide();
+            $("#dwn_from_project").hide();
+            $("#dwn_place").hide();
+            $("#dwnTo").hide();
+            $("#cmdu").text("Upload");
+            $('#all_selected_items').css("margin-top", "80px");
+            $("#dwnFrom").hide();
+            $('#selected_items').css("margin-top", "80px");
+            $("#change_selection_div").hide();
+            $("#showDiv").hide();
+            $("#deleteFrom").hide();
+            document.getElementById("deleteTo").style.display = "inline";
+            $("#deleteTo").hide();
+            document.getElementById("up_place").style.display = "inline";
+            document.getElementById("del_select_items_button").style.display = "inline";
+            document.getElementById("up_select_items_button").style.display = "inline";
+            $("#del_place").hide();
+            $("#del_select_items_button").hide();
+            $("#up_select_items_button").hide();
+            $("#copyTo").hide();
+            $("#delShow").hide();
+            $("#upShow").show();
+            $("#dwn_select_items_button").hide();
+            $("#up_place").show();
+            $('#up_place').css("margin-top", "90px");
+            $("#del_from_space").hide();
+            $("#del_from_group").hide();
+            $("#del_from_project").hide();
+            $("#up_from_space").hide();
+            $("#up_from_group").hide();
+            $("#up_from_project").hide();
+            document.getElementById("upFrom").style.display = "inline";
+            $('#from_label').hide();
+            $('#to_label').hide();
+            $('#to_place').hide();
+            $("#to_space").hide();
+            $("#to_group").hide();
+            $("#to_project").hide();
+            $('#select_items_button').hide();
+        }
+    } else if (sel_action_val == "download") {
+        src_space_name = '';
+        dest_space_name = '';
+        $("#cmdu").text("Download");
+        $("#tab_items").hide();
+        $('#all_selected_items').css("margin-top", "80px");
+        $('#selected_items').css("margin-top", "80px");
+        $("#change_selection_div").hide();
+        $("#showDiv").hide();
+        document.getElementById("del_place").style.display = "inline";
+        document.getElementById("del_select_items_button").style.display = "inline";
+        document.getElementById("up_select_items_button").style.display = "inline";
+        document.getElementById("up_place").style.display = "inline";
+        $("#del_place").css("margin-top", "110px");
+        $("#del_select_items_button").hide();
+        $("#up_select_items_button").hide();
+        $("#copyTo").hide();
+        $("#up_place").hide();
+        $("#dwn_select_items_button").hide();
+        $("#deleteTo").hide();
+        $("#delShow").hide();
+        $("#dwnShow").show();
+        $("#upShow").hide();
+        $("#upTo").hide();
+        $("#del_from_space").hide();
+        $("#del_from_group").hide();
+        $("#del_from_project").hide();
+        $("#up_from_space").hide();
+        $("#up_from_group").hide();
+        $("#up_from_project").hide();
+        document.getElementById("deleteFrom").style.display = "inline";
+        document.getElementById("upFrom").style.display = "inline";
 
-$('#dwnFrom').show();
-$('#upFrom').hide();
-$('#from_label').hide();
-$('#to_label').hide();
-$('#to_place').hide();
-$("#to_space").hide();
-$("#to_group").hide();
-$("#to_project").hide();
-$('#select_items_button').hide();	
-$('#start_copying_button').val('Start Downloading');
-//******************Hidiing all the items with reagard to categories
-$("#catShow").hide();
-$("#catFrom").hide();
-$("#cat_from_space").hide();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#cat_place").hide();
-$("#selCat").hide();
-$("#cat_sel").hide();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-$("#selected_items_categories").hide();
-//***********************End***************8
-//Hiding all the items with regard to tags
-$("#tagShow").hide();
-$("#tagFrom").hide();
-$("#tag_from_space").hide();
-$("#tag_from_group").hide();
-$("#tag_from_project").hide();
-$("#tag_place").hide();
-$("#selTag").hide();
-$("#tag_sel").hide();
-$("#add_tag_button").hide();
-$("#tagTo").hide();
-$("#tag_select_items_button").hide();
-//*********************End*********
-$('#start_copying_button').unbind('click').click(function(){startDownloading();});
-}
-else if(sel_action_val=="categs"){
-src_space_name='';
-dest_space_name='';
-$("#cat_place").css("margin-top", 0);
-//Show the items related to categories and hide the others
-$("#cmdu").text("Manage Categories");
-$("#catShow").show();
-$("#catFrom").show();
-$("#cat_place").show();
-$("#selCat").hide();
-$("#cat_sel").hide();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-$("#cat_from_space").hide();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#selected_items_categories").hide();
-$("#refresh_app_button").hide();
-$("#refresh_app").hide();
-$("#newUpSel").hide();
-$("#start_copying_button").hide();
-$("#start_uploading").hide();
-$("#change_contents").hide();
-//*********************End*********************
-//hide the finale tags items also 
-$("#finalTagShow").hide();
-$("#finale_tagFrom").hide();
-$("#finale_tag_from_space").hide();
-$("#finale_tag_from_group").hide();
-$("#finale_tag_from_project").hide();
-$("#finalSelTag").hide();
-$("#finale_tag_sel").hide();
-$("#finale_add_tag").hide();
-$("#tag_select_items_button").hide();
-$("#finale_finalTagTo").hide();
-//End
-//Hide all the items with regard to Manage Tags*************
-$("#tagShow").hide();
-$("#tagFrom").hide();
-$("#tag_place").hide();
-$("#selTag").hide();
-$("#tag_sel").hide();
-$("#tagTo").hide();
-$("#tag_from_space").hide();
-$("#tag_from_group").hide();
-$("#tag_from_project").hide();
-$("#add_tag_button").hide();
-$("#tag_select_items_button").hide();
-document.getElementById("cat_place").style.display="inline";
-//*************End****************
+        $('#dwnFrom').show();
+        $('#upFrom').hide();
+        $('#from_label').hide();
+        $('#to_label').hide();
+        $('#to_place').hide();
+        $("#to_space").hide();
+        $("#to_group").hide();
+        $("#to_project").hide();
+        $('#select_items_button').hide();
+        $('#start_copying_button').val('Start Downloading');
+        //******************Hidiing all the items with reagard to categories
+        $("#catShow").hide();
+        $("#catFrom").hide();
+        $("#cat_from_space").hide();
+        $("#cat_from_group").hide();
+        $("#cat_from_project").hide();
+        $("#cat_place").hide();
+        $("#selCat").hide();
+        $("#cat_sel").hide();
+        $("#catTo").hide();
+        $("#cat_select_items_button").hide();
+        $("#selected_items_categories").hide();
+        //***********************End***************8
+        //Hiding all the items with regard to tags
+        $("#tagShow").hide();
+        $("#tagFrom").hide();
+        $("#tag_from_space").hide();
+        $("#tag_from_group").hide();
+        $("#tag_from_project").hide();
+        $("#tag_place").hide();
+        $("#selTag").hide();
+        $("#tag_sel").hide();
+        $("#add_tag_button").hide();
+        $("#tagTo").hide();
+        $("#tag_select_items_button").hide();
+        //*********************End*********
+        $('#start_copying_button').unbind('click').click(function () {
+            startDownloading();
+        });
+    } else if (sel_action_val == "categs") {
+        src_space_name = '';
+        dest_space_name = '';
+        $("#cat_place").css("margin-top", 0);
+        //Show the items related to categories and hide the others
+        $("#cmdu").text("Manage Categories");
+        $("#catShow").show();
+        $("#catFrom").show();
+        $("#cat_place").show();
+        $("#selCat").hide();
+        $("#cat_sel").hide();
+        $("#catTo").hide();
+        $("#cat_select_items_button").hide();
+        $("#cat_from_space").hide();
+        $("#cat_from_group").hide();
+        $("#cat_from_project").hide();
+        $("#selected_items_categories").hide();
+        $("#refresh_app_button").hide();
+        $("#refresh_app").hide();
+        $("#newUpSel").hide();
+        $("#start_copying_button").hide();
+        $("#start_uploading").hide();
+        $("#change_contents").hide();
+        //*********************End*********************
+        //hide the finale tags items also 
+        $("#finalTagShow").hide();
+        $("#finale_tagFrom").hide();
+        $("#finale_tag_from_space").hide();
+        $("#finale_tag_from_group").hide();
+        $("#finale_tag_from_project").hide();
+        $("#finalSelTag").hide();
+        $("#finale_tag_sel").hide();
+        $("#finale_add_tag").hide();
+        $("#tag_select_items_button").hide();
+        $("#finale_finalTagTo").hide();
+        //End
+        //Hide all the items with regard to Manage Tags*************
+        $("#tagShow").hide();
+        $("#tagFrom").hide();
+        $("#tag_place").hide();
+        $("#selTag").hide();
+        $("#tag_sel").hide();
+        $("#tagTo").hide();
+        $("#tag_from_space").hide();
+        $("#tag_from_group").hide();
+        $("#tag_from_project").hide();
+        $("#add_tag_button").hide();
+        $("#tag_select_items_button").hide();
+        document.getElementById("cat_place").style.display = "inline";
+        //*************End****************
 
-//Hide all the items with regard to download
-$("#dwnShow").hide();
-$("#dwnFrom").hide();
-$("#dwn_from_space").hide();
-$("#dwn_from_group").hide();
-$("#dwn_from_project").hide();
-$("#dwn_place").hide();
-$("#dwnTo").hide();
-$("#dwn_select_items_button").hide();
+        //Hide all the items with regard to download
+        $("#dwnShow").hide();
+        $("#dwnFrom").hide();
+        $("#dwn_from_space").hide();
+        $("#dwn_from_group").hide();
+        $("#dwn_from_project").hide();
+        $("#dwn_place").hide();
+        $("#dwnTo").hide();
+        $("#dwn_select_items_button").hide();
 
-$("#tab_items").show();
-$("#change_selection_div").hide();
-$("#selected_items_categories").hide();
-$('#select_items_button').hide();
-$("#showDiv").hide();
-$("#copyTo").hide();
-document.getElementById("del_place").style.display="inline";
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-document.getElementById("up_place").style.display="inline";
-//*******************hide all items with regard to delete
-$("#delShow").hide();
-$("#deleteFrom").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#del_place").hide();
-$("#deleteTo").hide();
-$("#del_select_items_button").hide();
+        $("#tab_items").show();
+        $("#change_selection_div").hide();
+        $("#selected_items_categories").hide();
+        $('#select_items_button').hide();
+        $("#showDiv").hide();
+        $("#copyTo").hide();
+        document.getElementById("del_place").style.display = "inline";
+        document.getElementById("del_select_items_button").style.display = "inline";
+        document.getElementById("up_select_items_button").style.display = "inline";
+        document.getElementById("up_place").style.display = "inline";
+        //*******************hide all items with regard to delete
+        $("#delShow").hide();
+        $("#deleteFrom").hide();
+        $("#del_from_space").hide();
+        $("#del_from_group").hide();
+        $("#del_from_project").hide();
+        $("#del_place").hide();
+        $("#deleteTo").hide();
+        $("#del_select_items_button").hide();
 
-//*************Hide all elements with regard to upload
-$("#upShow").hide();
-$("#up_place").hide();
-$('#upFrom').hide();
-$("#up_select_items_button").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-$("#upTo").hide();
+        //*************Hide all elements with regard to upload
+        $("#upShow").hide();
+        $("#up_place").hide();
+        $('#upFrom').hide();
+        $("#up_select_items_button").hide();
+        $("#up_from_space").hide();
+        $("#up_from_group").hide();
+        $("#up_from_project").hide();
+        $("#upTo").hide();
 
 
-document.getElementById("deleteFrom").style.display="inline";
-document.getElementById("upFrom").style.display="inline";
+        document.getElementById("deleteFrom").style.display = "inline";
+        document.getElementById("upFrom").style.display = "inline";
 
-$('#from_label').hide();
-$('#to_label').hide();
-$('#from_space').hide();
-$('#from_group').hide();
-$('#from_project').hide();
-$('#to_space').hide();
-$('#to_group').hide();
-$('#to_project').hide();
-$('#from_place').hide();
-$('#to_place').hide();
-$('#button_div').hide();
-}
+        $('#from_label').hide();
+        $('#to_label').hide();
+        $('#from_space').hide();
+        $('#from_group').hide();
+        $('#from_project').hide();
+        $('#to_space').hide();
+        $('#to_group').hide();
+        $('#to_project').hide();
+        $('#from_place').hide();
+        $('#to_place').hide();
+        $('#button_div').hide();
+    } else if (sel_action_val == "tags") {
+        src_space_name = '';
+        dest_space_name = '';
+        $("#tagShow").show();
+        $("#catShow").hide();
+        $("#deleteTo").hide();
+        $("#tag_select_items_button").hide();
+        $("#selCat").hide();
+        $("#cat_place").hide();
+        $("#cat_sel").hide();
+        $("#catFrom").hide();
+        $("#cat_from_space").hide();
+        $("#cat_from_group").hide();
+        $("#cat_from_project").hide();
+        $("#catTo").hide();
+        $("#tag_update_text").hide();
+        $("#cat_select_items_button").hide();
+        document.getElementById("tag_place").style.display = "inline";
+        $("#tag_place").show();
+        //$("#tagFrom").css("margin-top", "-40px");
+        $("#tagFrom").show();
+        //$("#tag_place").css("margin-top", parseInt($("#tagFrom").css("margin-top"))+parseInt($("#tagFrom").css("height"))+10+'px');
+        //$("#tag_place").css("margin-top", "-20px");
+        //$("#del_place").css("margin-top", "110px");
+        //$('#tag_place').css("margin-top", "110px");
+        $("#dwnFrom").hide();
+        $("#del_place").hide();
+        $("#dwn_from_space").hide();
+        $("#dwn_from_group").hide();
+        $("#dwn_from_project").hide();
+        $("#dwn_place").hide();
+        $("#dwnTo").hide();
+        $("#cmdu").text("Delete");
+        $("#dwn_select_items_button").hide();
+        $("#dwnFrom").hide();
+        $("#tab_items").show();
+        //$('#all_selected_items').css("margin-top", "80px");
+        //$('#selected_items').css("margin-top", "80px");
+        $("#change_selection_div").hide();
+        $("#showDiv").hide();
+        //document.getElementById("del_place").style.display="inline";
+        document.getElementById("del_select_items_button").style.display = "inline";
+        document.getElementById("up_select_items_button").style.display = "inline";
+        document.getElementById("up_place").style.display = "inline";
+        //$("#del_place").css("margin-top", "110px");
+        $("#del_select_items_button").hide();
+        $("#up_select_items_button").hide();
+        $("#dwn_select_items_button").hide();
+        $("#copyTo").hide();
+        $("#up_place").hide();
+        $("#delShow").hide();
+        $("#catShow").hide();
+        $("#tagShow").show();
+        $("#upShow").hide();
+        $("#upTo").hide();
+        $("#del_from_space").hide();
+        $("#del_from_group").hide();
+        $("#del_from_project").hide();
+        $("#up_from_space").hide();
+        $("#up_from_group").hide();
+        $("#up_from_project").hide();
+        document.getElementById("deleteFrom").style.display = "inline";
+        document.getElementById("upFrom").style.display = "inline";
+        $('#upFrom').hide();
+        $('#from_label').hide();
+        $('#to_label').hide();
+        $('#to_place').hide();
+        $("#to_space").hide();
+        $("#to_group").hide();
+        $("#to_project").hide();
+        $('#select_items_button').hide();
+        $('#start_copying_button').val('Start Deleting');
+        $('#start_copying_button').unbind('click').click(function () {
+            startDeleting();
+        });
+    } else if (sel_action_val == "select_action") {
+        src_space_name = '';
+        dest_space_name = '';
 
-else if(sel_action_val=="tags"){
-src_space_name='';
-dest_space_name='';
-$("#tagShow").show();
-$("#catShow").hide();
-$("#deleteTo").hide();
-$("#tag_select_items_button").hide();
-$("#selCat").hide();
-$("#cat_place").hide();
-$("#cat_sel").hide();
-$("#catFrom").hide();
-$("#cat_from_space").hide();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#catTo").hide();
-$("#tag_update_text").hide();
-$("#cat_select_items_button").hide();
-document.getElementById("tag_place").style.display="inline";
-$("#tag_place").show();
-//$("#tagFrom").css("margin-top", "-40px");
-$("#tagFrom").show();
-//$("#tag_place").css("margin-top", parseInt($("#tagFrom").css("margin-top"))+parseInt($("#tagFrom").css("height"))+10+'px');
-//$("#tag_place").css("margin-top", "-20px");
-//$("#del_place").css("margin-top", "110px");
-//$('#tag_place').css("margin-top", "110px");
-$("#dwnFrom").hide();
-$("#del_place").hide();
-$("#dwn_from_space").hide();
-$("#dwn_from_group").hide();
-$("#dwn_from_project").hide();
-$("#dwn_place").hide();
-$("#dwnTo").hide();
-$("#cmdu").text("Delete");
-$("#dwn_select_items_button").hide();
-$("#dwnFrom").hide();
-$("#tab_items").show();
-//$('#all_selected_items').css("margin-top", "80px");
-//$('#selected_items').css("margin-top", "80px");
-$("#change_selection_div").hide();
-$("#showDiv").hide();
-//document.getElementById("del_place").style.display="inline";
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-document.getElementById("up_place").style.display="inline";
-//$("#del_place").css("margin-top", "110px");
-$("#del_select_items_button").hide();
-$("#up_select_items_button").hide();
-$("#dwn_select_items_button").hide();
-$("#copyTo").hide();
-$("#up_place").hide();
-$("#delShow").hide();
-$("#catShow").hide();
-$("#tagShow").show();
-$("#upShow").hide();
-$("#upTo").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-document.getElementById("deleteFrom").style.display="inline";
-document.getElementById("upFrom").style.display="inline";
-$('#upFrom').hide();
-$('#from_label').hide();
-$('#to_label').hide();
-$('#to_place').hide();
-$("#to_space").hide();
-$("#to_group").hide();
-$("#to_project").hide();
-$('#select_items_button').hide();	
-$('#start_copying_button').val('Start Deleting');
-$('#start_copying_button').unbind('click').click(function(){startDeleting();});
-}
-else if(sel_action_val=="select_action"){
-src_space_name='';
-dest_space_name='';
-
-document.getElementById("del_place").style.display="inline";
-$("#change_selection_div").hide();
-$("#dwn_from_space").hide();
-$("#dwn_select_items_button").hide();
-$("#dwn_from_group").hide();
-$("#dwn_from_project").hide();
-$("#dwn_place").hide();
-$("#dwnTo").hide();
-$("#dwnFrom").hide();
-$("#deleteFrom").hide();
-$("#upFrom").hide();
-document.getElementById("deleteTo").style.display="inline";
-document.getElementById("upTo").style.display="inline";
-$("#deleteTo").hide();
-$("#upTo").hide();
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#del_select_items_button").hide();
-$("#up_select_items_button").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-$("#showDiv").hide();
-$("#copyTo").hide();
-$("#delShow").hide();
-$("#del_place").hide();
-$("#upShow").hide();
-$("#up_place").hide();
-$('#select_items_button').hide();
-//******************Hidiing all the items with reagard to categories
-$("#catShow").hide();
-$("#catFrom").hide();
-$("#cat_from_space").hide();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#cat_place").hide();
-$("#selCat").hide();
-$("#cat_sel").hide();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-$("#selected_items_categories").hide();
-//***********************End***************8
-//Hiding all the items with regard to tags
-$("#tagShow").hide();
-$("#tagFrom").hide();
-$("#tag_from_space").hide();
-$("#tag_from_group").hide();
-$("#tag_from_project").hide();
-$("#tag_place").hide();
-$("#selTag").hide();
-$("#tag_sel").hide();
-$("#add_tag_button").hide();
-$("#tagTo").hide();
-$("#tag_select_items_button").hide();
-//*********************End*********
-}
+        document.getElementById("del_place").style.display = "inline";
+        $("#change_selection_div").hide();
+        $("#dwn_from_space").hide();
+        $("#dwn_select_items_button").hide();
+        $("#dwn_from_group").hide();
+        $("#dwn_from_project").hide();
+        $("#dwn_place").hide();
+        $("#dwnTo").hide();
+        $("#dwnFrom").hide();
+        $("#deleteFrom").hide();
+        $("#upFrom").hide();
+        document.getElementById("deleteTo").style.display = "inline";
+        document.getElementById("upTo").style.display = "inline";
+        $("#deleteTo").hide();
+        $("#upTo").hide();
+        document.getElementById("del_select_items_button").style.display = "inline";
+        document.getElementById("up_select_items_button").style.display = "inline";
+        $("#del_select_items_button").hide();
+        $("#up_select_items_button").hide();
+        $("#del_from_space").hide();
+        $("#del_from_group").hide();
+        $("#del_from_project").hide();
+        $("#up_from_space").hide();
+        $("#up_from_group").hide();
+        $("#up_from_project").hide();
+        $("#showDiv").hide();
+        $("#copyTo").hide();
+        $("#delShow").hide();
+        $("#del_place").hide();
+        $("#upShow").hide();
+        $("#up_place").hide();
+        $('#select_items_button').hide();
+        //******************Hidiing all the items with reagard to categories
+        $("#catShow").hide();
+        $("#catFrom").hide();
+        $("#cat_from_space").hide();
+        $("#cat_from_group").hide();
+        $("#cat_from_project").hide();
+        $("#cat_place").hide();
+        $("#selCat").hide();
+        $("#cat_sel").hide();
+        $("#catTo").hide();
+        $("#cat_select_items_button").hide();
+        $("#selected_items_categories").hide();
+        //***********************End***************8
+        //Hiding all the items with regard to tags
+        $("#tagShow").hide();
+        $("#tagFrom").hide();
+        $("#tag_from_space").hide();
+        $("#tag_from_group").hide();
+        $("#tag_from_project").hide();
+        $("#tag_place").hide();
+        $("#selTag").hide();
+        $("#tag_sel").hide();
+        $("#add_tag_button").hide();
+        $("#tagTo").hide();
+        $("#tag_select_items_button").hide();
+        //*********************End*********
+    }
 }
 
-function fromPlace()
-{
-// Identifies which space/group/project the user  has chosen the content to copy/move and calls the relevant method.
-var from_place = document.getElementById("from_place");
-var from_sel_place = from_place.options[from_place.selectedIndex].value;
+function fromPlace() {
+    // Identifies which space/group/project the user  has chosen the content to copy/move and calls the relevant method.
+    var from_place = document.getElementById("from_place");
+    var from_sel_place = from_place.options[from_place.selectedIndex].value;
 
-if(from_sel_place=="select_space"){
-src_space_name='';
-dest_space_name='';
-document.getElementById("to_space").innerHTML=msg2;
-document.getElementById("to_group").innerHTML=msg2;
-document.getElementById("to_project").innerHTML=msg2;
-$("#change_selection_div").hide();
-$("#change_contents").hide();
-$("#start_copying_button").hide();
-fromSpaceRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    if (from_sel_place == "select_space") {
+        src_space_name = '';
+        dest_space_name = '';
+        document.getElementById("to_space").innerHTML = msg2;
+        document.getElementById("to_group").innerHTML = msg2;
+        document.getElementById("to_project").innerHTML = msg2;
+        $("#change_selection_div").hide();
+        $("#change_contents").hide();
+        $("#start_copying_button").hide();
+        fromSpaceRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(from_sel_place=="select_group"){
-src_space_name='';
-dest_space_name='';
-document.getElementById("to_space").innerHTML=msg2;
-document.getElementById("to_group").innerHTML=msg2;
-document.getElementById("to_project").innerHTML=msg2;
-$("#change_selection_div").hide();
-$("#change_contents").hide();
-$("#start_copying_button").hide();
-fromGroupRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    } else if (from_sel_place == "select_group") {
+        src_space_name = '';
+        dest_space_name = '';
+        document.getElementById("to_space").innerHTML = msg2;
+        document.getElementById("to_group").innerHTML = msg2;
+        document.getElementById("to_project").innerHTML = msg2;
+        $("#change_selection_div").hide();
+        $("#change_contents").hide();
+        $("#start_copying_button").hide();
+        fromGroupRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(from_sel_place=="select_project"){
-src_space_name='';
-dest_space_name='';
-document.getElementById("to_space").innerHTML=msg2;
-document.getElementById("to_group").innerHTML=msg2;
-document.getElementById("to_project").innerHTML=msg2;
-$("#change_selection_div").hide();
-$("#change_contents").hide();
-$("#start_copying_button").hide();
-fromProjectRequest();
-document.getElementById("copyTo").style.visibility="hidden";
-}
-else if(from_sel_place=="select_one"){
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();
-document.getElementById("copyTo").style.visibility="hidden";
-}
+    } else if (from_sel_place == "select_project") {
+        src_space_name = '';
+        dest_space_name = '';
+        document.getElementById("to_space").innerHTML = msg2;
+        document.getElementById("to_group").innerHTML = msg2;
+        document.getElementById("to_project").innerHTML = msg2;
+        $("#change_selection_div").hide();
+        $("#change_contents").hide();
+        $("#start_copying_button").hide();
+        fromProjectRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
+    } else if (from_sel_place == "select_one") {
+        document.getElementById("start_copying_button").style.visibility = "hidden";
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+    }
 }
 
-function delFromPlace()
-{
-// Identifies which space/group/project the user  has chosen the content to delete from and calls the relevant method.
-var from_place = document.getElementById("del_place");
-var from_sel_place = from_place.options[from_place.selectedIndex].value;
+function delFromPlace() {
+    // Identifies which space/group/project the user  has chosen the content to delete from and calls the relevant method.
+    var from_place = document.getElementById("del_place");
+    var from_sel_place = from_place.options[from_place.selectedIndex].value;
 
-if(from_sel_place=="select_space"){
-fromSpaceRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    if (from_sel_place == "select_space") {
+        fromSpaceRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(from_sel_place=="select_group"){
-fromGroupRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    } else if (from_sel_place == "select_group") {
+        fromGroupRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(from_sel_place=="select_project"){
-fromProjectRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    } else if (from_sel_place == "select_project") {
+        fromProjectRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(from_sel_place=="select_one"){
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();
-document.getElementById("copyTo").style.visibility="hidden";
-}
+    } else if (from_sel_place == "select_one") {
+        document.getElementById("start_copying_button").style.visibility = "hidden";
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+    }
 }
 
-function dwnFromPlace()
-{
-// Identifies which space/group/project user has chosen to download content from and calls the appropriate method.
-var from_place = document.getElementById("dwn_place");
-var from_sel_place = from_place.options[from_place.selectedIndex].value;
+function dwnFromPlace() {
+    // Identifies which space/group/project user has chosen to download content from and calls the appropriate method.
+    var from_place = document.getElementById("dwn_place");
+    var from_sel_place = from_place.options[from_place.selectedIndex].value;
 
-if(from_sel_place=="select_space"){
-fromSpaceRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    if (from_sel_place == "select_space") {
+        fromSpaceRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(from_sel_place=="select_group"){
-fromGroupRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    } else if (from_sel_place == "select_group") {
+        fromGroupRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(from_sel_place=="select_project"){
-fromProjectRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    } else if (from_sel_place == "select_project") {
+        fromProjectRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(from_sel_place=="select_one"){
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();
-document.getElementById("copyTo").style.visibility="hidden";
-}
+    } else if (from_sel_place == "select_one") {
+        document.getElementById("start_copying_button").style.visibility = "hidden";
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+    }
 }
 
-function upFromPlace()
-{
-// Identifies which space/group/project user has chosen to upload file to and calls the appropriate method.
-var up_place = document.getElementById("up_place");
-var up_sel_place = up_place.options[up_place.selectedIndex].value;
+function upFromPlace() {
+    // Identifies which space/group/project user has chosen to upload file to and calls the appropriate method.
+    var up_place = document.getElementById("up_place");
+    var up_sel_place = up_place.options[up_place.selectedIndex].value;
 
-if(up_sel_place=="select_space"){
-toSpaceRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    if (up_sel_place == "select_space") {
+        toSpaceRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(up_sel_place=="select_group"){
-toGroupRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    } else if (up_sel_place == "select_group") {
+        toGroupRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(up_sel_place=="select_project"){
-toProjectRequest();
-document.getElementById("copyTo").style.visibility="hidden";
+    } else if (up_sel_place == "select_project") {
+        toProjectRequest();
+        document.getElementById("copyTo").style.visibility = "hidden";
 
-}
-else if(up_sel_place=="select_one"){
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();
-document.getElementById("copyTo").style.visibility="hidden";
-}
+    } else if (up_sel_place == "select_one") {
+        document.getElementById("start_copying_button").style.visibility = "hidden";
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+    }
 }
 
-function toPlace()
-{
-// Identifies which space/group/project the user  has chosen to copy/move the selected content and calls the relevant method.
-var to_place = document.getElementById("to_place");
-var to_sel_place = to_place.options[to_place.selectedIndex].value;
+function toPlace() {
+    // Identifies which space/group/project the user  has chosen to copy/move the selected content and calls the relevant method.
+    var to_place = document.getElementById("to_place");
+    var to_sel_place = to_place.options[to_place.selectedIndex].value;
 
-if(to_sel_place=="to_space"){
-toSpaceRequest();
-}
-else if(to_sel_place=="to_group"){
-toGroupRequest();
-}
-else if(to_sel_place=="to_project"){
-toProjectRequest();
-}
-else if(to_sel_place=="select_to"){
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();
-document.getElementById("copyTo").style.visibility="hidden";
-}
+    if (to_sel_place == "to_space") {
+        toSpaceRequest();
+    } else if (to_sel_place == "to_group") {
+        toGroupRequest();
+    } else if (to_sel_place == "to_project") {
+        toProjectRequest();
+    } else if (to_sel_place == "select_to") {
+        document.getElementById("start_copying_button").style.visibility = "hidden";
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+    }
 }
 
 function fromSpaceRequest() {
-// Handles user request to select the SPACE and then handle the response to fetch details about the selected SPACE.
+    // Handles user request to select the SPACE and then handle the response to fetch details about the selected SPACE.
 
-var from_place_name='';
-src_space_name='';
-dest_space_name='';
+    var from_place_name = '';
+    src_space_name = '';
+    dest_space_name = '';
 
-//Code related to categories
-selected_cat = '';
-selected_tag = '';
-arrayIndex=0;
-addId=new Array();
-tagPopulatList = new Array();
-//Assigning the values 
-$("#cat_from_space").text('Change Category in Space');
-$("#cat_from_group").text('Change Category in Group');
-$("#cat_from_project").text('Change Category in Project');
+    //Code related to categories
+    selected_cat = '';
+    selected_tag = '';
+    arrayIndex = 0;
+    addId = new Array();
+    tagPopulatList = new Array();
+    //Assigning the values 
+    $("#cat_from_space").text('Change Category in Space');
+    $("#cat_from_group").text('Change Category in Group');
+    $("#cat_from_project").text('Change Category in Project');
 
-$("#tag_from_space").text('Manage Tags in Space');
-$("#tag_from_group").text('Manage Tags in Group');
-$("#tag_from_project").text('Manage Tags in Project');
-//**************
-//******************End***************
+    $("#tag_from_space").text('Manage Tags in Space');
+    $("#tag_from_group").text('Manage Tags in Group');
+    $("#tag_from_project").text('Manage Tags in Project');
+    //**************
+    //******************End***************
 
-document.getElementById("to_place").disabled = false;
-document.getElementById("from_project").innerHTML=msg2;
-document.getElementById("from_group").innerHTML=msg2;
-document.getElementById("from_space").innerHTML=msg2;
-var params = {
-type : "space",
-success : ( function(data){
-//consolelog("DATA: "+JSON.stringify(data));
+    document.getElementById("to_place").disabled = false;
+    document.getElementById("from_project").innerHTML = msg2;
+    document.getElementById("from_group").innerHTML = msg2;
+    document.getElementById("from_space").innerHTML = msg2;
+    var params = {
+        type: "space",
+        success: (function (data) {
+            //consolelog("DATA: "+JSON.stringify(data));
 
-// Assigns values to the variables from the received response.
-from_place_name=data.name;
-src_space_name=from_place_name;
-space_url=data.resources.self.ref;
-blog_url=data.resources.blog.ref;
-source_html_url=data.resources.html.ref;
-global_from_place_name = src_space_name; //code added for categories
+            // Assigns values to the variables from the received response.
+            from_place_name = data.name;
+            src_space_name = from_place_name;
+            space_url = data.resources.self.ref;
+            blog_url = data.resources.blog.ref;
+            source_html_url = data.resources.html.ref;
+            global_from_place_name = src_space_name; //code added for categories
 
-$("#del_place").hide();
-document.getElementById("from_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+from_place_name;
+            $("#del_place").hide();
+            document.getElementById("from_space").innerHTML = '<span id="myId" style="text-decoration:underline;">Space</span>' + ': ' + from_place_name;
 
-// Check if the source place is empty and reset the values accordingly.
-if(from_place_name!='')
-{
-if(dest_space_name==from_place_name)
-{
-if(sel_action_val=="move"){
-// Showing an error message if the source and target is same for move.
-$("#dialogMove").show();
-$("#dialogMove").dialog();
-}
-else{
-// Showing an error message if the source and target is same for copy.
-$("#dialog").show();
-$("#dialog").dialog();
-}
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-document.getElementById("from_space").innerHTML=msg2;
-document.getElementById("copyTo").style.visibility="hidden";
-}
-else
-{	
-var dialog_obj = $("#dialog");
-dialog_obj.dialog("close");
-var dialog_obj2 = $("#dialogMove");
-dialog_obj2.dialog("close");
-document.getElementById("to_place").disabled = false;
-document.getElementById("from_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+from_place_name;	
-}
-}
+            // Check if the source place is empty and reset the values accordingly.
+            if (from_place_name != '') {
+                if (dest_space_name == from_place_name) {
+                    if (sel_action_val == "move") {
+                        // Showing an error message if the source and target is same for move.
+                        $("#dialogMove").show();
+                        $("#dialogMove").dialog();
+                    } else {
+                        // Showing an error message if the source and target is same for copy.
+                        $("#dialog").show();
+                        $("#dialog").dialog();
+                    }
+                    document.getElementById("start_copying_button").style.visibility = "hidden";
+                    $("#button_div").hide();
+                    document.getElementById("from_space").innerHTML = msg2;
+                    document.getElementById("copyTo").style.visibility = "hidden";
+                } else {
+                    var dialog_obj = $("#dialog");
+                    dialog_obj.dialog("close");
+                    var dialog_obj2 = $("#dialogMove");
+                    dialog_obj2.dialog("close");
+                    document.getElementById("to_place").disabled = false;
+                    document.getElementById("from_space").innerHTML = '<span id="myId" style="text-decoration:underline;">Space</span>' + ': ' + from_place_name;
+                }
+            }
 
-//changing the default dropdown selection to 'Change Place'	   
-$("#from_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#from_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#from_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            //changing the default dropdown selection to 'Change Place'	   
+            $("#from_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#from_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#from_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-//changing the default dropdown selection to 'Change Place'
-$("#del_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#del_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#del_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            //changing the default dropdown selection to 'Change Place'
+            $("#del_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#del_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#del_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-//changing the default dropdown selection to 'Change Place'
-$("#dwn_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#dwn_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#dwn_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            //changing the default dropdown selection to 'Change Place'
+            $("#dwn_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#dwn_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#dwn_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-// calling methods to fetch content.
-getDocs(space_url);
-getFiles(space_url);
-getDiscussions(space_url);
-getIdeas(space_url);
-getPolls(space_url);
-getBlogs(blog_url);
+            // calling methods to fetch content.
+            getDocs(space_url);
+            getFiles(space_url);
+            getDiscussions(space_url);
+            getIdeas(space_url);
+            getPolls(space_url);
+            getBlogs(blog_url);
 
-// actions when the user choses to delete content.
-if(sel_action_val=="delete")
-{
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#deleteTo").text("Delete this:").append('<br/>');
-document.getElementById("deleteTo").style.display="inline";
-$("#deleteTo").show();
-$("#upTo").hide();
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#del_select_items_button").show();
-$("#up_select_items_button").hide();
-$("#change_selection_div").hide();
-$("#delShow").show();
-$("#upShow").show();
-$("#up_place").hide();
-document.getElementById("del_place").style.display="inline";
-$("#del_place").show();
-document.getElementById("del_from_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+from_place_name;
-$("#del_place").css("margin-top", "140px");
-$("#del_from_space").show();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-}
-else if(sel_action_val=="download")
-{
-// actions when the user choses to download files.
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#dwnTo").text("Download this:").append('<br/>');
-document.getElementById("dwnTo").style.display="inline";
-$("#dwnTo").show();
-$("#upTo").hide();
-document.getElementById("dwn_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#dwn_select_items_button").show();
-$("#up_select_items_button").hide();
-$("#change_selection_div").hide();
-$("#dwnShow").show();
-$("#upShow").hide();
-$("#up_place").hide();
-document.getElementById("dwn_place").style.display="inline";
-$("#dwn_place").show();
-document.getElementById("dwn_from_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+from_place_name;
-$("#dwn_place").css("margin-top", "135px");
-$("#dwn_from_space").show();
-$("#dwn_from_group").hide();
-$("#dwn_from_project").hide();
-}
-else if(sel_action_val=="tags")
-{
-// actions when the user choses to download files.
+            // actions when the user choses to delete content.
+            if (sel_action_val == "delete") {
+                $('#all_selected_items').css("margin-top", "80px");
+                $('#selected_items').css("margin-top", "80px");
+                $("#deleteTo").text("Delete this:").append('<br/>');
+                document.getElementById("deleteTo").style.display = "inline";
+                $("#deleteTo").show();
+                $("#upTo").hide();
+                document.getElementById("del_select_items_button").style.display = "inline";
+                document.getElementById("up_select_items_button").style.display = "inline";
+                $("#del_select_items_button").show();
+                $("#up_select_items_button").hide();
+                $("#change_selection_div").hide();
+                $("#delShow").show();
+                $("#upShow").show();
+                $("#up_place").hide();
+                document.getElementById("del_place").style.display = "inline";
+                $("#del_place").show();
+                document.getElementById("del_from_space").innerHTML = '<span id="myId" style="text-decoration:underline;">Space</span>' + ': ' + from_place_name;
+                $("#del_place").css("margin-top", "140px");
+                $("#del_from_space").show();
+                $("#del_from_group").hide();
+                $("#del_from_project").hide();
+            } else if (sel_action_val == "download") {
+                // actions when the user choses to download files.
+                $('#all_selected_items').css("margin-top", "80px");
+                $('#selected_items').css("margin-top", "80px");
+                $("#dwnTo").text("Download this:").append('<br/>');
+                document.getElementById("dwnTo").style.display = "inline";
+                $("#dwnTo").show();
+                $("#upTo").hide();
+                document.getElementById("dwn_select_items_button").style.display = "inline";
+                document.getElementById("up_select_items_button").style.display = "inline";
+                $("#dwn_select_items_button").show();
+                $("#up_select_items_button").hide();
+                $("#change_selection_div").hide();
+                $("#dwnShow").show();
+                $("#upShow").hide();
+                $("#up_place").hide();
+                document.getElementById("dwn_place").style.display = "inline";
+                $("#dwn_place").show();
+                document.getElementById("dwn_from_space").innerHTML = '<span id="myId" style="text-decoration:underline;">Space</span>' + ': ' + from_place_name;
+                $("#dwn_place").css("margin-top", "135px");
+                $("#dwn_from_space").show();
+                $("#dwn_from_group").hide();
+                $("#dwn_from_project").hide();
+            } else if (sel_action_val == "tags") {
+                // actions when the user choses to download files.
 
-tagPopulatList =  new Array();
-completeTagIndex = 0;
-fromRequestAction = 'fromSpaceRequestAction';
-populateContentforTags(space_url,blog_url);
-}
+                tagPopulatList = new Array();
+                completeTagIndex = 0;
+                fromRequestAction = 'fromSpaceRequestAction';
+                populateContentforTags(space_url, blog_url);
+            } else if (sel_action_val == "categs") {
+                // actions when the user choses to download files.
+                $("#catShow").show();
+                $("#cat_from_space").show();
+                $("#cat_from_group").hide();
+                $("#cat_from_project").hide();
+                $("#cat_place").show();
+                $("#catTo").text("Manage content for this category:").append('<br/>');
+                $("#selCat").show();
+                $("#cat_sel").show();
+                $("#catTo").hide();
+                $("#cat_select_items_button").hide();
+                //document.getElementById("catTo").style.display="inline";
 
-else if(sel_action_val=="categs")
-{
-// actions when the user choses to download files.
-$("#catShow").show();
-$("#cat_from_space").show();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#cat_place").show();
-$("#catTo").text("Manage content for this category:").append('<br/>');
-$("#selCat").show();
-$("#cat_sel").show();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-//document.getElementById("catTo").style.display="inline";
+                $("#cat_sel option").each(function () {
+                    $(this).remove();
+                });
 
-$("#cat_sel option").each(function() {
-	$(this).remove();
-   });
+                document.getElementById("cat_sel").style.display = "inline";
+                document.getElementById("cat_place").style.display = "inline";
+                document.getElementById("cat_from_space").innerHTML = '<span id="myId" style="text-decoration:underline;">Space</span>' + ': ' + from_place_name;
+                $("#cat_place").css("margin-top", "40px");
+                categoryTest();
+            } else if (sel_action_val == "select_action") {
+                // actions if user changes action to default value.
+                document.getElementById("del_place").style.display = "inline";
+                $("#change_selection_div").hide();
+                $("#del_from_space").hide();
+                $("#del_from_group").hide();
+                $("#del_from_project").hide();
+                $("#deleteFrom").hide();
+                document.getElementById("deleteTo").style.display = "inline";
+                $("#deleteTo").hide();
 
-document.getElementById("cat_sel").style.display="inline";
-document.getElementById("cat_place").style.display="inline";
-document.getElementById("cat_from_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+from_place_name;
-$("#cat_place").css("margin-top", "40px");
-categoryTest();
-}
-else if(sel_action_val=="select_action")
-{
-// actions if user changes action to default value.
-document.getElementById("del_place").style.display="inline";
-$("#change_selection_div").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#deleteFrom").hide();
-document.getElementById("deleteTo").style.display="inline";
-$("#deleteTo").hide();
+                $("#showDiv").hide();
+                $("#copyTo").hide();
+                $("#delShow").hide();
+                $("#upShow").hide();
+                $("#del_place").hide();
+            }
 
-$("#showDiv").hide();
-$("#copyTo").hide();
-$("#delShow").hide();
-$("#upShow").hide();
-$("#del_place").hide();
-}
+            $("#from_space").show();
+            $("#from_group").hide();
+            $("#from_project").hide();
+        }),
+        error: handleResponse
+    };
 
-$("#from_space").show();
-$("#from_group").hide();
-$("#from_project").hide();
-} ),
-error : handleResponse  };
+    if (from_place_name == '') {
+        // actions if the selected place name is empty.
+        document.getElementById("to_place").disabled = true;
+        document.getElementById("start_copying_button").style.visibility = "hidden";
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+        document.getElementById("from_space").innerHTML = msg2;
+    }
 
-if(from_place_name=='')
-{
-// actions if the selected place name is empty.
-document.getElementById("to_place").disabled = true;
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("from_space").innerHTML=msg2;
-}
-
-// calling the OSAPI with the params. final call.
-osapi.jive.corev3.places.requestPicker(params);	
+    // calling the OSAPI with the params. final call.
+    osapi.jive.corev3.places.requestPicker(params);
 }
 
 function fromGroupRequest() {
-// Handles user request to select the GROUP and then handle the response to fetch details about the selected GROUP.
+    // Handles user request to select the GROUP and then handle the response to fetch details about the selected GROUP.
 
-var from_place_name='';
-src_space_name='';
-dest_space_name='';
-//Code related to categories
-selected_cat = '';
-selected_tag = '';
-arrayIndex=0;
-addId=new Array();
-tagPopulatList = new Array();
-//Assigning the values 
-$("#cat_from_space").text('Change Category in Space');
-$("#cat_from_group").text('Change Category in Group');
-$("#cat_from_project").text('Change Category in Project');
+    var from_place_name = '';
+    src_space_name = '';
+    dest_space_name = '';
+    //Code related to categories
+    selected_cat = '';
+    selected_tag = '';
+    arrayIndex = 0;
+    addId = new Array();
+    tagPopulatList = new Array();
+    //Assigning the values 
+    $("#cat_from_space").text('Change Category in Space');
+    $("#cat_from_group").text('Change Category in Group');
+    $("#cat_from_project").text('Change Category in Project');
 
-$("#tag_from_space").text('Manage Tags in Space');
-$("#tag_from_group").text('Manage Tags in Group');
-$("#tag_from_project").text('Manage Tags in Project');
+    $("#tag_from_space").text('Manage Tags in Space');
+    $("#tag_from_group").text('Manage Tags in Group');
+    $("#tag_from_project").text('Manage Tags in Project');
 
-//**************
-//******************End***************
-document.getElementById("to_place").disabled = false;
-document.getElementById("from_project").innerHTML=msg2;
-document.getElementById("from_group").innerHTML=msg2;
-document.getElementById("from_space").innerHTML=msg2;
-var params = {
-type : "group",
-success : ( function(data){
-//console.log("DATA: "+JSON.stringify(data));
+    //**************
+    //******************End***************
+    document.getElementById("to_place").disabled = false;
+    document.getElementById("from_project").innerHTML = msg2;
+    document.getElementById("from_group").innerHTML = msg2;
+    document.getElementById("from_space").innerHTML = msg2;
+    var params = {
+        type: "group",
+        success: (function (data) {
+            //console.log("DATA: "+JSON.stringify(data));
 
-// assigning values to the variables from the received response.
-from_place_name=data.name;
-src_space_name=from_place_name;
-space_url=data.resources.self.ref;
-blog_url=data.resources.blog.ref;
-source_html_url=data.resources.html.ref;
-global_from_place_name = src_space_name; //code added for categories
+            // assigning values to the variables from the received response.
+            from_place_name = data.name;
+            src_space_name = from_place_name;
+            space_url = data.resources.self.ref;
+            blog_url = data.resources.blog.ref;
+            source_html_url = data.resources.html.ref;
+            global_from_place_name = src_space_name; //code added for categories
 
-$("#del_place").hide();
-document.getElementById("from_group").innerHTML='<span id="myId" style="text-decoration:underline;">Group</span>'+': '+from_place_name;
+            $("#del_place").hide();
+            document.getElementById("from_group").innerHTML = '<span id="myId" style="text-decoration:underline;">Group</span>' + ': ' + from_place_name;
 
-if(from_place_name!='')
-{
-// checking if the selected source and target are same.
-if(dest_space_name==from_place_name)
-{
-if(sel_action_val=="move"){
-// an error message of the source and target are same for move.
-$("#dialogMove").show();
-$("#dialogMove").dialog();
-}
-else{
-// an error message of the source and target are same for copy.
-$("#dialog").show();
-$("#dialog").dialog();
-}
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("from_group").innerHTML=msg2;
-}
-else
-{	
-var dialog_obj = $("#dialog");
-dialog_obj.dialog("close");	
-var dialog_obj2 = $("#dialogMove");
-dialog_obj2.dialog("close");
-document.getElementById("to_place").disabled = false;
-$("#del_place").hide();
-document.getElementById("from_group").innerHTML='<span id="myId" style="text-decoration:underline;">Group</span>'+': '+from_place_name;	
-}
-}
+            if (from_place_name != '') {
+                // checking if the selected source and target are same.
+                if (dest_space_name == from_place_name) {
+                    if (sel_action_val == "move") {
+                        // an error message of the source and target are same for move.
+                        $("#dialogMove").show();
+                        $("#dialogMove").dialog();
+                    } else {
+                        // an error message of the source and target are same for copy.
+                        $("#dialog").show();
+                        $("#dialog").dialog();
+                    }
+                    document.getElementById("start_copying_button").style.visibility = "hidden";
+                    $("#button_div").hide();
+                    document.getElementById("copyTo").style.visibility = "hidden";
+                    document.getElementById("from_group").innerHTML = msg2;
+                } else {
+                    var dialog_obj = $("#dialog");
+                    dialog_obj.dialog("close");
+                    var dialog_obj2 = $("#dialogMove");
+                    dialog_obj2.dialog("close");
+                    document.getElementById("to_place").disabled = false;
+                    $("#del_place").hide();
+                    document.getElementById("from_group").innerHTML = '<span id="myId" style="text-decoration:underline;">Group</span>' + ': ' + from_place_name;
+                }
+            }
 
-//changing the default dropdown value to 'Change Place'
-$("#from_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#from_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#from_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            //changing the default dropdown value to 'Change Place'
+            $("#from_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#from_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#from_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-//changing the default dropdown value to 'Change Place'
-$("#del_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#del_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#del_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            //changing the default dropdown value to 'Change Place'
+            $("#del_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#del_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#del_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-//changing the default dropdown value to 'Change Place'
-$("#dwn_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#dwn_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#dwn_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            //changing the default dropdown value to 'Change Place'
+            $("#dwn_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#dwn_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#dwn_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-// calling methods to fetch content from the selected group.
-getDocs(space_url);
-getFiles(space_url);
-getDiscussions(space_url);
-getIdeas(space_url);
-getPolls(space_url);
-getBlogs(blog_url);
+            // calling methods to fetch content from the selected group.
+            getDocs(space_url);
+            getFiles(space_url);
+            getDiscussions(space_url);
+            getIdeas(space_url);
+            getPolls(space_url);
+            getBlogs(blog_url);
 
-if(sel_action_val=="delete")
-{
-// actions when user choses to delete content.
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#deleteTo").text("Delete this:").append('<br/>');
-document.getElementById("deleteTo").style.display="inline";
-$("#deleteTo").show();
-$("#upTo").hide();
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#del_select_items_button").show();
-$("#up_select_items_button").hide();
-$("#change_selection_div").hide();
-$("#delShow").show();
-$("#upShow").hide();
-$("#up_place").hide();
-document.getElementById("del_place").style.display="inline";
-$("#del_place").show();
-document.getElementById("del_from_group").innerHTML='<span id="myId" style="text-decoration:underline;">Group</span>'+': '+from_place_name;
-$("#del_place").css("margin-top", "140px");
-$("#del_from_group").show();
-$("#del_from_space").hide();
-$("#del_from_project").hide();
-}
-else if(sel_action_val=="download")
-{
-// actions when user choses to download content.
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#dwnTo").text("Download this:").append('<br/>');
-document.getElementById("dwnTo").style.display="inline";
-$("#dwnTo").show();
-$("#upTo").hide();
-document.getElementById("dwn_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#dwn_select_items_button").show();
-$("#up_select_items_button").hide();
-$("#change_selection_div").hide();
-$("#dwnShow").show();
-$("#upShow").hide();
-$("#up_place").hide();
-document.getElementById("dwn_place").style.display="inline";
-$("#dwn_place").show();
-document.getElementById("dwn_from_group").innerHTML='<span id="myId" style="text-decoration:underline;">Group</span>'+': '+from_place_name;
-$("#dwn_place").css("margin-top", "135px");
-$("#dwn_from_group").show();
-$("#dwn_from_space").hide();
-$("#dwn_from_project").hide();
-}
-else if(sel_action_val=="categs")
-{
-// actions when the user choses to download files.
-$("#cat_place").css("margin-top", "20px");
-$("#catShow").show();
-$("#cat_from_space").show();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#cat_place").show();
-$("#catTo").text("Manage content for this category:").append('<br/>');
-$("#selCat").show();
-$("#cat_sel").show();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-//document.getElementById("catTo").style.display="inline";
+            if (sel_action_val == "delete") {
+                // actions when user choses to delete content.
+                $('#all_selected_items').css("margin-top", "80px");
+                $('#selected_items').css("margin-top", "80px");
+                $("#deleteTo").text("Delete this:").append('<br/>');
+                document.getElementById("deleteTo").style.display = "inline";
+                $("#deleteTo").show();
+                $("#upTo").hide();
+                document.getElementById("del_select_items_button").style.display = "inline";
+                document.getElementById("up_select_items_button").style.display = "inline";
+                $("#del_select_items_button").show();
+                $("#up_select_items_button").hide();
+                $("#change_selection_div").hide();
+                $("#delShow").show();
+                $("#upShow").hide();
+                $("#up_place").hide();
+                document.getElementById("del_place").style.display = "inline";
+                $("#del_place").show();
+                document.getElementById("del_from_group").innerHTML = '<span id="myId" style="text-decoration:underline;">Group</span>' + ': ' + from_place_name;
+                $("#del_place").css("margin-top", "140px");
+                $("#del_from_group").show();
+                $("#del_from_space").hide();
+                $("#del_from_project").hide();
+            } else if (sel_action_val == "download") {
+                // actions when user choses to download content.
+                $('#all_selected_items').css("margin-top", "80px");
+                $('#selected_items').css("margin-top", "80px");
+                $("#dwnTo").text("Download this:").append('<br/>');
+                document.getElementById("dwnTo").style.display = "inline";
+                $("#dwnTo").show();
+                $("#upTo").hide();
+                document.getElementById("dwn_select_items_button").style.display = "inline";
+                document.getElementById("up_select_items_button").style.display = "inline";
+                $("#dwn_select_items_button").show();
+                $("#up_select_items_button").hide();
+                $("#change_selection_div").hide();
+                $("#dwnShow").show();
+                $("#upShow").hide();
+                $("#up_place").hide();
+                document.getElementById("dwn_place").style.display = "inline";
+                $("#dwn_place").show();
+                document.getElementById("dwn_from_group").innerHTML = '<span id="myId" style="text-decoration:underline;">Group</span>' + ': ' + from_place_name;
+                $("#dwn_place").css("margin-top", "135px");
+                $("#dwn_from_group").show();
+                $("#dwn_from_space").hide();
+                $("#dwn_from_project").hide();
+            } else if (sel_action_val == "categs") {
+                // actions when the user choses to download files.
+                $("#cat_place").css("margin-top", "20px");
+                $("#catShow").show();
+                $("#cat_from_space").show();
+                $("#cat_from_group").hide();
+                $("#cat_from_project").hide();
+                $("#cat_place").show();
+                $("#catTo").text("Manage content for this category:").append('<br/>');
+                $("#selCat").show();
+                $("#cat_sel").show();
+                $("#catTo").hide();
+                $("#cat_select_items_button").hide();
+                //document.getElementById("catTo").style.display="inline";
 
-$("#cat_sel option").each(function() {
-	$(this).remove();
-   });
+                $("#cat_sel option").each(function () {
+                    $(this).remove();
+                });
 
-document.getElementById("cat_sel").style.display="inline";
-document.getElementById("cat_place").style.display="inline";
-document.getElementById("cat_from_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+from_place_name;
-$("#cat_place").css("margin-top", "40px");
-categoryTest();
-}
-else if(sel_action_val=="tags")
-{
-//alert("Inside tags...");
-tagPopulatList =  new Array();
-completeTagIndex = 0;
-fromRequestAction = 'fromGroupRequestAction';
-populateContentforTags(space_url,blog_url);
-}
-else if(sel_action_val=="select_action")
-{
-//action when user changes the action to default value.
-document.getElementById("del_place").style.display="inline";
-$("#change_selection_div").hide();
-$("#showDiv").hide();
-document.getElementById("deleteTo").style.display="inline";
-$("#deleteTo").hide();
-$("#copyTo").hide();
-$("#delShow").hide();
-$("#upShow").hide();
-$("#deleteFrom").hide();
-$("#del_place").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-}
+                document.getElementById("cat_sel").style.display = "inline";
+                document.getElementById("cat_place").style.display = "inline";
+                document.getElementById("cat_from_space").innerHTML = '<span id="myId" style="text-decoration:underline;">Space</span>' + ': ' + from_place_name;
+                $("#cat_place").css("margin-top", "40px");
+                categoryTest();
+            } else if (sel_action_val == "tags") {
+                //alert("Inside tags...");
+                tagPopulatList = new Array();
+                completeTagIndex = 0;
+                fromRequestAction = 'fromGroupRequestAction';
+                populateContentforTags(space_url, blog_url);
+            } else if (sel_action_val == "select_action") {
+                //action when user changes the action to default value.
+                document.getElementById("del_place").style.display = "inline";
+                $("#change_selection_div").hide();
+                $("#showDiv").hide();
+                document.getElementById("deleteTo").style.display = "inline";
+                $("#deleteTo").hide();
+                $("#copyTo").hide();
+                $("#delShow").hide();
+                $("#upShow").hide();
+                $("#deleteFrom").hide();
+                $("#del_place").hide();
+                $("#del_from_space").hide();
+                $("#del_from_group").hide();
+                $("#del_from_project").hide();
+            }
 
 
-$("#from_space").hide();
-$("#from_group").show();
-$("#from_project").hide();
-} ),
-error : handleResponse  };
+            $("#from_space").hide();
+            $("#from_group").show();
+            $("#from_project").hide();
+        }),
+        error: handleResponse
+    };
 
-if(from_place_name=='')
-{
-// actions if the source place is empty
-document.getElementById("to_place").disabled = true;
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("from_group").innerHTML=msg2;
-}
+    if (from_place_name == '') {
+        // actions if the source place is empty
+        document.getElementById("to_place").disabled = true;
+        document.getElementById("start_copying_button").style.visibility = "hidden";
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+        document.getElementById("from_group").innerHTML = msg2;
+    }
 
-// final call by OSAPI using the params.
-osapi.jive.corev3.places.requestPicker(params);	
+    // final call by OSAPI using the params.
+    osapi.jive.corev3.places.requestPicker(params);
 }
 
 function fromProjectRequest() {
-// Handles user request to select the PROJECT and then handle the response to fetch details about the selected PROJECT.
+    // Handles user request to select the PROJECT and then handle the response to fetch details about the selected PROJECT.
 
-var from_place_name='';
-src_space_name='';
-dest_space_name='';
-//Code related to categories
-selected_cat = '';
-selected_tag = '';
-arrayIndex=0;
-addId=new Array();
-tagPopulatList = new Array();
-//Assigning the values 
-$("#cat_from_space").text('Change Category in Space');
-$("#cat_from_group").text('Change Category in Group');
-$("#cat_from_project").text('Change Category in Project');
+    var from_place_name = '';
+    src_space_name = '';
+    dest_space_name = '';
+    //Code related to categories
+    selected_cat = '';
+    selected_tag = '';
+    arrayIndex = 0;
+    addId = new Array();
+    tagPopulatList = new Array();
+    //Assigning the values 
+    $("#cat_from_space").text('Change Category in Space');
+    $("#cat_from_group").text('Change Category in Group');
+    $("#cat_from_project").text('Change Category in Project');
 
-$("#tag_from_space").text('Manage Tags in Space');
-$("#tag_from_group").text('Manage Tags in Group');
-$("#tag_from_project").text('Manage Tags in Project');
-document.getElementById("to_place").disabled = false;
-document.getElementById("from_project").innerHTML=msg2;
-document.getElementById("from_group").innerHTML=msg2;
-document.getElementById("from_space").innerHTML=msg2;
-var params = {
-type : "project",
-success : ( function(data){
-//console.log("DATA: "+JSON.stringify(data));
+    $("#tag_from_space").text('Manage Tags in Space');
+    $("#tag_from_group").text('Manage Tags in Group');
+    $("#tag_from_project").text('Manage Tags in Project');
+    document.getElementById("to_place").disabled = false;
+    document.getElementById("from_project").innerHTML = msg2;
+    document.getElementById("from_group").innerHTML = msg2;
+    document.getElementById("from_space").innerHTML = msg2;
+    var params = {
+        type: "project",
+        success: (function (data) {
+            //console.log("DATA: "+JSON.stringify(data));
 
-// assigning values to the variables from the received response.
-from_place_name=data.name;
-src_space_name=from_place_name;
-space_url=data.resources.self.ref;
-blog_url=data.resources.blog.ref;
-source_html_url=data.resources.html.ref;
-global_from_place_name = src_space_name; //code added for categories
+            // assigning values to the variables from the received response.
+            from_place_name = data.name;
+            src_space_name = from_place_name;
+            space_url = data.resources.self.ref;
+            blog_url = data.resources.blog.ref;
+            source_html_url = data.resources.html.ref;
+            global_from_place_name = src_space_name; //code added for categories
 
-$("#del_place").hide();
-document.getElementById("from_project").innerHTML='<span id="myId" style="text-decoration:underline;">Project</span>'+': '+from_place_name;
+            $("#del_place").hide();
+            document.getElementById("from_project").innerHTML = '<span id="myId" style="text-decoration:underline;">Project</span>' + ': ' + from_place_name;
 
-if(from_place_name!='')
-{
-//checking if the selected source and destination are same.
-if(dest_space_name==from_place_name)
-{
-if(sel_action_val=="move"){
-// error message of the selected source and destination are same for move.
-$("#dialogMove").show();
-$("#dialogMove").dialog();
-}
-else{
-// error message of the selected source and destination are same for copy.
-$("#dialog").show();
-$("#dialog").dialog();
-}
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("from_project").innerHTML=msg2;
-}
-else
-{		
-var dialog_obj = $("#dialog");
-dialog_obj.dialog("close");
-var dialog_obj2 = $("#dialogMove");
-dialog_obj2.dialog("close");
-document.getElementById("to_place").disabled = false;
-document.getElementById("from_project").innerHTML='<span id="myId" style="text-decoration:underline;">Project</span>'+': '+from_place_name;	
-}
-}
+            if (from_place_name != '') {
+                //checking if the selected source and destination are same.
+                if (dest_space_name == from_place_name) {
+                    if (sel_action_val == "move") {
+                        // error message of the selected source and destination are same for move.
+                        $("#dialogMove").show();
+                        $("#dialogMove").dialog();
+                    } else {
+                        // error message of the selected source and destination are same for copy.
+                        $("#dialog").show();
+                        $("#dialog").dialog();
+                    }
+                    document.getElementById("start_copying_button").style.visibility = "hidden";
+                    $("#button_div").hide();
+                    document.getElementById("copyTo").style.visibility = "hidden";
+                    document.getElementById("from_project").innerHTML = msg2;
+                } else {
+                    var dialog_obj = $("#dialog");
+                    dialog_obj.dialog("close");
+                    var dialog_obj2 = $("#dialogMove");
+                    dialog_obj2.dialog("close");
+                    document.getElementById("to_place").disabled = false;
+                    document.getElementById("from_project").innerHTML = '<span id="myId" style="text-decoration:underline;">Project</span>' + ': ' + from_place_name;
+                }
+            }
 
-//changing the default dropdown value to 'Change Place'
-$("#from_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#from_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#from_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            //changing the default dropdown value to 'Change Place'
+            $("#from_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#from_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#from_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-//changing the default dropdown value to 'Change Place'
-$("#del_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#del_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#del_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            //changing the default dropdown value to 'Change Place'
+            $("#del_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#del_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#del_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-//changing the default dropdown value to 'Change Place'
-$("#dwn_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#dwn_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#dwn_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            //changing the default dropdown value to 'Change Place'
+            $("#dwn_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#dwn_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#dwn_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-// calling the methods to fetch content from selected project.
-getDocs(space_url);
-getFiles(space_url);
-getDiscussions(space_url);
-getIdeas(space_url);
-getPolls(space_url);
-getBlogs(blog_url);
+            // calling the methods to fetch content from selected project.
+            getDocs(space_url);
+            getFiles(space_url);
+            getDiscussions(space_url);
+            getIdeas(space_url);
+            getPolls(space_url);
+            getBlogs(blog_url);
 
-if(sel_action_val=="delete")
-{
-// actions when the user choses to delete.
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#deleteTo").text("Delete this:").append('<br/>');
-document.getElementById("deleteTo").style.display="inline";
-$("#deleteTo").show();
-$("#upTo").hide();
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#del_select_items_button").show();
-$("#up_select_items_button").hide();
-$("#change_selection_div").hide();
-$("#delShow").show();
-$("#upShow").hide();
-$("#up_place").hide();
-document.getElementById("del_place").style.display="inline";
-$("#del_place").show();
-document.getElementById("del_from_project").innerHTML='<span id="myId" style="text-decoration:underline;">Project</span>'+': '+from_place_name;
-$("#del_place").css("margin-top", "140px");
-$("#del_from_project").show();
-$("#del_from_group").hide();
-$("#del_from_space").hide();
-}
-else if(sel_action_val=="download")
-{
-// actions when the user choses to download.
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#dwnTo").text("Download this:").append('<br/>');
-document.getElementById("dwnTo").style.display="inline";
-$("#dwnTo").show();
-$("#upTo").hide();
-document.getElementById("dwn_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-$("#dwn_select_items_button").show();
-$("#up_select_items_button").hide();
-$("#change_selection_div").hide();
-$("#dwnShow").show();
-$("#delShow").hide();
-$("#upShow").hide();
-$("#up_place").hide();
-document.getElementById("dwn_place").style.display="inline";
-$("#dwn_place").show();
-$("#del_place").hide();
-document.getElementById("dwn_from_project").innerHTML='<span id="myId" style="text-decoration:underline;">Project</span>'+': '+from_place_name;
-$("#dwn_place").css("margin-top", "135px");
-$("#dwn_from_group").hide();
-$("#dwn_from_space").hide();
-$("#dwn_from_project").show();
-}
-else if(sel_action_val=="categs")
-{
-// actions when the user choses to download files.
-$("#cat_place").css("margin-top", "20px");
-$("#catShow").show();
-$("#cat_from_space").show();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#cat_place").show();
-$("#catTo").text("Manage content for this category:").append('<br/>');
-$("#selCat").show();
-$("#cat_sel").show();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-//document.getElementById("catTo").style.display="inline";
+            if (sel_action_val == "delete") {
+                // actions when the user choses to delete.
+                $('#all_selected_items').css("margin-top", "80px");
+                $('#selected_items').css("margin-top", "80px");
+                $("#deleteTo").text("Delete this:").append('<br/>');
+                document.getElementById("deleteTo").style.display = "inline";
+                $("#deleteTo").show();
+                $("#upTo").hide();
+                document.getElementById("del_select_items_button").style.display = "inline";
+                document.getElementById("up_select_items_button").style.display = "inline";
+                $("#del_select_items_button").show();
+                $("#up_select_items_button").hide();
+                $("#change_selection_div").hide();
+                $("#delShow").show();
+                $("#upShow").hide();
+                $("#up_place").hide();
+                document.getElementById("del_place").style.display = "inline";
+                $("#del_place").show();
+                document.getElementById("del_from_project").innerHTML = '<span id="myId" style="text-decoration:underline;">Project</span>' + ': ' + from_place_name;
+                $("#del_place").css("margin-top", "140px");
+                $("#del_from_project").show();
+                $("#del_from_group").hide();
+                $("#del_from_space").hide();
+            } else if (sel_action_val == "download") {
+                // actions when the user choses to download.
+                $('#all_selected_items').css("margin-top", "80px");
+                $('#selected_items').css("margin-top", "80px");
+                $("#dwnTo").text("Download this:").append('<br/>');
+                document.getElementById("dwnTo").style.display = "inline";
+                $("#dwnTo").show();
+                $("#upTo").hide();
+                document.getElementById("dwn_select_items_button").style.display = "inline";
+                document.getElementById("up_select_items_button").style.display = "inline";
+                $("#dwn_select_items_button").show();
+                $("#up_select_items_button").hide();
+                $("#change_selection_div").hide();
+                $("#dwnShow").show();
+                $("#delShow").hide();
+                $("#upShow").hide();
+                $("#up_place").hide();
+                document.getElementById("dwn_place").style.display = "inline";
+                $("#dwn_place").show();
+                $("#del_place").hide();
+                document.getElementById("dwn_from_project").innerHTML = '<span id="myId" style="text-decoration:underline;">Project</span>' + ': ' + from_place_name;
+                $("#dwn_place").css("margin-top", "135px");
+                $("#dwn_from_group").hide();
+                $("#dwn_from_space").hide();
+                $("#dwn_from_project").show();
+            } else if (sel_action_val == "categs") {
+                // actions when the user choses to download files.
+                $("#cat_place").css("margin-top", "20px");
+                $("#catShow").show();
+                $("#cat_from_space").show();
+                $("#cat_from_group").hide();
+                $("#cat_from_project").hide();
+                $("#cat_place").show();
+                $("#catTo").text("Manage content for this category:").append('<br/>');
+                $("#selCat").show();
+                $("#cat_sel").show();
+                $("#catTo").hide();
+                $("#cat_select_items_button").hide();
+                //document.getElementById("catTo").style.display="inline";
 
-$("#cat_sel option").each(function() {
-	$(this).remove();
-   });
+                $("#cat_sel option").each(function () {
+                    $(this).remove();
+                });
 
-document.getElementById("cat_sel").style.display="inline";
-document.getElementById("cat_place").style.display="inline";
-document.getElementById("cat_from_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+from_place_name;
-$("#cat_place").css("margin-top", "40px");
-categoryTest();
-}
-else if(sel_action_val=="tags")
-{
+                document.getElementById("cat_sel").style.display = "inline";
+                document.getElementById("cat_place").style.display = "inline";
+                document.getElementById("cat_from_space").innerHTML = '<span id="myId" style="text-decoration:underline;">Space</span>' + ': ' + from_place_name;
+                $("#cat_place").css("margin-top", "40px");
+                categoryTest();
+            } else if (sel_action_val == "tags") {
 
-// actions when the user choses to download files.
-//alert("Inside tags...");
-tagPopulatList =  new Array();
-completeTagIndex = 0;
-fromRequestAction = 'fromProjectRequestAction';
-populateContentforTags(space_url,blog_url);
-}
-else if(sel_action_val=="select_action")
-{
-// actions when the user changes the action to default value.
-document.getElementById("del_place").style.display="inline";
-$("#change_selection_div").hide();
-$("#showDiv").hide();
-$("#copyTo").hide();
-$("#delShow").hide();
-$("#upShow").hide();
-document.getElementById("deleteTo").style.display="inline";
-$("#deleteTo").hide();
-$("#del_place").hide();
-$("#deleteFrom").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-}
+                // actions when the user choses to download files.
+                //alert("Inside tags...");
+                tagPopulatList = new Array();
+                completeTagIndex = 0;
+                fromRequestAction = 'fromProjectRequestAction';
+                populateContentforTags(space_url, blog_url);
+            } else if (sel_action_val == "select_action") {
+                // actions when the user changes the action to default value.
+                document.getElementById("del_place").style.display = "inline";
+                $("#change_selection_div").hide();
+                $("#showDiv").hide();
+                $("#copyTo").hide();
+                $("#delShow").hide();
+                $("#upShow").hide();
+                document.getElementById("deleteTo").style.display = "inline";
+                $("#deleteTo").hide();
+                $("#del_place").hide();
+                $("#deleteFrom").hide();
+                $("#del_from_space").hide();
+                $("#del_from_group").hide();
+                $("#del_from_project").hide();
+            }
 
-$("#from_space").hide();
-$("#from_group").hide();
-$("#from_project").show();
-} ),
-error : handleResponse  };
+            $("#from_space").hide();
+            $("#from_group").hide();
+            $("#from_project").show();
+        }),
+        error: handleResponse
+    };
 
-if(from_place_name=='')
-{
-// actions if the soruce place name is empty.
-document.getElementById("to_place").disabled = true;
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("from_project").innerHTML=msg2;
-}
+    if (from_place_name == '') {
+        // actions if the soruce place name is empty.
+        document.getElementById("to_place").disabled = true;
+        document.getElementById("start_copying_button").style.visibility = "hidden";
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+        document.getElementById("from_project").innerHTML = msg2;
+    }
 
-// final OSAPI call with params.
-osapi.jive.corev3.places.requestPicker(params);	
+    // final OSAPI call with params.
+    osapi.jive.corev3.places.requestPicker(params);
 }
 
 function toSpaceRequest() {
-var to_place_name='';
-document.getElementById("to_project").innerHTML=msg2;
-document.getElementById("to_group").innerHTML=msg2;
-document.getElementById("to_space").innerHTML=msg2;
-var params = {
-type : "space",
-success : ( function(data){
-//console.log("DATA: "+JSON.stringify(data));
-to_place_name=data.name;	
-to_place_blog_url=data.resources.blog.ref;
+    var to_place_name = '';
+    document.getElementById("to_project").innerHTML = msg2;
+    document.getElementById("to_group").innerHTML = msg2;
+    document.getElementById("to_space").innerHTML = msg2;
+    var params = {
+        type: "space",
+        success: (function (data) {
+            //console.log("DATA: "+JSON.stringify(data));
+            to_place_name = data.name;
+            to_place_blog_url = data.resources.blog.ref;
 
-//showing execute button		
+            //showing execute button		
 
-if(to_place_name!='')
-{
-if(src_space_name==to_place_name)
-{
-//alert("The source place and destination place should be different..!!");
-if(sel_action_val=="move"){
-$("#dialogMove").show();
-$("#dialogMove").dialog();
-}
-else{
-$("#dialog").show();
-$("#dialog").dialog();
-}
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("to_space").innerHTML=msg2;
-}
-else
-{	
-if(sel_action_val=='copy')		
-$("#copyTo").text("Copy this:").append('<br/>');
-else
-$("#copyTo").text("Move this:").append('<br/>');
+            if (to_place_name != '') {
+                if (src_space_name == to_place_name) {
+                    //alert("The source place and destination place should be different..!!");
+                    if (sel_action_val == "move") {
+                        $("#dialogMove").show();
+                        $("#dialogMove").dialog();
+                    } else {
+                        $("#dialog").show();
+                        $("#dialog").dialog();
+                    }
+                    document.getElementById("start_copying_button").style.visibility = "hidden";
+                    $("#button_div").hide();
+                    document.getElementById("copyTo").style.visibility = "hidden";
+                    document.getElementById("to_space").innerHTML = msg2;
+                } else {
+                    if (sel_action_val == 'copy')
+                        $("#copyTo").text("Copy this:").append('<br/>');
+                    else
+                        $("#copyTo").text("Move this:").append('<br/>');
 
-var dialog_obj = $("#dialog");
-dialog_obj.dialog("close");
-var dialog_obj2 = $("#dialogMove");
-dialog_obj2.dialog("close");
-document.getElementById("start_copying_button").style.visibility="visible";
-$('#select_items_button').show();
-document.getElementById("start_uploading").style.visibility="hidden";
-$("#button_div").show();	
-$("#change_selection_div").hide();
-document.getElementById("copyTo").style.visibility="visible";
-document.getElementById("to_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+to_place_name;	
-}
-}
-to_url=data.resources.self.ref;
-redirection_url=data.resources.html.ref;
-dest_space_name=to_place_name;
+                    var dialog_obj = $("#dialog");
+                    dialog_obj.dialog("close");
+                    var dialog_obj2 = $("#dialogMove");
+                    dialog_obj2.dialog("close");
+                    document.getElementById("start_copying_button").style.visibility = "visible";
+                    $('#select_items_button').show();
+                    document.getElementById("start_uploading").style.visibility = "hidden";
+                    $("#button_div").show();
+                    $("#change_selection_div").hide();
+                    document.getElementById("copyTo").style.visibility = "visible";
+                    document.getElementById("to_space").innerHTML = '<span id="myId" style="text-decoration:underline;">Space</span>' + ': ' + to_place_name;
+                }
+            }
+            to_url = data.resources.self.ref;
+            redirection_url = data.resources.html.ref;
+            dest_space_name = to_place_name;
 
-//changing the selection to 'Change Place'	   
-$("#to_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#to_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});	
+            //changing the selection to 'Change Place'	   
+            $("#to_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#to_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-$("#up_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#up_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#up_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            $("#up_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#up_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#up_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-if(sel_action_val=="uploadd")
-{
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#upTo").text("Upload this:").append('<br/>');
-document.getElementById("upTo").style.display="inline";
-$("#upTo").show();
-document.getElementById("up_select_items_button").style.display="inline";
-document.getElementById("del_select_items_button").style.display="inline";
-$("#up_select_items_button").show();
-$('#up_select_items_button').css("margin-top", "180px");
-$('#up_select_items_button').css("margin-left", "-80px");
-$("#del_select_items_button").hide();
-$("#button_div").hide();	
-$("#change_selection_div").hide();
-$("#upShow").show();
-document.getElementById("up_place").style.display="inline";
-$("#up_place").show();
-document.getElementById("up_from_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+to_place_name;
-$('#up_place').css("margin-top", "128px");
-$("#up_from_project").hide();
-$("#up_from_group").hide();
-$("#up_from_space").show();
-$('#select_items_button').hide();
-}
-else if(sel_action_val=="select_action")
-{
-document.getElementById("up_place").style.display="inline";
-//$("#stylized").hide();		
-$("#change_selection_div").hide();
-$("#showDiv").hide();
-$("#copyTo").hide();
-$("#upShow").hide();
-document.getElementById("upTo").style.display="inline";
-$("#upTo").hide();
-$("#up_place").hide();
-$("#upFrom").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-$('#select_items_button').hide();
-}
+            if (sel_action_val == "uploadd") {
+                $('#all_selected_items').css("margin-top", "80px");
+                $('#selected_items').css("margin-top", "80px");
+                $("#upTo").text("Upload this:").append('<br/>');
+                document.getElementById("upTo").style.display = "inline";
+                $("#upTo").show();
+                document.getElementById("up_select_items_button").style.display = "inline";
+                document.getElementById("del_select_items_button").style.display = "inline";
+                $("#up_select_items_button").show();
+                $('#up_select_items_button').css("margin-top", "180px");
+                $('#up_select_items_button').css("margin-left", "-80px");
+                $("#del_select_items_button").hide();
+                $("#button_div").hide();
+                $("#change_selection_div").hide();
+                $("#upShow").show();
+                document.getElementById("up_place").style.display = "inline";
+                $("#up_place").show();
+                document.getElementById("up_from_space").innerHTML = '<span id="myId" style="text-decoration:underline;">Space</span>' + ': ' + to_place_name;
+                $('#up_place').css("margin-top", "128px");
+                $("#up_from_project").hide();
+                $("#up_from_group").hide();
+                $("#up_from_space").show();
+                $('#select_items_button').hide();
+            } else if (sel_action_val == "select_action") {
+                document.getElementById("up_place").style.display = "inline";
+                //$("#stylized").hide();		
+                $("#change_selection_div").hide();
+                $("#showDiv").hide();
+                $("#copyTo").hide();
+                $("#upShow").hide();
+                document.getElementById("upTo").style.display = "inline";
+                $("#upTo").hide();
+                $("#up_place").hide();
+                $("#upFrom").hide();
+                $("#up_from_space").hide();
+                $("#up_from_group").hide();
+                $("#up_from_project").hide();
+                $('#select_items_button').hide();
+            }
 
-$("#to_space").show();
-$("#to_group").hide();
-$("#to_project").hide();
-} ),
-error : handleResponse  };
-//hiding execute button
-if(to_place_name=='')
-{
-//document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("to_space").innerHTML=msg2;
-//document.getElementById("to_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+dest_space_name;
-$("#to_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#to_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});	
-}
+            $("#to_space").show();
+            $("#to_group").hide();
+            $("#to_project").hide();
+        }),
+        error: handleResponse
+    };
+    //hiding execute button
+    if (to_place_name == '') {
+        //document.getElementById("start_copying_button").style.visibility="hidden";	
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+        document.getElementById("to_space").innerHTML = msg2;
+        //document.getElementById("to_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+dest_space_name;
+        $("#to_place option").each(function () {
+            if ($(this).text() == 'Select Place') {
+                $(this).attr('selected', 'selected');
+                $('#to_place :selected').text('Change Place');
+            } else if ($(this).text() == 'Change Place') {
+                $('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+            }
+        });
+    }
 
-osapi.jive.corev3.places.requestPicker(params);
+    osapi.jive.corev3.places.requestPicker(params);
 }
 
 function toGroupRequest() {
-var to_place_name='';
-document.getElementById("to_project").innerHTML=msg2;
-document.getElementById("to_group").innerHTML=msg2;
-document.getElementById("to_space").innerHTML=msg2;
-var params = {
-type : "group",
-success : ( function(data){
-//console.log("DATA: "+JSON.stringify(data));
-to_place_name=data.name;	
-to_place_blog_url=data.resources.blog.ref;	
-//showing execute button		
-if(to_place_name!='')
-{
-if(src_space_name==to_place_name)
-{
-//alert("The source place and destination place should be different..!!");
-if(sel_action_val=="move"){
-$("#dialogMove").show();
-$("#dialogMove").dialog();
-}
-else{
-$("#dialog").show();
-$("#dialog").dialog();
-}
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("to_group").innerHTML=msg2;
-}
-else
-{		
-if(sel_action_val=='copy')		
-$("#copyTo").text("Copy this:").append('<br/>');
-else
-$("#copyTo").text("Move this:").append('<br/>');  
+    var to_place_name = '';
+    document.getElementById("to_project").innerHTML = msg2;
+    document.getElementById("to_group").innerHTML = msg2;
+    document.getElementById("to_space").innerHTML = msg2;
+    var params = {
+        type: "group",
+        success: (function (data) {
+            //console.log("DATA: "+JSON.stringify(data));
+            to_place_name = data.name;
+            to_place_blog_url = data.resources.blog.ref;
+            //showing execute button		
+            if (to_place_name != '') {
+                if (src_space_name == to_place_name) {
+                    //alert("The source place and destination place should be different..!!");
+                    if (sel_action_val == "move") {
+                        $("#dialogMove").show();
+                        $("#dialogMove").dialog();
+                    } else {
+                        $("#dialog").show();
+                        $("#dialog").dialog();
+                    }
+                    document.getElementById("start_copying_button").style.visibility = "hidden";
+                    $("#button_div").hide();
+                    document.getElementById("copyTo").style.visibility = "hidden";
+                    document.getElementById("to_group").innerHTML = msg2;
+                } else {
+                    if (sel_action_val == 'copy')
+                        $("#copyTo").text("Copy this:").append('<br/>');
+                    else
+                        $("#copyTo").text("Move this:").append('<br/>');
 
-var dialog_obj = $("#dialog");
-dialog_obj.dialog("close");    
-var dialog_obj2 = $("#dialogMove");
-dialog_obj2.dialog("close"); 
-document.getElementById("to_place").disabled = false; 	
-document.getElementById("start_copying_button").style.visibility="visible";
-document.getElementById("start_uploading").style.visibility="hidden";
-$("#button_div").show();	
-$("#change_selection_div").hide();
-$('#select_items_button').show();
-document.getElementById("copyTo").style.visibility="visible";
-document.getElementById("to_group").innerHTML='<span id="myId" style="text-decoration:underline;">Group</span>'+': '+to_place_name;	
-}
-}
+                    var dialog_obj = $("#dialog");
+                    dialog_obj.dialog("close");
+                    var dialog_obj2 = $("#dialogMove");
+                    dialog_obj2.dialog("close");
+                    document.getElementById("to_place").disabled = false;
+                    document.getElementById("start_copying_button").style.visibility = "visible";
+                    document.getElementById("start_uploading").style.visibility = "hidden";
+                    $("#button_div").show();
+                    $("#change_selection_div").hide();
+                    $('#select_items_button').show();
+                    document.getElementById("copyTo").style.visibility = "visible";
+                    document.getElementById("to_group").innerHTML = '<span id="myId" style="text-decoration:underline;">Group</span>' + ': ' + to_place_name;
+                }
+            }
 
-to_url=data.resources.self.ref;
-redirection_url=data.resources.html.ref;
-dest_space_name=to_place_name;
+            to_url = data.resources.self.ref;
+            redirection_url = data.resources.html.ref;
+            dest_space_name = to_place_name;
 
 
-//changing the selection to 'Change Place'	   
-$("#to_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#to_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});	
+            //changing the selection to 'Change Place'	   
+            $("#to_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#to_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-$("#up_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#up_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#up_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            $("#up_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#up_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#up_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-if(sel_action_val=="uploadd")
-{
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#upTo").text("Upload this:").append('<br/>');
-document.getElementById("upTo").style.display="inline";
-$("#upTo").show();
-document.getElementById("up_select_items_button").style.display="inline";
-document.getElementById("del_select_items_button").style.display="inline";
-$("#up_select_items_button").show();
-$('#up_select_items_button').css("margin-top", "180px");
-$('#up_select_items_button').css("margin-left", "-80px");
-$("#del_select_items_button").hide();
-$("#change_selection_div").hide();
-$("#button_div").hide();
-$("#upShow").show();
-document.getElementById("up_place").style.display="inline";
-$("#up_place").show();
-document.getElementById("up_from_group").innerHTML='<span id="myId" style="text-decoration:underline;">Group</span>'+': '+to_place_name;
-$('#up_place').css("margin-top", "128px");
-$("#up_from_project").hide();
-$("#up_from_group").show();
-$("#up_from_space").hide();
-$('#select_items_button').hide();
-}
-else if(sel_action_val=="select_action")
-{
-document.getElementById("up_place").style.display="inline";
-//$("#stylized").hide();		
-$("#change_selection_div").hide();
-$("#showDiv").hide();
-$("#copyTo").hide();
-$("#upShow").hide();
-document.getElementById("upTo").style.display="inline";
-$("#upTo").hide();
-$("#up_place").hide();
-$("#upFrom").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-$('#select_items_button').hide();
-}
+            if (sel_action_val == "uploadd") {
+                $('#all_selected_items').css("margin-top", "80px");
+                $('#selected_items').css("margin-top", "80px");
+                $("#upTo").text("Upload this:").append('<br/>');
+                document.getElementById("upTo").style.display = "inline";
+                $("#upTo").show();
+                document.getElementById("up_select_items_button").style.display = "inline";
+                document.getElementById("del_select_items_button").style.display = "inline";
+                $("#up_select_items_button").show();
+                $('#up_select_items_button').css("margin-top", "180px");
+                $('#up_select_items_button').css("margin-left", "-80px");
+                $("#del_select_items_button").hide();
+                $("#change_selection_div").hide();
+                $("#button_div").hide();
+                $("#upShow").show();
+                document.getElementById("up_place").style.display = "inline";
+                $("#up_place").show();
+                document.getElementById("up_from_group").innerHTML = '<span id="myId" style="text-decoration:underline;">Group</span>' + ': ' + to_place_name;
+                $('#up_place').css("margin-top", "128px");
+                $("#up_from_project").hide();
+                $("#up_from_group").show();
+                $("#up_from_space").hide();
+                $('#select_items_button').hide();
+            } else if (sel_action_val == "select_action") {
+                document.getElementById("up_place").style.display = "inline";
+                //$("#stylized").hide();		
+                $("#change_selection_div").hide();
+                $("#showDiv").hide();
+                $("#copyTo").hide();
+                $("#upShow").hide();
+                document.getElementById("upTo").style.display = "inline";
+                $("#upTo").hide();
+                $("#up_place").hide();
+                $("#upFrom").hide();
+                $("#up_from_space").hide();
+                $("#up_from_group").hide();
+                $("#up_from_project").hide();
+                $('#select_items_button').hide();
+            }
 
-$("#to_space").hide();
-$("#to_group").show();
-$("#to_project").hide();
-} ),
-error : handleResponse  };
+            $("#to_space").hide();
+            $("#to_group").show();
+            $("#to_project").hide();
+        }),
+        error: handleResponse
+    };
 
-if(to_place_name=='')
-{
-//document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-//document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("to_group").innerHTML=msg2;
-//document.getElementById("to_group").innerHTML='<span id="myId" style="text-decoration:underline;">Group</span>'+': '+dest_space_name;	
-$("#to_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#to_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});	
-}
+    if (to_place_name == '') {
+        //document.getElementById("start_copying_button").style.visibility="hidden";	
+        $("#button_div").hide();
+        //document.getElementById("copyTo").style.visibility="hidden";
+        document.getElementById("copyTo").style.visibility = "hidden";
+        document.getElementById("to_group").innerHTML = msg2;
+        //document.getElementById("to_group").innerHTML='<span id="myId" style="text-decoration:underline;">Group</span>'+': '+dest_space_name;	
+        $("#to_place option").each(function () {
+            if ($(this).text() == 'Select Place') {
+                $(this).attr('selected', 'selected');
+                $('#to_place :selected').text('Change Place');
+            } else if ($(this).text() == 'Change Place') {
+                $('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+            }
+        });
+    }
 
-osapi.jive.corev3.places.requestPicker(params);
+    osapi.jive.corev3.places.requestPicker(params);
 }
 
 function toProjectRequest() {
-var to_place_name='';
-document.getElementById("to_project").innerHTML=msg2;
-document.getElementById("to_group").innerHTML=msg2;
-document.getElementById("to_space").innerHTML=msg2;
-var params = {
-type : "project",
-success : ( function(data){
-//console.log("DATA: "+JSON.stringify(data));
-to_place_name=data.name;
-to_place_blog_url=data.resources.blog.ref;	
-//showing execute button		
-if(to_place_name!='')
-{
-if(src_space_name==to_place_name)
-{
-//alert("The source place and destination place should be different..!!");
-if(sel_action_val=="move"){
-$("#dialogMove").show();
-$("#dialogMove").dialog();
-}
-else{
-$("#dialog").show();
-$("#dialog").dialog();
-}
-document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-document.getElementById("copyTo").style.visibility="hidden";
-document.getElementById("to_project").innerHTML=msg2;
-}
-else
-{
-if(sel_action_val=='copy')		
-$("#copyTo").text("Copy this:").append('<br/>');
-else
-$("#copyTo").text("Move this:").append('<br/>');
+    var to_place_name = '';
+    document.getElementById("to_project").innerHTML = msg2;
+    document.getElementById("to_group").innerHTML = msg2;
+    document.getElementById("to_space").innerHTML = msg2;
+    var params = {
+        type: "project",
+        success: (function (data) {
+            //console.log("DATA: "+JSON.stringify(data));
+            to_place_name = data.name;
+            to_place_blog_url = data.resources.blog.ref;
+            //showing execute button		
+            if (to_place_name != '') {
+                if (src_space_name == to_place_name) {
+                    //alert("The source place and destination place should be different..!!");
+                    if (sel_action_val == "move") {
+                        $("#dialogMove").show();
+                        $("#dialogMove").dialog();
+                    } else {
+                        $("#dialog").show();
+                        $("#dialog").dialog();
+                    }
+                    document.getElementById("start_copying_button").style.visibility = "hidden";
+                    $("#button_div").hide();
+                    document.getElementById("copyTo").style.visibility = "hidden";
+                    document.getElementById("to_project").innerHTML = msg2;
+                } else {
+                    if (sel_action_val == 'copy')
+                        $("#copyTo").text("Copy this:").append('<br/>');
+                    else
+                        $("#copyTo").text("Move this:").append('<br/>');
 
-var dialog_obj = $("#dialog");
-dialog_obj.dialog("close");
-var dialog_obj2 = $("#dialogMove");
-dialog_obj2.dialog("close");
-//document.getElementById("to_place").disabled = false;
-document.getElementById("start_copying_button").style.visibility="visible";
-document.getElementById("start_uploading").style.visibility="hidden";
-$("#button_div").show();
-$("#change_selection_div").hide();
-$('#select_items_button').show();
-document.getElementById("copyTo").style.visibility="visible";		
-document.getElementById("to_project").innerHTML='<span id="myId" style="text-decoration:underline;">Project</span>'+': '+to_place_name;
+                    var dialog_obj = $("#dialog");
+                    dialog_obj.dialog("close");
+                    var dialog_obj2 = $("#dialogMove");
+                    dialog_obj2.dialog("close");
+                    //document.getElementById("to_place").disabled = false;
+                    document.getElementById("start_copying_button").style.visibility = "visible";
+                    document.getElementById("start_uploading").style.visibility = "hidden";
+                    $("#button_div").show();
+                    $("#change_selection_div").hide();
+                    $('#select_items_button').show();
+                    document.getElementById("copyTo").style.visibility = "visible";
+                    document.getElementById("to_project").innerHTML = '<span id="myId" style="text-decoration:underline;">Project</span>' + ': ' + to_place_name;
 
-}
-}
+                }
+            }
 
-to_url=data.resources.self.ref;
-redirection_url=data.resources.html.ref;
-dest_space_name=to_place_name;
+            to_url = data.resources.self.ref;
+            redirection_url = data.resources.html.ref;
+            dest_space_name = to_place_name;
 
-//changing the selection to 'Change Place'	   
-$("#to_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#to_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});		
+            //changing the selection to 'Change Place'	   
+            $("#to_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#to_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-$("#up_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#up_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#up_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});
+            $("#up_place option").each(function () {
+                if ($(this).text() == 'Select Place') {
+                    $(this).attr('selected', 'selected');
+                    $('#up_place :selected').text('Change Place');
+                } else if ($(this).text() == 'Change Place') {
+                    $('#up_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+                }
+            });
 
-if(sel_action_val=="uploadd")
-{
-$('#all_selected_items').css("margin-top", "80px");
-$('#selected_items').css("margin-top", "80px");
-$("#upTo").text("Upload this:").append('<br/>');
-document.getElementById("upTo").style.display="inline";
-$("#upTo").show();
-document.getElementById("up_select_items_button").style.display="inline";
-document.getElementById("del_select_items_button").style.display="inline";
-$("#up_select_items_button").show();
-$('#up_select_items_button').css("margin-top", "180px");
-$('#up_select_items_button').css("margin-left", "-80px");
-$("#del_select_items_button").hide();
-$("#change_selection_div").hide();
-$("#button_div").hide();
-$("#upShow").show();
-document.getElementById("up_place").style.display="inline";
-$("#up_place").show();
-document.getElementById("up_from_project").innerHTML='<span id="myId" style="text-decoration:underline;">Project</span>'+': '+to_place_name;
-$('#up_place').css("margin-top", "128px");
-$("#up_from_project").show();
-$("#up_from_group").hide();
-$("#up_from_space").hide();
-$('#select_items_button').hide();
-}
-else if(sel_action_val=="select_action")
-{
-document.getElementById("up_place").style.display="inline";
-//$("#stylized").hide();		
-$("#change_selection_div").hide();
-$("#showDiv").hide();
-$("#copyTo").hide();
-$("#upShow").hide();
-document.getElementById("upTo").style.display="inline";
-$("#upTo").hide();
-$("#up_place").hide();
-$("#upFrom").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-$('#select_items_button').hide();
-}
+            if (sel_action_val == "uploadd") {
+                $('#all_selected_items').css("margin-top", "80px");
+                $('#selected_items').css("margin-top", "80px");
+                $("#upTo").text("Upload this:").append('<br/>');
+                document.getElementById("upTo").style.display = "inline";
+                $("#upTo").show();
+                document.getElementById("up_select_items_button").style.display = "inline";
+                document.getElementById("del_select_items_button").style.display = "inline";
+                $("#up_select_items_button").show();
+                $('#up_select_items_button').css("margin-top", "180px");
+                $('#up_select_items_button').css("margin-left", "-80px");
+                $("#del_select_items_button").hide();
+                $("#change_selection_div").hide();
+                $("#button_div").hide();
+                $("#upShow").show();
+                document.getElementById("up_place").style.display = "inline";
+                $("#up_place").show();
+                document.getElementById("up_from_project").innerHTML = '<span id="myId" style="text-decoration:underline;">Project</span>' + ': ' + to_place_name;
+                $('#up_place').css("margin-top", "128px");
+                $("#up_from_project").show();
+                $("#up_from_group").hide();
+                $("#up_from_space").hide();
+                $('#select_items_button').hide();
+            } else if (sel_action_val == "select_action") {
+                document.getElementById("up_place").style.display = "inline";
+                //$("#stylized").hide();		
+                $("#change_selection_div").hide();
+                $("#showDiv").hide();
+                $("#copyTo").hide();
+                $("#upShow").hide();
+                document.getElementById("upTo").style.display = "inline";
+                $("#upTo").hide();
+                $("#up_place").hide();
+                $("#upFrom").hide();
+                $("#up_from_space").hide();
+                $("#up_from_group").hide();
+                $("#up_from_project").hide();
+                $('#select_items_button').hide();
+            }
 
-$("#to_space").hide();
-$("#to_group").hide();
-$("#to_project").show();
-} ),
-error : handleResponse  };
+            $("#to_space").hide();
+            $("#to_group").hide();
+            $("#to_project").show();
+        }),
+        error: handleResponse
+    };
 
-if(to_place_name=='')
-{
-//document.getElementById("start_copying_button").style.visibility="hidden";	
-$("#button_div").hide();	
-document.getElementById("copyTo").style.visibility="hidden";
-//document.getElementById("copyTo").style.visibility="visible";
-document.getElementById("to_project").innerHTML=msg2;
-//document.getElementById("to_project").innerHTML='<span id="myId" style="text-decoration:underline;">Project</span>'+': '+dest_space_name;
-$("#to_place option").each(function() {
-if($(this).text() == 'Select Place') {
-$(this).attr('selected', 'selected'); 
-$('#to_place :selected').text('Change Place');	
-}
-else if($(this).text() == 'Change Place')
-{  
-$('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);  
-}
-});	
+    if (to_place_name == '') {
+        //document.getElementById("start_copying_button").style.visibility="hidden";	
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "hidden";
+        //document.getElementById("copyTo").style.visibility="visible";
+        document.getElementById("to_project").innerHTML = msg2;
+        //document.getElementById("to_project").innerHTML='<span id="myId" style="text-decoration:underline;">Project</span>'+': '+dest_space_name;
+        $("#to_place option").each(function () {
+            if ($(this).text() == 'Select Place') {
+                $(this).attr('selected', 'selected');
+                $('#to_place :selected').text('Change Place');
+            } else if ($(this).text() == 'Change Place') {
+                $('#to_place option:[text="' + $(this).text() + '"]').attr('selected', true);
+            }
+        });
+    }
+
+    osapi.jive.corev3.places.requestPicker(params);
 }
 
-osapi.jive.corev3.places.requestPicker(params);
-}
+function getFiles(space_url) {
+    // fetches the files from the selected space/group/project using the SPACE_URL.
 
-function getFiles(space_url)
-{
-// fetches the files from the selected space/group/project using the SPACE_URL.
+    osapi.jive.corev3.contents.get({
+        type: 'file',
+        fields: '@all',
+        count: 50,
+        place: space_url
+    }).execute(function (response) {
+        //console.log("Files: "+JSON.stringify(response));
 
-osapi.jive.corev3.contents.get({
-type : 'file',
-fields : '@all',
-count : 50,
-place : space_url
-}).execute(function(response) {
-//console.log("Files: "+JSON.stringify(response));
+        var files = response.list;
+        var postFiles;
+        var files_length = response.list.length;
 
-var files = response.list;
-var postFiles;
-var files_length=response.list.length;
+        if (files_length == 0) {
+            // action when the selected space/group/project has no files.
 
-if (files_length==0)
-{
-// action when the selected space/group/project has no files.
+            files_row = '<table id="filesTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
+                '<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No files in this place.</strong></td></tr>';
+        } else {
+            // action when the selected space/group/project has files.
 
-files_row='<table id="filesTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+				
-'<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No files in this place.</strong></td></tr>';
-}
-else
-{
-// action when the selected space/group/project has files.
+            // creates table header row.
+            files_row = '<table id="filesTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
 
-// creates table header row.
-files_row='<table id="filesTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
-
-'<tr>'+
-'<td style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>'+'All<input type="checkbox" id="sel_all_files"  onclick="javascript:checkedAll(this.id);">'+'</strong></td>'+
-'<td style="border:1px ;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></td>'+
-'<td style="border:1px solid ;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></td>'+
-'</tr>';
+            '<tr>' +
+                '<td style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>' + 'All<input type="checkbox" id="sel_all_files"  onclick="javascript:checkedAll(this.id);">' + '</strong></td>' +
+                '<td style="border:1px ;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></td>' +
+                '<td style="border:1px solid ;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></td>' +
+                '</tr>';
 
 
-$.each(files, function(index, group) {
-postFiles = {
-title : "",
-author : "",
-updated : "",
-fileUrl : ""
-}
+            $.each(files, function (index, group) {
+                postFiles = {
+                    title: "",
+                    author: "",
+                    updated: "",
+                    fileUrl: ""
+                }
 
-// assigning values from the received response to the variables.
-postFiles.title = group.subject;
-postFiles.author = group.author.name.formatted;
-postFiles.updated = group.updated;
-postFiles.fileUrl = group.resources.self.ref;
+                // assigning values from the received response to the variables.
+                postFiles.title = group.subject;
+                postFiles.author = group.author.name.formatted;
+                postFiles.updated = group.updated;
+                postFiles.fileUrl = group.resources.self.ref;
 
-// adding each file in a row as per the received response.
-files_row = files_row + '<tr>'+
-'<td style="border:1px ;border: 1px solid #000000;text-align:right;padding:2px;">'+'<input type="checkbox" name="file_cb" class="file_cb" onclick="javascript:checkUncheck(this.name);" value="'+postFiles.fileUrl+'">'+'</td>'+
-'<td style="border:1px ;border: 1px solid #000000;padding: 2px;">'+postFiles.title+'</td>'+
-'<td style="border:1px ;border: 1px solid #000000;padding: 2px;">'+postFiles.author+'</td>'+
-'</tr>';		
-});
-}
-files_row=files_row+'</table>';	
+                // adding each file in a row as per the received response.
+                files_row = files_row + '<tr>' +
+                    '<td style="border:1px ;border: 1px solid #000000;text-align:right;padding:2px;">' + '<input type="checkbox" name="file_cb" class="file_cb" onclick="javascript:checkUncheck(this.name);" value="' + postFiles.fileUrl + '">' + '</td>' +
+                    '<td style="border:1px ;border: 1px solid #000000;padding: 2px;">' + postFiles.title + '</td>' +
+                    '<td style="border:1px ;border: 1px solid #000000;padding: 2px;">' + postFiles.author + '</td>' +
+                    '</tr>';
+            });
+        }
+        files_row = files_row + '</table>';
 
-// writing the files table to the files tab.
-document.getElementById("files_div").innerHTML=files_row;	
+        // writing the files table to the files tab.
+        document.getElementById("files_div").innerHTML = files_row;
 
-});
+    });
 };
 
-function getBlogs(blog_url)
-{
-// getting the blogs from the selected space/group/project using the BLOG_URL.
+function getBlogs(blog_url) {
+    // getting the blogs from the selected space/group/project using the BLOG_URL.
 
-osapi.jive.corev3.contents.get({
-type : 'post',
-fields : '@all',
-count : 50,
-place : blog_url
-}).execute(function(response) {
-//console.log("Blogs: "+JSON.stringify(response));
+    osapi.jive.corev3.contents.get({
+        type: 'post',
+        fields: '@all',
+        count: 50,
+        place: blog_url
+    }).execute(function (response) {
+        //console.log("Blogs: "+JSON.stringify(response));
 
-var blogs = response.list;
-var postBlogs;
-var blogs_length=response.list.length;
-if(blogs_length==0)
-{
-// action when the selected space/group/project has no blogs.
-blog_row='<table id="blogTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
-'<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No blog posts in this place.</strong></td></tr>';
-}
-else
-{	
-// action when the selected space/group/project has blogs.
+        var blogs = response.list;
+        var postBlogs;
+        var blogs_length = response.list.length;
+        if (blogs_length == 0) {
+            // action when the selected space/group/project has no blogs.
+            blog_row = '<table id="blogTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
+                '<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No blog posts in this place.</strong></td></tr>';
+        } else {
+            // action when the selected space/group/project has blogs.
 
-// adding the header for blogs table.
-blog_row='<table id="blogTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
-'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>'+'All<input type="checkbox" id="sel_all_blogs"  onclick="javascript:checkedAll(this.id);">'+'</strong></th>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></th>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></th>'+
-'</tr>';
+            // adding the header for blogs table.
+            blog_row = '<table id="blogTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
+                '<tr>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>' + 'All<input type="checkbox" id="sel_all_blogs"  onclick="javascript:checkedAll(this.id);">' + '</strong></th>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></th>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></th>' +
+                '</tr>';
 
-$.each(blogs, function(index, group) {
-postBlogs = {
-title : "",
-author : "",
-updated : "",
-fileUrl : ""
-}
+            $.each(blogs, function (index, group) {
+                postBlogs = {
+                    title: "",
+                    author: "",
+                    updated: "",
+                    fileUrl: ""
+                }
 
-// assigning values from received response to the variables.
-postBlogs.title = group.subject;
-postBlogs.author = group.author.name.formatted;
-postBlogs.updated = group.updated;
-postBlogs.fileUrl = group.resources.self.ref;
+                // assigning values from received response to the variables.
+                postBlogs.title = group.subject;
+                postBlogs.author = group.author.name.formatted;
+                postBlogs.updated = group.updated;
+                postBlogs.fileUrl = group.resources.self.ref;
 
-// adding each blog in a row as per the received response.
-blog_row = blog_row + '<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">'+'<input type="checkbox" name="blog_cb" class="blog_cb" onclick="javascript:checkUncheck(this.name);" value="'+postBlogs.fileUrl+'">'+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">'+postBlogs.title+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">'+postBlogs.author+'</td>'+
-'</tr>';	
-});
-}
-blog_row=blog_row+'</table>';	
+                // adding each blog in a row as per the received response.
+                blog_row = blog_row + '<tr>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" name="blog_cb" class="blog_cb" onclick="javascript:checkUncheck(this.name);" value="' + postBlogs.fileUrl + '">' + '</td>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">' + postBlogs.title + '</td>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">' + postBlogs.author + '</td>' +
+                    '</tr>';
+            });
+        }
+        blog_row = blog_row + '</table>';
 
-// writing the blog table in the blog tab.
-document.getElementById("blog_div").innerHTML=blog_row;	
+        // writing the blog table in the blog tab.
+        document.getElementById("blog_div").innerHTML = blog_row;
 
-});
+    });
 };
 
 
-function getDocs(space_url)
-{
+function getDocs(space_url) {
 
-osapi.jive.corev3.documents.get ({
-fields : '@all',
-count : 50,
-place : space_url
-}).execute(function(response) {
-//console.log("Documents: "+JSON.stringify(response));
+    osapi.jive.corev3.documents.get({
+        fields: '@all',
+        count: 50,
+        place: space_url
+    }).execute(function (response) {
+        //console.log("Documents: "+JSON.stringify(response));
 
-var documents = response.list;
-var postDoc;
-var docs_length=response.list.length;
-if (docs_length==0)
-{
-docs_row='<table id="docsTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
-'<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No documents in this place.</strong></td></tr>';
-}
-else
-{	
-docs_row='<table id="docsTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
+        var documents = response.list;
+        var postDoc;
+        var docs_length = response.list.length;
+        if (docs_length == 0) {
+            docs_row = '<table id="docsTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
+                '<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No documents in this place.</strong></td></tr>';
+        } else {
+            docs_row = '<table id="docsTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
 
-'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>'+'All<input type="checkbox" id="sel_all_docs" onclick="javascript:checkedAll(this.id);">'+'</strong></th>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></th>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></th>'+
-'</tr>';
+            '<tr>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>' + 'All<input type="checkbox" id="sel_all_docs" onclick="javascript:checkedAll(this.id);">' + '</strong></th>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></th>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></th>' +
+                '</tr>';
 
-$.each(documents, function(index, group) {
-postDoc = {
-title : "",
-author : "",
-updated : "",
-docUrl : ""
-}
+            $.each(documents, function (index, group) {
+                postDoc = {
+                    title: "",
+                    author: "",
+                    updated: "",
+                    docUrl: ""
+                }
 
-postDoc.title = group.subject;
-postDoc.author = group.author.name.formatted;
-postDoc.updated = group.updated;
-postDoc.docUrl = group.resources.self.ref;
+                postDoc.title = group.subject;
+                postDoc.author = group.author.name.formatted;
+                postDoc.updated = group.updated;
+                postDoc.docUrl = group.resources.self.ref;
 
-docs_row = docs_row + '<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">'+'<input type="checkbox" name="doc_cb" class="doc_cb" onclick="javascript:checkUncheck(this.name);" value="'+postDoc.docUrl+'">'+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">'+postDoc.title+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">'+postDoc.author+'</td>'+
-'</tr>';
+                docs_row = docs_row + '<tr>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" name="doc_cb" class="doc_cb" onclick="javascript:checkUncheck(this.name);" value="' + postDoc.docUrl + '">' + '</td>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">' + postDoc.title + '</td>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">' + postDoc.author + '</td>' +
+                    '</tr>';
 
-});	
-}	
-docs_row=docs_row+'</table>';
-document.getElementById("docs_div").innerHTML=docs_row;
-});
+            });
+        }
+        docs_row = docs_row + '</table>';
+        document.getElementById("docs_div").innerHTML = docs_row;
+    });
 };
 
-function getDiscussions(space_url){
+function getDiscussions(space_url) {
 
-osapi.jive.corev3.discussions.get ({
-fields : '@all',
-count : 50,
-place : space_url
-}).execute(function(response) {
-//console.log("Discussions: "+JSON.stringify(response));
+    osapi.jive.corev3.discussions.get({
+        fields: '@all',
+        count: 50,
+        place: space_url
+    }).execute(function (response) {
+        //console.log("Discussions: "+JSON.stringify(response));
 
-var disc = response.list;
-var postDisc;
-var disc_length=response.list.length;
-if(disc_length==0)
-{
-disc_row='<table id="discTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
-'<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No discussions in this place.</strong></td></tr>';
-}
-else
-{
-disc_row='<table id="discTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
+        var disc = response.list;
+        var postDisc;
+        var disc_length = response.list.length;
+        if (disc_length == 0) {
+            disc_row = '<table id="discTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
+                '<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No discussions in this place.</strong></td></tr>';
+        } else {
+            disc_row = '<table id="discTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
 
-'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>'+'All<input type="checkbox" id="sel_all_disc"  onclick="javascript:checkedAll(this.id);">'+'</strong></th>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></th>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></th>'+
-'</tr>';
+            '<tr>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>' + 'All<input type="checkbox" id="sel_all_disc"  onclick="javascript:checkedAll(this.id);">' + '</strong></th>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></th>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></th>' +
+                '</tr>';
 
-$.each(disc, function(index, group) {
-postDisc = {
-title : "",
-author : "",
-updated : "",
-discUrl : ""
-}
+            $.each(disc, function (index, group) {
+                postDisc = {
+                    title: "",
+                    author: "",
+                    updated: "",
+                    discUrl: ""
+                }
 
-postDisc.title = group.subject;
-postDisc.author = group.author.name.formatted;
-postDisc.updated = group.updated;
-postDisc.discUrl = group.resources.self.ref;
+                postDisc.title = group.subject;
+                postDisc.author = group.author.name.formatted;
+                postDisc.updated = group.updated;
+                postDisc.discUrl = group.resources.self.ref;
 
-disc_row = disc_row + '<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">'+'<input type="checkbox" name="disc_cb" class="disc_cb" onclick="javascript:checkUncheck(this.name);" value="'+postDisc.discUrl+'">'+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">'+postDisc.title+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">'+postDisc.author+'</td>'+
-'</tr>';	
-});
-}
-disc_row=disc_row+'</table>';	
-document.getElementById("disc_div").innerHTML=disc_row;	
-});
+                disc_row = disc_row + '<tr>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" name="disc_cb" class="disc_cb" onclick="javascript:checkUncheck(this.name);" value="' + postDisc.discUrl + '">' + '</td>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">' + postDisc.title + '</td>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">' + postDisc.author + '</td>' +
+                    '</tr>';
+            });
+        }
+        disc_row = disc_row + '</table>';
+        document.getElementById("disc_div").innerHTML = disc_row;
+    });
 
 };
 
-function getIdeas(space_url){
+function getIdeas(space_url) {
 
-osapi.jive.corev3.ideas.get ({
-fields : '@all',
-count : 50,
-place : space_url
-}).execute(function(response) {
-//console.log("Ideas: "+JSON.stringify(response));
+    osapi.jive.corev3.ideas.get({
+        fields: '@all',
+        count: 50,
+        place: space_url
+    }).execute(function (response) {
+        //console.log("Ideas: "+JSON.stringify(response));
 
-var idea = response.list;
-var postIdea;
-var idea_length=response.list.length;
-if(idea_length==0)
-{
-idea_row='<table id="ideaTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
-'<tr>'+
-'<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No ideas in this place.</strong></td></tr>';
-}
-else
-{
-idea_row='<table id="ideaTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
-'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>'+'All<input type="checkbox" id="sel_all_ideas"  onclick="javascript:checkedAll(this.id);">'+'</strong></th>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></th>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></th>'+
-'</tr>';
+        var idea = response.list;
+        var postIdea;
+        var idea_length = response.list.length;
+        if (idea_length == 0) {
+            idea_row = '<table id="ideaTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
+                '<tr>' +
+                '<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No ideas in this place.</strong></td></tr>';
+        } else {
+            idea_row = '<table id="ideaTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
+                '<tr>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>' + 'All<input type="checkbox" id="sel_all_ideas"  onclick="javascript:checkedAll(this.id);">' + '</strong></th>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></th>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></th>' +
+                '</tr>';
 
-$.each(idea, function(index, group) {
-postIdea = {
-title : "",
-author : "",
-updated : "",
-ideaUrl : ""
-}
+            $.each(idea, function (index, group) {
+                postIdea = {
+                    title: "",
+                    author: "",
+                    updated: "",
+                    ideaUrl: ""
+                }
 
-postIdea.title = group.subject;
-postIdea.author = group.author.name.formatted;
-postIdea.updated = group.updated;
-postIdea.ideaUrl = group.resources.self.ref;
+                postIdea.title = group.subject;
+                postIdea.author = group.author.name.formatted;
+                postIdea.updated = group.updated;
+                postIdea.ideaUrl = group.resources.self.ref;
 
-idea_row = idea_row + '<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">'+'<input type="checkbox" name="idea_cb" class="idea_cb" onclick="javascript:checkUncheck(this.name);" value="'+postIdea.ideaUrl+'">'+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">'+postIdea.title+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">'+postIdea.author+'</td>'+
-'</tr>';	
-});
-}
-idea_row=idea_row+'</table>';	
-document.getElementById("idea_div").innerHTML=idea_row;	
-});
+                idea_row = idea_row + '<tr>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" name="idea_cb" class="idea_cb" onclick="javascript:checkUncheck(this.name);" value="' + postIdea.ideaUrl + '">' + '</td>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">' + postIdea.title + '</td>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">' + postIdea.author + '</td>' +
+                    '</tr>';
+            });
+        }
+        idea_row = idea_row + '</table>';
+        document.getElementById("idea_div").innerHTML = idea_row;
+    });
 };
 
-function getPolls(space_url)
-{
-osapi.jive.corev3.polls.get({
-fields : '@all',
-count : 50,
-place : space_url
-}).execute(function(response) {
-//console.log("Polls: "+JSON.stringify(response));
+function getPolls(space_url) {
+    osapi.jive.corev3.polls.get({
+        fields: '@all',
+        count: 50,
+        place: space_url
+    }).execute(function (response) {
+        //console.log("Polls: "+JSON.stringify(response));
 
-var polls = response.list;
-var postPolls;
-var poll_length=response.list.length;
-if(poll_length==0)
-{
-poll_row='<table id="pollTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
-'<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No polls in this place.</strong></td></tr>';
-}
-else
-{	
-poll_row='<table id="pollTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">'+
+        var polls = response.list;
+        var postPolls;
+        var poll_length = response.list.length;
+        if (poll_length == 0) {
+            poll_row = '<table id="pollTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
+                '<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No polls in this place.</strong></td></tr>';
+        } else {
+            poll_row = '<table id="pollTable" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 450px;">' +
 
-'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>'+'All<input type="checkbox" id="sel_all_polls"  onclick="javascript:checkedAll(this.id);">'+'</strong></th>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></th>'+
-'<td style="border:1px solid black;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></th>'+
-'</tr>';
+            '<tr>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: right;" valign="middle"><strong>' + 'All<input type="checkbox" id="sel_all_polls"  onclick="javascript:checkedAll(this.id);">' + '</strong></th>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 450px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Title</strong></th>' +
+                '<td style="border:1px solid black;border: 1px solid #000000;width: 160px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>&nbsp; Author</strong></th>' +
+                '</tr>';
 
-$.each(polls, function(index, group) {
-postPolls = {
-title : "",
-author : "",
-updated : "",
-fileUrl : ""
-}
+            $.each(polls, function (index, group) {
+                postPolls = {
+                    title: "",
+                    author: "",
+                    updated: "",
+                    fileUrl: ""
+                }
 
-postPolls.title = group.subject;
-postPolls.author = group.author.name.formatted;
-postPolls.updated = group.updated;
-postPolls.fileUrl = group.resources.self.ref;
+                postPolls.title = group.subject;
+                postPolls.author = group.author.name.formatted;
+                postPolls.updated = group.updated;
+                postPolls.fileUrl = group.resources.self.ref;
 
-poll_row = poll_row + '<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">'+'<input type="checkbox" name="poll_cb" class="poll_cb" onclick="javascript:checkUncheck(this.name);" value="'+postPolls.fileUrl+'">'+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">'+postPolls.title+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">'+postPolls.author+'</td>'+
-'</tr>';
-});
-}
-poll_row=poll_row+'</table>';	
-document.getElementById("poll_div").innerHTML=poll_row;	
+                poll_row = poll_row + '<tr>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" name="poll_cb" class="poll_cb" onclick="javascript:checkUncheck(this.name);" value="' + postPolls.fileUrl + '">' + '</td>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">' + postPolls.title + '</td>' +
+                    '<td style="border:1px solid black;border: 1px solid #000000;padding: 2px;">' + postPolls.author + '</td>' +
+                    '</tr>';
+            });
+        }
+        poll_row = poll_row + '</table>';
+        document.getElementById("poll_div").innerHTML = poll_row;
 
-});
+    });
 };
 
-function checkedAll(selCheckId){
+function checkedAll(selCheckId) {
 
-// check/uncheck all the checkboxes if the one in header is checked/unchecked.
+    // check/uncheck all the checkboxes if the one in header is checked/unchecked.
 
-var tab='';
-if(selCheckId=='sel_all_files')
-{
-tab = document.getElementById ("filesTable");
-}
-else if(selCheckId=='sel_all_docs')
-{
-tab = document.getElementById ("docsTable");
-}
-else if(selCheckId=='sel_all_disc')
-{
-tab = document.getElementById ("discTable");
-}
-else if(selCheckId=='sel_all_ideas')
-{
-tab = document.getElementById ("ideaTable");
-}else if(selCheckId=='sel_all_polls')
-{
-tab = document.getElementById ("pollTable");
-}else if(selCheckId=='sel_all_blogs')
-{
-tab = document.getElementById ("blogTable");
-}
-var elems = tab.getElementsByTagName ("input");
-var len = elems.length;
-var sel_all=document.getElementById(selCheckId);
+    var tab = '';
+    if (selCheckId == 'sel_all_files') {
+        tab = document.getElementById("filesTable");
+    } else if (selCheckId == 'sel_all_docs') {
+        tab = document.getElementById("docsTable");
+    } else if (selCheckId == 'sel_all_disc') {
+        tab = document.getElementById("discTable");
+    } else if (selCheckId == 'sel_all_ideas') {
+        tab = document.getElementById("ideaTable");
+    } else if (selCheckId == 'sel_all_polls') {
+        tab = document.getElementById("pollTable");
+    } else if (selCheckId == 'sel_all_blogs') {
+        tab = document.getElementById("blogTable");
+    }
+    var elems = tab.getElementsByTagName("input");
+    var len = elems.length;
+    var sel_all = document.getElementById(selCheckId);
 
-if(sel_all.checked==true)
-{
-for ( var i = 0; i < len; i++ )
-{
-if ( elems[i].type == "checkbox" )
-{
-elems[i].checked = true;
-}
-}
-}
-else if(sel_all.checked==false)
-{
-for ( var i = 0; i < len; i++ )
-{
-if ( elems[i].type == "checkbox" )
-{
-elems[i].checked = false;
-}
-}
-}
+    if (sel_all.checked == true) {
+        for (var i = 0; i < len; i++) {
+            if (elems[i].type == "checkbox") {
+                elems[i].checked = true;
+            }
+        }
+    } else if (sel_all.checked == false) {
+        for (var i = 0; i < len; i++) {
+            if (elems[i].type == "checkbox") {
+                elems[i].checked = false;
+            }
+        }
+    }
 
 };
 
-function checkUncheck(name)
-{
-// check/uncheck the checkbox in header if all the others below are checked/unchecked.
+function checkUncheck(name) {
+    // check/uncheck the checkbox in header if all the others below are checked/unchecked.
 
-var id='';
-var mcb_id='';
-var check='';
-if(name=="file_cb")
-{
-id='sel_all_files';
-mcb_id='#'+id;
-name='.'+name;
-var rowCount = $('#filesTable tr').length;
-if(rowCount==2)
-$(mcb_id).attr('checked', 'checked');
-else
-$(mcb_id).removeAttr("checked");
-}
-else if(name=="doc_cb")
-{
-id='sel_all_docs';
-mcb_id='#'+id;
-name='.'+name;
-var rowCount = $('#docsTable tr').length;
-if(rowCount==2)
-$(mcb_id).attr('checked', 'checked');
-else
-$(mcb_id).removeAttr("checked");
-}
-else if(name=="disc_cb")
-{
-id='sel_all_disc';
-mcb_id='#'+id;
-name='.'+name;
-var rowCount = $('#discTable tr').length;
-if(rowCount==2)
-$(mcb_id).attr('checked', 'checked');
-else
-$(mcb_id).removeAttr("checked");
-}
-else if(name=="idea_cb")
-{
-id='sel_all_ideas';
-mcb_id='#'+id;
-name='.'+name;
-var rowCount = $('#ideaTable tr').length;
-if(rowCount==2)
-$(mcb_id).attr('checked', 'checked');
-else
-$(mcb_id).removeAttr("checked");
-}
-else if(name=="poll_cb")
-{
-id='sel_all_polls';
-mcb_id='#'+id;
-name='.'+name;
-var rowCount = $('#pollTable tr').length;
-if(rowCount==2)
-$(mcb_id).attr('checked', 'checked');
-else
-$(mcb_id).removeAttr("checked");
-}
-else if(name=="blog_cb")
-{
-id='sel_all_blogs';
-mcb_id='#'+id;
-name='.'+name;
-var rowCount = $('#blogTable tr').length;
-if(rowCount==2)
-$(mcb_id).attr('checked', 'checked');
-else
-$(mcb_id).removeAttr("checked");
-}
+    var id = '';
+    var mcb_id = '';
+    var check = '';
+    if (name == "file_cb") {
+        id = 'sel_all_files';
+        mcb_id = '#' + id;
+        name = '.' + name;
+        var rowCount = $('#filesTable tr').length;
+        if (rowCount == 2)
+            $(mcb_id).attr('checked', 'checked');
+        else
+            $(mcb_id).removeAttr("checked");
+    } else if (name == "doc_cb") {
+        id = 'sel_all_docs';
+        mcb_id = '#' + id;
+        name = '.' + name;
+        var rowCount = $('#docsTable tr').length;
+        if (rowCount == 2)
+            $(mcb_id).attr('checked', 'checked');
+        else
+            $(mcb_id).removeAttr("checked");
+    } else if (name == "disc_cb") {
+        id = 'sel_all_disc';
+        mcb_id = '#' + id;
+        name = '.' + name;
+        var rowCount = $('#discTable tr').length;
+        if (rowCount == 2)
+            $(mcb_id).attr('checked', 'checked');
+        else
+            $(mcb_id).removeAttr("checked");
+    } else if (name == "idea_cb") {
+        id = 'sel_all_ideas';
+        mcb_id = '#' + id;
+        name = '.' + name;
+        var rowCount = $('#ideaTable tr').length;
+        if (rowCount == 2)
+            $(mcb_id).attr('checked', 'checked');
+        else
+            $(mcb_id).removeAttr("checked");
+    } else if (name == "poll_cb") {
+        id = 'sel_all_polls';
+        mcb_id = '#' + id;
+        name = '.' + name;
+        var rowCount = $('#pollTable tr').length;
+        if (rowCount == 2)
+            $(mcb_id).attr('checked', 'checked');
+        else
+            $(mcb_id).removeAttr("checked");
+    } else if (name == "blog_cb") {
+        id = 'sel_all_blogs';
+        mcb_id = '#' + id;
+        name = '.' + name;
+        var rowCount = $('#blogTable tr').length;
+        if (rowCount == 2)
+            $(mcb_id).attr('checked', 'checked');
+        else
+            $(mcb_id).removeAttr("checked");
+    }
 
-check=name+':checked';
+    check = name + ':checked';
 
-$(mcb_id).click(function () {
-$(name).attr('checked', this.checked);
-});
+    $(mcb_id).click(function () {
+        $(name).attr('checked', this.checked);
+    });
 
-$(name).click(function(){
-if($(name).length == $(check).length) {
-$(mcb_id).attr("checked", "checked");
-} else {
-$(mcb_id).removeAttr("checked");
-}
-});
+    $(name).click(function () {
+        if ($(name).length == $(check).length) {
+            $(mcb_id).attr("checked", "checked");
+        } else {
+            $(mcb_id).removeAttr("checked");
+        }
+    });
 
 };
 
-function highlightTab()
-{
-// highlight the tab on which the user clicks by adding a blue border and underline.
-$("#docs_tab").addClass("borderadd");
-$("#disc_tab").addClass("borderadd");
-$("#idea_tab").addClass("borderadd");
-$("#blog_tab").addClass("borderadd");
-$("#poll_tab").addClass("borderadd");
-$("li.active").removeClass("active");
-$("#files_tab").removeClass("borderadd");
-$("#files_tab").addClass("active");
-$('li').click(function() {
-$("li.active").addClass("borderadd");
-$("li.active").removeClass("active");
-$(this).addClass('active');
-$(this).removeClass('borderadd');
-});
+function highlightTab() {
+    // highlight the tab on which the user clicks by adding a blue border and underline.
+    $("#docs_tab").addClass("borderadd");
+    $("#disc_tab").addClass("borderadd");
+    $("#idea_tab").addClass("borderadd");
+    $("#blog_tab").addClass("borderadd");
+    $("#poll_tab").addClass("borderadd");
+    $("li.active").removeClass("active");
+    $("#files_tab").removeClass("borderadd");
+    $("#files_tab").addClass("active");
+    $('li').click(function () {
+        $("li.active").addClass("borderadd");
+        $("li.active").removeClass("active");
+        $(this).addClass('active');
+        $(this).removeClass('borderadd');
+    });
 
 }
 
-function showTab(){
-// actions when user choses to select content he wants to copy/move/delete/download.
+function showTab() {
+    // actions when user choses to select content he wants to copy/move/delete/download.
 
-//for checking and unchecking the contents
-//checking of checkboxes
-console.log("array Len: "+addId.length);
- for (var i=0; i<addId.length; i++) 
- {
- console.log("value: "+addId[i]);
- document.getElementById(addId[i]).checked = true;
- }
-//end checking of checkboxes
+    //for checking and unchecking the contents
+    //checking of checkboxes
+    console.log("array Len: " + addId.length);
+    for (var i = 0; i < addId.length; i++) {
+        console.log("value: " + addId[i]);
+        document.getElementById(addId[i]).checked = true;
+    }
+    //end checking of checkboxes
 
-$("#stylized").hide();
-$("#selection_menu").show();
+    $("#stylized").hide();
+    $("#selection_menu").show();
 
-$("#files_div").show();
+    $("#files_div").show();
 
-$("#files_tab").click(function () {
-$("#files_div").show();
-$("#docs_div").hide();
-$("#disc_div").hide();
-$("#idea_div").hide();
-$("#poll_div").hide();
-$("#blog_div").hide();
-});	
+    $("#files_tab").click(function () {
+        $("#files_div").show();
+        $("#docs_div").hide();
+        $("#disc_div").hide();
+        $("#idea_div").hide();
+        $("#poll_div").hide();
+        $("#blog_div").hide();
+    });
 
-$("#docs_tab").click(function () {
-$("#files_div").hide();
-$("#docs_div").show();
-$("#disc_div").hide();
-$("#idea_div").hide();
-$("#poll_div").hide();
-$("#blog_div").hide();
-});	
+    $("#docs_tab").click(function () {
+        $("#files_div").hide();
+        $("#docs_div").show();
+        $("#disc_div").hide();
+        $("#idea_div").hide();
+        $("#poll_div").hide();
+        $("#blog_div").hide();
+    });
 
-$("#disc_tab").click(function () {
-$("#files_div").hide();
-$("#docs_div").hide();
-$("#disc_div").show();
-$("#idea_div").hide();
-$("#poll_div").hide();
-$("#blog_div").hide();
-});	
+    $("#disc_tab").click(function () {
+        $("#files_div").hide();
+        $("#docs_div").hide();
+        $("#disc_div").show();
+        $("#idea_div").hide();
+        $("#poll_div").hide();
+        $("#blog_div").hide();
+    });
 
-$("#idea_tab").click(function () {
-$("#files_div").hide();
-$("#docs_div").hide();
-$("#disc_div").hide();
-$("#idea_div").show();
-$("#poll_div").hide();
-$("#blog_div").hide();
-});
+    $("#idea_tab").click(function () {
+        $("#files_div").hide();
+        $("#docs_div").hide();
+        $("#disc_div").hide();
+        $("#idea_div").show();
+        $("#poll_div").hide();
+        $("#blog_div").hide();
+    });
 
-$("#poll_tab").click(function () {
-$("#files_div").hide();
-$("#docs_div").hide();
-$("#disc_div").hide();
-$("#idea_div").hide();
-$("#poll_div").show();
-$("#blog_div").hide();
-});
+    $("#poll_tab").click(function () {
+        $("#files_div").hide();
+        $("#docs_div").hide();
+        $("#disc_div").hide();
+        $("#idea_div").hide();
+        $("#poll_div").show();
+        $("#blog_div").hide();
+    });
 
-$("#blog_tab").click(function () {
-$("#files_div").hide();
-$("#docs_div").hide();
-$("#disc_div").hide();
-$("#idea_div").hide();
-$("#poll_div").hide();
-$("#blog_div").show();
-});
+    $("#blog_tab").click(function () {
+        $("#files_div").hide();
+        $("#docs_div").hide();
+        $("#disc_div").hide();
+        $("#idea_div").hide();
+        $("#poll_div").hide();
+        $("#blog_div").show();
+    });
 };
 
-var all_selected=''; 
+var all_selected = '';
 
-function goBack(){
-if(sel_action_val=="categs")
-{
-	
-		startUpdatingCategories();
-}
-else if(sel_action_val=="tags")
-{
-	
-		startUpdatingTags();
-}
-else {
-// handles the code for creating the final selection tables and the list of values to be passed to the server/javascript
+function goBack() {
+    if (sel_action_val == "categs") {
 
-all_selected='';
-Grp_file_json='';
-Grp_doc_json='';
-Grp_idea_json='';
-Grp_disc_json='';
-Grp_blog_json='';
-Grp_poll_json='';
+        startUpdatingCategories();
+    } else if (sel_action_val == "tags") {
 
-$("#button_div").hide();
-document.getElementById("copyTo").style.visibility="visible";
-document.getElementById("start_copying_button").disabled = false;
+        startUpdatingTags();
+    } else {
+        // handles the code for creating the final selection tables and the list of values to be passed to the server/javascript
 
-$("#docs_div").hide();
-$("#files_div").hide();
-$("#disc_div").hide();
-$("#idea_div").hide();
-$("#poll_div").hide();
-$("#blog_div").hide();
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("dwn_select_items_button").style.display="inline";
-$("#del_select_items_button").hide();
-$("#dwn_select_items_button").hide();
-document.getElementById("up_select_items_button").style.display="inline";
-$("#up_select_items_button").hide();
+        all_selected = '';
+        Grp_file_json = '';
+        Grp_doc_json = '';
+        Grp_idea_json = '';
+        Grp_disc_json = '';
+        Grp_blog_json = '';
+        Grp_poll_json = '';
 
-if(sel_action_val=="delete")
-{
-document.getElementById("start_copying_button").style.visibility="visible";
-document.getElementById("start_uploading").style.visibility="hidden";
-}else if(sel_action_val=="download")
-{
-document.getElementById("start_copying_button").style.visibility="visible";
-document.getElementById("start_uploading").style.visibility="hidden";
-}
+        $("#button_div").hide();
+        document.getElementById("copyTo").style.visibility = "visible";
+        document.getElementById("start_copying_button").disabled = false;
 
-$("#selection_menu").hide();
-$("#stylized").show();
-$("#change_selection_div").show();
-$("#change_contents").show();
-$("#start_copying_button").show();
-document.getElementById("start_uploading").style.visibility="hidden";
+        $("#docs_div").hide();
+        $("#files_div").hide();
+        $("#disc_div").hide();
+        $("#idea_div").hide();
+        $("#poll_div").hide();
+        $("#blog_div").hide();
+        document.getElementById("del_select_items_button").style.display = "inline";
+        document.getElementById("dwn_select_items_button").style.display = "inline";
+        $("#del_select_items_button").hide();
+        $("#dwn_select_items_button").hide();
+        document.getElementById("up_select_items_button").style.display = "inline";
+        $("#up_select_items_button").hide();
 
-// creating the header for the final selection table.
-all_selected='<TABLE id="all_selected_items" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 600px;">'
-+'<col width="400px" /><col width="120px" /><col width="10px" />'
-+'<tr>'+
-'<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Title</strong></td>'+
-'<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Author</strong></td>'+
-'<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Type</strong></td>'+
-'</tr>';
+        if (sel_action_val == "delete") {
+            document.getElementById("start_copying_button").style.visibility = "visible";
+            document.getElementById("start_uploading").style.visibility = "hidden";
+        } else if (sel_action_val == "download") {
+            document.getElementById("start_copying_button").style.visibility = "visible";
+            document.getElementById("start_uploading").style.visibility = "hidden";
+        }
 
-$('#filesTable input[type=checkbox]:checked').each(function() { 
-// getting self url's of files from the files table and adding them to files JSON.
-if($(this).val()!='on'){
-Grp_file_json = Grp_file_json+$(this).val()+';';
-var row = $(this).parent().parent();
-var rowcells = row.find('td');
+        $("#selection_menu").hide();
+        $("#stylized").show();
+        $("#change_selection_div").show();
+        $("#change_contents").show();
+        $("#start_copying_button").show();
+        document.getElementById("start_uploading").style.visibility = "hidden";
 
-if(rowcells[1].textContent!='Title'){
-all_selected=all_selected+'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[1].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[2].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">File</td>'+
-'</tr>';
-}   
-}
-});
+        // creating the header for the final selection table.
+        all_selected = '<TABLE id="all_selected_items" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 600px;">' + '<col width="400px" /><col width="120px" /><col width="10px" />' + '<tr>' +
+            '<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Title</strong></td>' +
+            '<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Author</strong></td>' +
+            '<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Type</strong></td>' +
+            '</tr>';
 
-$('#docsTable input[type=checkbox]:checked').each(function() { 
-// getting self url's of files from the files table and adding them to files JSON.
-if($(this).val()!='on'){
-Grp_doc_json = Grp_doc_json+$(this).val()+';';
-var row = $(this).parent().parent();
-var rowcells = row.find('td');
+        $('#filesTable input[type=checkbox]:checked').each(function () {
+            // getting self url's of files from the files table and adding them to files JSON.
+            if ($(this).val() != 'on') {
+                Grp_file_json = Grp_file_json + $(this).val() + ';';
+                var row = $(this).parent().parent();
+                var rowcells = row.find('td');
 
-if(rowcells[1].textContent!='Title'){
-all_selected=all_selected+'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[1].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[2].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">Documents</td>'+
-'</tr>';
-}
-}
-});
+                if (rowcells[1].textContent != 'Title') {
+                    all_selected = all_selected + '<tr>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[1].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[2].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">File</td>' +
+                        '</tr>';
+                }
+            }
+        });
 
-$('#discTable input[type=checkbox]:checked').each(function() { 
-// getting self url's of files from the files table and adding them to files JSON.
-if($(this).val()!='on'){
-Grp_disc_json = Grp_disc_json+$(this).val()+';';
-var row = $(this).parent().parent();
-var rowcells = row.find('td');
+        $('#docsTable input[type=checkbox]:checked').each(function () {
+            // getting self url's of files from the files table and adding them to files JSON.
+            if ($(this).val() != 'on') {
+                Grp_doc_json = Grp_doc_json + $(this).val() + ';';
+                var row = $(this).parent().parent();
+                var rowcells = row.find('td');
 
-if(rowcells[1].textContent!='Title'){
-all_selected=all_selected+'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[1].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[2].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">Discussions</td>'+
-'</tr>';
-}
-}
-});
+                if (rowcells[1].textContent != 'Title') {
+                    all_selected = all_selected + '<tr>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[1].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[2].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">Documents</td>' +
+                        '</tr>';
+                }
+            }
+        });
 
-$('#ideaTable input[type=checkbox]:checked').each(function() { 
-// getting self url's of files from the files table and adding them to files JSON.
-if($(this).val()!='on'){
-Grp_idea_json = Grp_idea_json+$(this).val()+';';
-var row = $(this).parent().parent();
-var rowcells = row.find('td');
+        $('#discTable input[type=checkbox]:checked').each(function () {
+            // getting self url's of files from the files table and adding them to files JSON.
+            if ($(this).val() != 'on') {
+                Grp_disc_json = Grp_disc_json + $(this).val() + ';';
+                var row = $(this).parent().parent();
+                var rowcells = row.find('td');
 
-if(rowcells[1].textContent!='Title'){
-all_selected=all_selected+'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[1].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[2].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">Ideas</td>'+
-'</tr>';
-}
-}
-});
+                if (rowcells[1].textContent != 'Title') {
+                    all_selected = all_selected + '<tr>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[1].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[2].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">Discussions</td>' +
+                        '</tr>';
+                }
+            }
+        });
 
-$('#pollTable input[type=checkbox]:checked').each(function() { 
-// getting self url's of files from the files table and adding them to files JSON.
-if($(this).val()!='on'){
-Grp_poll_json = Grp_poll_json+$(this).val()+';';
-var row = $(this).parent().parent();
-var rowcells = row.find('td');
+        $('#ideaTable input[type=checkbox]:checked').each(function () {
+            // getting self url's of files from the files table and adding them to files JSON.
+            if ($(this).val() != 'on') {
+                Grp_idea_json = Grp_idea_json + $(this).val() + ';';
+                var row = $(this).parent().parent();
+                var rowcells = row.find('td');
 
-if(rowcells[1].textContent!='Title'){
-all_selected=all_selected+'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[1].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[2].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">Polls</td>'+
-'</tr>';
-}
-}
-});
+                if (rowcells[1].textContent != 'Title') {
+                    all_selected = all_selected + '<tr>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[1].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[2].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">Ideas</td>' +
+                        '</tr>';
+                }
+            }
+        });
 
-$('#blogTable input[type=checkbox]:checked').each(function() { 
-// getting self url's of files from the files table and adding them to files JSON.
-if($(this).val()!='on'){
-Grp_blog_json = Grp_blog_json+$(this).val()+';';
-var row = $(this).parent().parent();
-var rowcells = row.find('td');
+        $('#pollTable input[type=checkbox]:checked').each(function () {
+            // getting self url's of files from the files table and adding them to files JSON.
+            if ($(this).val() != 'on') {
+                Grp_poll_json = Grp_poll_json + $(this).val() + ';';
+                var row = $(this).parent().parent();
+                var rowcells = row.find('td');
 
-if(rowcells[1].textContent!='Title'){
-all_selected=all_selected+'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[1].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+rowcells[2].textContent+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">Blogs</td>'+
-'</tr>';
-}
-}
-});
+                if (rowcells[1].textContent != 'Title') {
+                    all_selected = all_selected + '<tr>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[1].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[2].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">Polls</td>' +
+                        '</tr>';
+                }
+            }
+        });
+
+        $('#blogTable input[type=checkbox]:checked').each(function () {
+            // getting self url's of files from the files table and adding them to files JSON.
+            if ($(this).val() != 'on') {
+                Grp_blog_json = Grp_blog_json + $(this).val() + ';';
+                var row = $(this).parent().parent();
+                var rowcells = row.find('td');
+
+                if (rowcells[1].textContent != 'Title') {
+                    all_selected = all_selected + '<tr>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[1].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + rowcells[2].textContent + '</td>' +
+                        '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">Blogs</td>' +
+                        '</tr>';
+                }
+            }
+        });
 
 
-all_selected=all_selected+'</table>';
+        all_selected = all_selected + '</table>';
 
-// writing all selected files to the final selection table on the app home page.
-document.getElementById("selected_items").innerHTML=all_selected;  
+        // writing all selected files to the final selection table on the app home page.
+        document.getElementById("selected_items").innerHTML = all_selected;
 
-var count = $('#all_selected_items tr').length;
-if (count==1)
-{
-// actions when no content has been selected by the user.
-all_selected='<table name="all_selected_items" id="all_selected_items" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 600px;">'
-+'<col width="400px" /><col width="120px" /><col width="10px" />'+
-'<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No content selected.</strong></td></tr></table>';
-document.getElementById("start_copying_button").disabled = true;
-document.getElementById("selected_items").innerHTML=all_selected;
-}
-}
+        var count = $('#all_selected_items tr').length;
+        if (count == 1) {
+            // actions when no content has been selected by the user.
+            all_selected = '<table name="all_selected_items" id="all_selected_items" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 600px;">' + '<col width="400px" /><col width="120px" /><col width="10px" />' +
+                '<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No content selected.</strong></td></tr></table>';
+            document.getElementById("start_copying_button").disabled = true;
+            document.getElementById("selected_items").innerHTML = all_selected;
+        }
+    }
 };
 
-function startCopying(){
-// handles actions after clicking the start copy button.
+function startCopying() {
+    // handles actions after clicking the start copy button.
 
-$("#cmdu").show();
-$("#src_place").hide();
-$("#start_copying_button").hide();
-$("#change_contents").hide();
-$("#button_div").hide();
-$("#from_place").hide();
-$("#to_place").hide();
+    $("#cmdu").show();
+    $("#src_place").hide();
+    $("#start_copying_button").hide();
+    $("#change_contents").hide();
+    $("#button_div").hide();
+    $("#from_place").hide();
+    $("#to_place").hide();
 
-if(browserName=="MSIE")
-{
-// actions when the app is used in IE.
-var finalurl=redirection_url+'/content';
+    if (browserName == "MSIE") {
+        // actions when the app is used in IE.
+        var finalurl = redirection_url + '/content';
 
-// we add static message to IE and do not use the iframe based tracker because of compatibility issues.
-var ieSpan='<span id="ieSpan" style="font-family:Tahoma;font-size:12px;font-color:#3778C7;">The selected contents are being copied. This may take a while depending on the number of contents and files that have been selected. The process will be completed in the background so you can close this window. The copies of the selected contents will be available after completion here: <a href='+finalurl+'>'+dest_space_name+' - Contents</a></span>';
-document.getElementById("selected_items").innerHTML=ieSpan; 
+        // we add static message to IE and do not use the iframe based tracker because of compatibility issues.
+        var ieSpan = '<span id="ieSpan" style="font-family:Tahoma;font-size:12px;font-color:#3778C7;">The selected contents are being copied. This may take a while depending on the number of contents and files that have been selected. The process will be completed in the background so you can close this window. The copies of the selected contents will be available after completion here: <a href=' + finalurl + '>' + dest_space_name + ' - Contents</a></span>';
+        document.getElementById("selected_items").innerHTML = ieSpan;
 
-dest_space_name=dest_space_name.toLowerCase();
-dest_space_name=dest_space_name.replace(/[^a-z0-9-\s]/gi, '').replace(/[_\s]/g, '-');
+        dest_space_name = dest_space_name.toLowerCase();
+        dest_space_name = dest_space_name.replace(/[^a-z0-9-\s]/gi, '').replace(/[_\s]/g, '-');
 
-// OSAPI call to send the details to the server for copying.
-osapi.http.get({
-'href' : 'http://54.247.84.129:8081/UAT/AIServlet?srcgroup_place_url='+space_url+'&target_groupurl='+to_url+'&src_group_file='+Grp_file_json+'&src_group_document='+Grp_doc_json+'&src_idea='+Grp_idea_json+'&src_discussion='+Grp_disc_json+'&src_blog='+Grp_blog_json+'&src_poll='+Grp_poll_json+'&logged-user='+loggedUser+'&logged-userName='+loggedUserName+'&group-name='+dest_space_name,
-'format' : 'json',
-'authz' : 'signed'
-}).execute(blankMethod);
-}
-else
-{
-// actions when the app is used in any other browser.
-var iframe = '<iframe id="frame1" src = "javascript:"&nbsp;" style="width:650px;height:90px;margin-top:0px;font-family:Tahoma"></iframe>';
-document.getElementById("selected_items").innerHTML=iframe;  
-$("#copyTo").text("Copying this:");
+        // OSAPI call to send the details to the server for copying.
+        osapi.http.get({
+            'href': 'http://54.247.84.129:8081/UAT/AIServlet?srcgroup_place_url=' + space_url + '&target_groupurl=' + to_url + '&src_group_file=' + Grp_file_json + '&src_group_document=' + Grp_doc_json + '&src_idea=' + Grp_idea_json + '&src_discussion=' + Grp_disc_json + '&src_blog=' + Grp_blog_json + '&src_poll=' + Grp_poll_json + '&logged-user=' + loggedUser + '&logged-userName=' + loggedUserName + '&group-name=' + dest_space_name,
+            'format': 'json',
+            'authz': 'signed'
+        }).execute(blankMethod);
+    } else {
+        // actions when the app is used in any other browser.
+        var iframe = '<iframe id="frame1" src = "javascript:"&nbsp;" style="width:650px;height:90px;margin-top:0px;font-family:Tahoma"></iframe>';
+        document.getElementById("selected_items").innerHTML = iframe;
+        $("#copyTo").text("Copying this:");
 
-dest_space_name=dest_space_name.toLowerCase();
-dest_space_name=dest_space_name.replace(/[^a-z0-9-\s]/gi, '').replace(/[_\s]/g, '-');
+        dest_space_name = dest_space_name.toLowerCase();
+        dest_space_name = dest_space_name.replace(/[^a-z0-9-\s]/gi, '').replace(/[_\s]/g, '-');
 
-var initialMsg='Please wait, initialising copying..';
-document.getElementById("frame1").contentDocument.body.style.fontFamily="Tahoma";	
-document.getElementById("frame1").contentDocument.body.style.fontSize = "12px";
-document.getElementById("frame1").contentDocument.body.style.color='Grey';
-document.getElementById("frame1").contentDocument.body.innerHTML = "Copying in Progress.<br>Please leave this window open until the copying process has been completed.<br><br><span id='mySpan' style='font-weight:bold;'>"+initialMsg.fontcolor("#3778C7")+"</span>";
+        var initialMsg = 'Please wait, initialising copying..';
+        document.getElementById("frame1").contentDocument.body.style.fontFamily = "Tahoma";
+        document.getElementById("frame1").contentDocument.body.style.fontSize = "12px";
+        document.getElementById("frame1").contentDocument.body.style.color = 'Grey';
+        document.getElementById("frame1").contentDocument.body.innerHTML = "Copying in Progress.<br>Please leave this window open until the copying process has been completed.<br><br><span id='mySpan' style='font-weight:bold;'>" + initialMsg.fontcolor("#3778C7") + "</span>";
 
-// OSAPI call to send the details to the server for copying.
-osapi.http.get({
-'href' : 'http://54.247.84.129:8081/UAT/AIServlet?srcgroup_place_url='+space_url+'&target_groupurl='+to_url+'&src_group_file='+Grp_file_json+'&src_group_document='+Grp_doc_json+'&src_idea='+Grp_idea_json+'&src_discussion='+Grp_disc_json+'&src_blog='+Grp_blog_json+'&src_poll='+Grp_poll_json+'&logged-user='+loggedUser+'&logged-userName='+loggedUserName+'&group-name='+dest_space_name,
-'format' : 'json',
-'authz' : 'signed'
-}).execute(refreshiframe);
-}
+        // OSAPI call to send the details to the server for copying.
+        osapi.http.get({
+            'href': 'http://54.247.84.129:8081/UAT/AIServlet?srcgroup_place_url=' + space_url + '&target_groupurl=' + to_url + '&src_group_file=' + Grp_file_json + '&src_group_document=' + Grp_doc_json + '&src_idea=' + Grp_idea_json + '&src_discussion=' + Grp_disc_json + '&src_blog=' + Grp_blog_json + '&src_poll=' + Grp_poll_json + '&logged-user=' + loggedUser + '&logged-userName=' + loggedUserName + '&group-name=' + dest_space_name,
+            'format': 'json',
+            'authz': 'signed'
+        }).execute(refreshiframe);
+    }
 };
 
-var flag=false;
+var flag = false;
 
-function blankMethod(response)
-{
-// to handle the response when the app is being used in IE.
-// the method is blank because we are adding the call just to complete the syntax.
+function blankMethod(response) {
+    // to handle the response when the app is being used in IE.
+    // the method is blank because we are adding the call just to complete the syntax.
 }
 
-function refreshiframe() 
-{ 
-// to hit the logger servlet and get the response of which action is being done right now.
-flag=true;
-osapi.http.get({
-'href' : 'http://54.247.84.129:8081/UAT/LoggerServlet?logged-user='+loggedUser+'&logged-userName='+loggedUserName,
-'format' : 'text',
-'authz' : 'signed'
-}).execute(refreshFrameResponse);
+function refreshiframe() {
+    // to hit the logger servlet and get the response of which action is being done right now.
+    flag = true;
+    osapi.http.get({
+        'href': 'http://54.247.84.129:8081/UAT/LoggerServlet?logged-user=' + loggedUser + '&logged-userName=' + loggedUserName,
+        'format': 'text',
+        'authz': 'signed'
+    }).execute(refreshFrameResponse);
 };
 
 
-function refreshFrameResponse(response) 
-{
-// refreshs iframe with the fresh messages being received from the server.
-if(!flag)
-{
-refreshiframe();
-}
-setTimeout("refreshiframe()",1000); 	
-var str=response.content;
-var res='{ error: "Connect to /54.246.36.246:8081 timed out" }';
-var errorCode=str.indexOf(res);
-if(errorCode!=0)
-{
-// checks if the server is running
-document.getElementById("frame1").contentDocument.body.style.fontFamily="Tahoma";	
-document.getElementById("frame1").contentDocument.body.style.fontSize = "12px";
-document.getElementById("frame1").contentDocument.body.style.color='Grey';
-document.getElementById("frame1").contentDocument.body.innerHTML = "Copying in Progress.<br>Please leave this window open until the copying process has been completed.<br><br><span id='mySpan' style='font-weight:bold;'>"+str.fontcolor("#3778C7")+"</span>";
+function refreshFrameResponse(response) {
+    // refreshs iframe with the fresh messages being received from the server.
+    if (!flag) {
+        refreshiframe();
+    }
+    setTimeout("refreshiframe()", 1000);
+    var str = response.content;
+    var res = '{ error: "Connect to /54.246.36.246:8081 timed out" }';
+    var errorCode = str.indexOf(res);
+    if (errorCode != 0) {
+        // checks if the server is running
+        document.getElementById("frame1").contentDocument.body.style.fontFamily = "Tahoma";
+        document.getElementById("frame1").contentDocument.body.style.fontSize = "12px";
+        document.getElementById("frame1").contentDocument.body.style.color = 'Grey';
+        document.getElementById("frame1").contentDocument.body.innerHTML = "Copying in Progress.<br>Please leave this window open until the copying process has been completed.<br><br><span id='mySpan' style='font-weight:bold;'>" + str.fontcolor("#3778C7") + "</span>";
 
-var compare='You will be redirected to the "copy to" group.';
+        var compare = 'You will be redirected to the "copy to" group.';
 
-var pos=str.indexOf(compare);
-if (pos!=-1)
-{
-// redirects to target place when the final message is received.
-document.getElementById("frame1").contentDocument.body.innerHTML = "Copying in Progress.<br>Please leave this window open until the copying process has been completed.<br><br><span id='mySpan' style='font-weight:bold;'>"+str.fontcolor("#3778C7")+"</span>";
-$("#stylized").fadeOut(5000,function(){
-window.location = redirection_url+'/content';
-});
-}
-}
-else
-{
-var serverMsg = "Server is stopped/down, check with the administrator.";
-document.getElementById("frame1").contentDocument.body.innerHTML = "<br><br><span id='mySpan' style='font-weight:bold;'>"+serverMsg.fontcolor("#3778C7")+"</span>";
-}	
+        var pos = str.indexOf(compare);
+        if (pos != -1) {
+            // redirects to target place when the final message is received.
+            document.getElementById("frame1").contentDocument.body.innerHTML = "Copying in Progress.<br>Please leave this window open until the copying process has been completed.<br><br><span id='mySpan' style='font-weight:bold;'>" + str.fontcolor("#3778C7") + "</span>";
+            $("#stylized").fadeOut(5000, function () {
+                window.location = redirection_url + '/content';
+            });
+        }
+    } else {
+        var serverMsg = "Server is stopped/down, check with the administrator.";
+        document.getElementById("frame1").contentDocument.body.innerHTML = "<br><br><span id='mySpan' style='font-weight:bold;'>" + serverMsg.fontcolor("#3778C7") + "</span>";
+    }
 }
 
-var uploadSelected='';
+var uploadSelected = '';
 
-function uploadFiles()
-{
-// handles the response for uploading files.
-uploadSelected='';
+function uploadFiles() {
+    // handles the response for uploading files.
+    uploadSelected = '';
 
-uploadSelected='<input  style="visibility:hidden" type="text" name="loggedUser" value="'+loggedUser+'">'+
-'<input  style="visibility:hidden" type="text" name="loggedUserName" value="'+loggedUserName+'">'+
-'<input  style="visibility:hidden" type="text" name="to_url" value="'+to_url+'">'+
+    uploadSelected = '<input  style="visibility:hidden" type="text" name="loggedUser" value="' + loggedUser + '">' +
+        '<input  style="visibility:hidden" type="text" name="loggedUserName" value="' + loggedUserName + '">' +
+        '<input  style="visibility:hidden" type="text" name="to_url" value="' + to_url + '">' +
 
-'<TABLE id="upload_selected_items" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 600px;">'
-+'<col width="400px" /><col width="120px" /><col width="10px" />'
-+'<tr>'+
-'<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Name</strong></td>'+
-'<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Size</strong></td>'+
-'<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Description [optional]</strong></td>'+
-'</tr>';
+    '<TABLE id="upload_selected_items" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 600px;">' + '<col width="400px" /><col width="120px" /><col width="10px" />' + '<tr>' +
+        '<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Name</strong></td>' +
+        '<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Size</strong></td>' +
+        '<td style="border:1px ;border: 1px solid #000000;width: 43px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: left;" valign="middle"><strong>Description [optional]</strong></td>' +
+        '</tr>';
 
-// getting the details about the files selected by the user for upload.
-var files = $('#up_select_items_button').prop("files");
-var names = $.map(files, function(val) { return val.name; });
-for(var i=0;i<names.length;i++)
-{
-var fileObject = document.getElementById('up_select_items_button').files[i];
-var fileName=fileObject.name;
-var fileSize=fileObject.size;
-var sizeInMB = (fileSize / (1024*1024)).toFixed(2);
-sizeInMB= sizeInMB +'MB';
-var fileDesc='Please enter your description here.';
+    // getting the details about the files selected by the user for upload.
+    var files = $('#up_select_items_button').prop("files");
+    var names = $.map(files, function (val) {
+        return val.name;
+    });
+    for (var i = 0; i < names.length; i++) {
+        var fileObject = document.getElementById('up_select_items_button').files[i];
+        var fileName = fileObject.name;
+        var fileSize = fileObject.size;
+        var sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+        sizeInMB = sizeInMB + 'MB';
+        var fileDesc = 'Please enter your description here.';
 
-// listing the files selected for upload.
-uploadSelected=uploadSelected+'<tr>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;"><input id="fileName'+i+'" size="45" type="text" name="fileName" value="'+fileName+'" onchange="javascript:getName(this,'+i+')"></td>'+
-'<td style="color:black; border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">'+sizeInMB+'</td>'+
-'<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;"><input id="fileDesc'+i+'" size="35" type="text" name="fileDesc" value="'+fileDesc+'" onchange="javascript:getDesc(this,'+i+')" onblur="javascript:clickrecall(this);" onclick="javascript:clickclear(this);" onfocus="javascript:clickclear(this);"  autocomplete="off" style="color:black;"></td>'+
-'</tr>';
-}
+        // listing the files selected for upload.
+        uploadSelected = uploadSelected + '<tr>' +
+            '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;"><input id="fileName' + i + '" size="45" type="text" name="fileName" value="' + fileName + '" onchange="javascript:getName(this,' + i + ')"></td>' +
+            '<td style="color:black; border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;">' + sizeInMB + '</td>' +
+            '<td style="border:1px solid black;border: 1px solid #000000;text-align: left;padding: 2px;"><input id="fileDesc' + i + '" size="35" type="text" name="fileDesc" value="' + fileDesc + '" onchange="javascript:getDesc(this,' + i + ')" onblur="javascript:clickrecall(this);" onclick="javascript:clickclear(this);" onfocus="javascript:clickclear(this);"  autocomplete="off" style="color:black;"></td>' +
+            '</tr>';
+    }
 
-uploadSelected=uploadSelected+'</table>';
+    uploadSelected = uploadSelected + '</table>';
 
-$("#change_selection_div").show();
-//$("#up_select_items_button").hide();
-$("#change_contents").hide();
-$("#start_copying_button").hide();
-document.getElementById("start_uploading").style.visibility="visible";	
-document.getElementById("start_uploading").disabled = false;
+    $("#change_selection_div").show();
+    //$("#up_select_items_button").hide();
+    $("#change_contents").hide();
+    $("#start_copying_button").hide();
+    document.getElementById("start_uploading").style.visibility = "visible";
+    document.getElementById("start_uploading").disabled = false;
 
-document.getElementById("selected_items").innerHTML=uploadSelected;  
-document.getElementById("form2").innerHTML=uploadSelected;  
-var count = $('#upload_selected_items tr').length;
-// count is taken as 2 because we are adding three dynamic textboxes in this table
-// check if the selection is empty.
-if (count==2)
-{
-uploadSelected='<table name="upload_selected_items" id="upload_selected_items" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 600px;">'
-+'<col width="400px" /><col width="120px" /><col width="10px" />'+
-'<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No content selected.</strong></td></tr></table>';
-document.getElementById("start_copying_button").disabled = true;
-document.getElementById("start_uploading").disabled = true;
-document.getElementById("selected_items").innerHTML=uploadSelected;
-}
-$('#up_select_items_button').css("margin-top", "333px");
-$('#up_select_items_button').css("margin-left", "-320px");
+    document.getElementById("selected_items").innerHTML = uploadSelected;
+    document.getElementById("form2").innerHTML = uploadSelected;
+    var count = $('#upload_selected_items tr').length;
+    // count is taken as 2 because we are adding three dynamic textboxes in this table
+    // check if the selection is empty.
+    if (count == 2) {
+        uploadSelected = '<table name="upload_selected_items" id="upload_selected_items" border="0" class="jiveBorder" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" style="border: 1px solid #000000; width: 600px;">' + '<col width="400px" /><col width="120px" /><col width="10px" />' +
+            '<tr><td colspan="4" style="border:1px ;border: 1px solid #000000;width: 60px;padding: 2px;color: #ffffff;background-color: #6690bc;text-align: center;" valign="middle"><strong>No content selected.</strong></td></tr></table>';
+        document.getElementById("start_copying_button").disabled = true;
+        document.getElementById("start_uploading").disabled = true;
+        document.getElementById("selected_items").innerHTML = uploadSelected;
+    }
+    $('#up_select_items_button').css("margin-top", "333px");
+    $('#up_select_items_button').css("margin-left", "-320px");
 }
 
 function clickclear(thisfield) {
-// adding description and handling the description textfield.
-if (thisfield.value == 'Please enter your description here.') {
-thisfield.value = "";
-thisfield.color="black";
-}
+    // adding description and handling the description textfield.
+    if (thisfield.value == 'Please enter your description here.') {
+        thisfield.value = "";
+        thisfield.color = "black";
+    }
 
 }
 
 function clickrecall(thisfield) {
-// when the description is cleared add the defualt message.
-if (thisfield.value == "") {
-thisfield.value = 'Please enter your description here.';
-}
+    // when the description is cleared add the defualt message.
+    if (thisfield.value == "") {
+        thisfield.value = 'Please enter your description here.';
+    }
 
 }
 
-function getName(data,counter){
-// adding the new name in name textbox.
-var id = 'fileName'+counter;
-document.getElementById(id).value=data.value;
-}
-function getDesc(data,counter){
-// adding the new description.
-var id = 'fileDesc'+counter;
-
-if(data.value!='Please enter your description here.')
-document.getElementById(id).value=data.value;
-else
-document.getElementById(id).value='';
+function getName(data, counter) {
+    // adding the new name in name textbox.
+    var id = 'fileName' + counter;
+    document.getElementById(id).value = data.value;
 }
 
-function startUploading(){
+function getDesc(data, counter) {
+    // adding the new description.
+    var id = 'fileDesc' + counter;
 
-// handles the actions for upload functionality.
-$("#cmdu").show();
-$("#src_place").hide();
-var files = $('#up_select_items_button').prop("files");
-var names = $.map(files, function(val) { return val.name; });
-for(var i=0;i<names.length;i++)
-{
-var val=document.getElementById('fileDesc'+i).value;
-if(val=='Please enter your description here.')
-document.getElementById('fileDesc'+i).value='';
+    if (data.value != 'Please enter your description here.')
+        document.getElementById(id).value = data.value;
+    else
+        document.getElementById(id).value = '';
 }
 
-$("#up_place").hide();
-$("#up_select_items_button").hide();
-$("#start_uploading").hide();
-$("#upTo").text("Uploading this:");
+function startUploading() {
 
-var iframe = '<iframe id="frame1" src = "javascript:"&nbsp;" style="width:650px;height:90px;margin-top:0px;font-family:Tahoma"></iframe>';
-document.getElementById("selected_items").innerHTML=iframe;  
+    // handles the actions for upload functionality.
+    $("#cmdu").show();
+    $("#src_place").hide();
+    var files = $('#up_select_items_button').prop("files");
+    var names = $.map(files, function (val) {
+        return val.name;
+    });
+    for (var i = 0; i < names.length; i++) {
+        var val = document.getElementById('fileDesc' + i).value;
+        if (val == 'Please enter your description here.')
+            document.getElementById('fileDesc' + i).value = '';
+    }
 
-var initialMsg1='Your files are now being uploaded. Please <u>do not close</u> this window.!<br/><br/>';
-var initialMsg2='You will be redirected to the uploaded files once the upload is complete.<br/>';
+    $("#up_place").hide();
+    $("#up_select_items_button").hide();
+    $("#start_uploading").hide();
+    $("#upTo").text("Uploading this:");
 
-document.getElementById("frame1").contentDocument.body.style.fontFamily="Tahoma";	
-document.getElementById("frame1").contentDocument.body.style.fontSize = "12px";
-document.getElementById("frame1").contentDocument.body.style.color='Grey';
-document.getElementById("frame1").contentDocument.body.innerHTML = "<span id='mySpan' style='font-family:Tahoma;font-size:12px;font-weight:bold;'>"+initialMsg1.fontcolor("#3778C7")+"</span><span id='mySpan' style='font-weight:bold;'>"+initialMsg2.fontcolor("Grey")+"</span>";
+    var iframe = '<iframe id="frame1" src = "javascript:"&nbsp;" style="width:650px;height:90px;margin-top:0px;font-family:Tahoma"></iframe>';
+    document.getElementById("selected_items").innerHTML = iframe;
 
-document.getElementById('redirectVal').value=redirection_url;
+    var initialMsg1 = 'Your files are now being uploaded. Please <u>do not close</u> this window.!<br/><br/>';
+    var initialMsg2 = 'You will be redirected to the uploaded files once the upload is complete.<br/>';
 
-document.getElementById("form2").submit();
+    document.getElementById("frame1").contentDocument.body.style.fontFamily = "Tahoma";
+    document.getElementById("frame1").contentDocument.body.style.fontSize = "12px";
+    document.getElementById("frame1").contentDocument.body.style.color = 'Grey';
+    document.getElementById("frame1").contentDocument.body.innerHTML = "<span id='mySpan' style='font-family:Tahoma;font-size:12px;font-weight:bold;'>" + initialMsg1.fontcolor("#3778C7") + "</span><span id='mySpan' style='font-weight:bold;'>" + initialMsg2.fontcolor("Grey") + "</span>";
+
+    document.getElementById('redirectVal').value = redirection_url;
+
+    document.getElementById("form2").submit();
 
 }
 
-var flag=false;
+var flag = false;
 
-function uprefreshiframe() 
-{ 
+function uprefreshiframe() {
 
-// for getting servlet response for upload functionality.
-flag=true;
+    // for getting servlet response for upload functionality.
+    flag = true;
 
-osapi.http.get({
-'href' : 'http://54.247.84.129:8081/UAT/LoggerServlet?logged-user='+loggedUser+'&logged-userName='+loggedUserName,
-'format' : 'text',
-'authz' : 'signed'
-}).execute(uprefreshFrameResponse);
+    osapi.http.get({
+        'href': 'http://54.247.84.129:8081/UAT/LoggerServlet?logged-user=' + loggedUser + '&logged-userName=' + loggedUserName,
+        'format': 'text',
+        'authz': 'signed'
+    }).execute(uprefreshFrameResponse);
 };
 
 
-function uprefreshFrameResponse(response) 
-{
-// refresh iframe for upload functionality.
-if(!flag)
-{
-uprefreshiframe();
-}
-setTimeout("uprefreshiframe()",1000); 	
-var str=response.content;
-var res='{ error: "Connect to /54.247.84.129:8081 timed out" }';
-var errorCode=str.indexOf(res);
-if(errorCode!=0)
-{
-document.getElementById("frame1").contentDocument.body.style.fontFamily="Tahoma";	
-document.getElementById("frame1").contentDocument.body.style.fontSize = "12px";
-document.getElementById("frame1").contentDocument.body.style.color='Grey';
-document.getElementById("frame1").contentDocument.body.innerHTML = "Upload in Progress.<br>Please leave this window open until the upload process has completed.<br><br><span id='mySpan' style='font-weight:bold;'>"+str.fontcolor("#3778C7")+"</span>";
+function uprefreshFrameResponse(response) {
+    // refresh iframe for upload functionality.
+    if (!flag) {
+        uprefreshiframe();
+    }
+    setTimeout("uprefreshiframe()", 1000);
+    var str = response.content;
+    var res = '{ error: "Connect to /54.247.84.129:8081 timed out" }';
+    var errorCode = str.indexOf(res);
+    if (errorCode != 0) {
+        document.getElementById("frame1").contentDocument.body.style.fontFamily = "Tahoma";
+        document.getElementById("frame1").contentDocument.body.style.fontSize = "12px";
+        document.getElementById("frame1").contentDocument.body.style.color = 'Grey';
+        document.getElementById("frame1").contentDocument.body.innerHTML = "Upload in Progress.<br>Please leave this window open until the upload process has completed.<br><br><span id='mySpan' style='font-weight:bold;'>" + str.fontcolor("#3778C7") + "</span>";
 
-var compare='You will be redirected to the "upload to" place.';
+        var compare = 'You will be redirected to the "upload to" place.';
 
-var pos=str.indexOf(compare);
-if (pos!=-1)
-{
-document.getElementById("frame1").contentDocument.body.innerHTML = "Upload in Progress.<br>Please leave this window open until the upload process has completed.<br><br><span id='mySpan' style='font-weight:bold;'>"+str.fontcolor("#3778C7")+"</span>";
-$("#stylized").fadeOut(5000,function(){
-window.location = redirection_url;   
-});
-}
-//}	
-}
-else
-{
-var serverMsg = "Server is stopped/down, check with the administrator.";
-document.getElementById("frame1").contentDocument.body.innerHTML = "<br><br><span id='mySpan' style='font-weight:bold;'>"+serverMsg.fontcolor("#3778C7")+"</span>";
-}	
+        var pos = str.indexOf(compare);
+        if (pos != -1) {
+            document.getElementById("frame1").contentDocument.body.innerHTML = "Upload in Progress.<br>Please leave this window open until the upload process has completed.<br><br><span id='mySpan' style='font-weight:bold;'>" + str.fontcolor("#3778C7") + "</span>";
+            $("#stylized").fadeOut(5000, function () {
+                window.location = redirection_url;
+            });
+        }
+        //}	
+    } else {
+        var serverMsg = "Server is stopped/down, check with the administrator.";
+        document.getElementById("frame1").contentDocument.body.innerHTML = "<br><br><span id='mySpan' style='font-weight:bold;'>" + serverMsg.fontcolor("#3778C7") + "</span>";
+    }
 }
 
-function startMoving(){
-// handles actions for move.
-$("#cmdu").show();
-$("#src_place").hide();
-$("#from_place").hide();
-$("#to_place").hide();
-$("#start_copying_button").hide();
-$("#change_contents").hide();
-$("#button_div").hide();
-$("#copyTo").text("Moving this:");
+function startMoving() {
+    // handles actions for move.
+    $("#cmdu").show();
+    $("#src_place").hide();
+    $("#from_place").hide();
+    $("#to_place").hide();
+    $("#start_copying_button").hide();
+    $("#change_contents").hide();
+    $("#button_div").hide();
+    $("#copyTo").text("Moving this:");
 
-// send data to JS file movendelete for move.
-movendelete('move',space_url,to_url,Grp_file_json,Grp_doc_json,Grp_disc_json,Grp_idea_json,Grp_poll_json,Grp_blog_json,dest_space_name,redirection_url,source_html_url,src_space_name,to_place_blog_url,browserName);
+    // send data to JS file movendelete for move.
+    movendelete('move', space_url, to_url, Grp_file_json, Grp_doc_json, Grp_disc_json, Grp_idea_json, Grp_poll_json, Grp_blog_json, dest_space_name, redirection_url, source_html_url, src_space_name, to_place_blog_url, browserName);
 };
 
-function startDeleting(){
-$("#cmdu").show();
-$("#src_place").hide();
-$("#start_copying_button").hide();
-$("#change_contents").hide();
-$("#button_div").hide();
-$("#del_place").hide();
-$("#deleteTo").text("Deleting this:");
+function startDeleting() {
+    $("#cmdu").show();
+    $("#src_place").hide();
+    $("#start_copying_button").hide();
+    $("#change_contents").hide();
+    $("#button_div").hide();
+    $("#del_place").hide();
+    $("#deleteTo").text("Deleting this:");
 
-// send data to JS file movendelete for move.
-movendelete('delete',space_url,to_url,Grp_file_json,Grp_doc_json,Grp_disc_json,Grp_idea_json,Grp_poll_json,Grp_blog_json,'test_name','test_url',source_html_url,src_space_name,to_place_blog_url,browserName);
+    // send data to JS file movendelete for move.
+    movendelete('delete', space_url, to_url, Grp_file_json, Grp_doc_json, Grp_disc_json, Grp_idea_json, Grp_poll_json, Grp_blog_json, 'test_name', 'test_url', source_html_url, src_space_name, to_place_blog_url, browserName);
 };
 
-function startDownloading()
-{
-// handles actions for download.
-$("#cmdu").show();
-$("#src_place").hide();
-$("#start_copying_button").hide();
-$("#change_contents").hide();
-$("#button_div").hide();
-$("#dwn_place").hide();
-$("#dwnTo").text("Downloading this:");
+function startDownloading() {
+    // handles actions for download.
+    $("#cmdu").show();
+    $("#src_place").hide();
+    $("#start_copying_button").hide();
+    $("#change_contents").hide();
+    $("#button_div").hide();
+    $("#dwn_place").hide();
+    $("#dwnTo").text("Downloading this:");
 
-document.getElementById("dwnloadDataSend").value=Grp_file_json;
+    document.getElementById("dwnloadDataSend").value = Grp_file_json;
 
-// submits the form to server for processing download.
-document.getElementById("form3").submit();
-var strDwnload="Closing this browser window will abort the operation.";
+    // submits the form to server for processing download.
+    document.getElementById("form3").submit();
+    var strDwnload = "Closing this browser window will abort the operation.";
 
-var ieSpan='<span id="ieSpan" style="font-family:Tahoma;font-size:12px;font-color:#3778C7;"><br/>Download is being prepared. DO NOT CLOSE THIS WINDOW.<br/>A zip file containing all selected contents is being assembled by the server.<br/>After that process is complete a download dialog will pop up giving you the option to save the zip file on your local hard drive.<br/><br/></span>'+
-'<span id="ieSpan2" style="font-weight:bold;">'+strDwnload.fontcolor("#3778C7")+'</span>';
+    var ieSpan = '<span id="ieSpan" style="font-family:Tahoma;font-size:12px;font-color:#3778C7;"><br/>Download is being prepared. DO NOT CLOSE THIS WINDOW.<br/>A zip file containing all selected contents is being assembled by the server.<br/>After that process is complete a download dialog will pop up giving you the option to save the zip file on your local hard drive.<br/><br/></span>' +
+        '<span id="ieSpan2" style="font-weight:bold;">' + strDwnload.fontcolor("#3778C7") + '</span>';
 
-document.getElementById("selected_items").innerHTML=ieSpan;
+    document.getElementById("selected_items").innerHTML = ieSpan;
 }
 
 
 //******************Code for Categories start****************
+
 function catFromPlace() {
     // Identifies which space/group/project user has chosen to edit categories into and calls the appropriate method.
-	//alert("Into CatFrom Place");
+    //alert("Into CatFrom Place");
     var cat_place = document.getElementById("cat_place");
     var cat_sel_place = cat_place.options[cat_place.selectedIndex].value;
     if (cat_sel_place == "select_space") {
@@ -3296,15 +3084,16 @@ function catFromPlace() {
 }
 
 function categoryTest() {
-	osapi.jive.corev3.places.get({
-	uri: space_url
-	}).execute(onPlaceFetchBlog);
+    osapi.jive.corev3.places.get({
+        uri: space_url
+    }).execute(onPlaceFetchBlog);
 }
 
-function onPlaceFetchBlog(response){
-	response.getCategories().execute(catFetch);
+function onPlaceFetchBlog(response) {
+    response.getCategories().execute(catFetch);
 
 }
+
 function catFetch(response) {
     // capture the categories in the space/group/project and then populate the same in a dropdown.
     var groups_list = [];
@@ -3329,28 +3118,24 @@ function catFetch(response) {
     $('select option[value="val1"]').attr("selected", true);
 }
 
-function categSel()
-{
+function categSel() {
 
-selected_cat=document.getElementById('cat_sel').value;
-//alert("selected_cat = "+selected_cat);
-if (selected_cat=="val1")
-{
-$("#cat_select_items_button").hide();
-$("#catTo").hide();
-}
-else
-{
-//*********************Hide and show for resetting the position of the element
-$("#cat_select_items_button").show();
-$("#catTo").show();
-$("#cat_select_items_button").hide();
-$("#catTo").hide();
-//***************************************End***************
-$("#cat_select_items_button").show();
-$("#catTo").show();
+    selected_cat = document.getElementById('cat_sel').value;
+    //alert("selected_cat = "+selected_cat);
+    if (selected_cat == "val1") {
+        $("#cat_select_items_button").hide();
+        $("#catTo").hide();
+    } else {
+        //*********************Hide and show for resetting the position of the element
+        $("#cat_select_items_button").show();
+        $("#catTo").show();
+        $("#cat_select_items_button").hide();
+        $("#catTo").hide();
+        //***************************************End***************
+        $("#cat_select_items_button").show();
+        $("#catTo").show();
 
-}
+    }
 
 }
 
@@ -3370,8 +3155,8 @@ function populateContent() {
     contentUnCheckedIndex = 0;
     mainCheckedItems = new Array();
     mainUncheckItems = new Array();
-  //  alert("mainCheckedItems.length = "+mainCheckedItems.length);
-   // alert("mainUncheckItems.length = "+mainUncheckItems.length);
+    //  alert("mainCheckedItems.length = "+mainCheckedItems.length);
+    // alert("mainUncheckItems.length = "+mainUncheckItems.length);
     alert("Please wait , as this operation may take some time . Press ok");
     osapi.jive.corev3.contents.get({
         type: 'file',
@@ -3460,7 +3245,7 @@ function populateContent() {
                     }
                 } else if (sel_action_val == 'tags') {
                     var tags = postFiles.tags;
-					checkFlagItem == false
+                    checkFlagItem == false
                     console.log("tags: " + tags);
                     files_row = files_row + '<tr>' +
                         '<td style="border:1px ;border: 1px solid #000000;text-align:right;padding:2px;">' + '<input type="checkbox" id="file_cb' + index + '" name="file_cb" class="file_cb" onclick="javascript:checkUncheck(this.name);" value="' + postFiles.fileUrl + '">' + '</td>' +
@@ -3483,10 +3268,10 @@ function populateContent() {
                             checkFlagItem = true;
                         }
                     }
-					 if (checkFlagItem == false && !(selected_tag == '')) {
-                            mainUncheckItems[contentUnCheckedIndex] = postFiles.fileUrl;
-                            contentUnCheckedIndex++;
-                        }
+                    if (checkFlagItem == false && !(selected_tag == '')) {
+                        mainUncheckItems[contentUnCheckedIndex] = postFiles.fileUrl;
+                        contentUnCheckedIndex++;
+                    }
 
                 } else {
                     files_row = files_row + '<tr>' +
@@ -3595,7 +3380,7 @@ function populateBlogContent(space_url, blog_url) {
                     }
                 } else if (sel_action_val == 'tags') {
                     var tags = postBlogs.tags;
-					checkFlagItem == false
+                    checkFlagItem == false
                     console.log("tags: " + tags);
                     blog_row = blog_row + '<tr>' +
                         '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" id="blog_cb' + index + '" name="blog_cb" class="blog_cb" onclick="javascript:checkUncheck(this.name);" value="' + postBlogs.fileUrl + '">' + '</td>' +
@@ -3720,7 +3505,7 @@ function populateDocContent(space_url) {
 
                 } else if (sel_action_val == 'tags') {
                     var tags = postDoc.tags;
-					checkFlagItem == false
+                    checkFlagItem == false
                     console.log("tags: " + tags);
                     docs_row = docs_row + '<tr>' +
                         '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" id="doc_cb' + index + '" name="doc_cb" class="doc_cb" onclick="javascript:checkUncheck(this.name);" value="' + postDoc.docUrl + '">' + '</td>' +
@@ -3843,7 +3628,7 @@ function populateDiscussions(space_url) {
                     }
                 } else if (sel_action_val == 'tags') {
                     var tags = postDisc.tags;
-					checkFlagItem == false
+                    checkFlagItem == false
                     console.log("tags: " + tags);
                     disc_row = disc_row + '<tr>' +
                         '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" id="disc_cb' + index + '" name="disc_cb" class="disc_cb" onclick="javascript:checkUncheck(this.name);" value="' + postDisc.discUrl + '">' + '</td>' +
@@ -3967,7 +3752,7 @@ function populateIdeas(space_url) {
 
                 } else if (sel_action_val == 'tags') {
                     var tags = postIdea.tags;
-					checkFlagItem == false
+                    checkFlagItem == false
                     console.log("tags: " + tags);
                     idea_row = idea_row + '<tr>' +
                         '<td style="border:1px ;border: 1px solid #000000;text-align:right;padding:2px;">' + '<input type="checkbox" id="idea_cb' + index + '" name="idea_cb" class="idea_cb" onclick="javascript:checkUncheck(this.name);" value="' + postIdea.ideaUrl + '">' + '</td>' +
@@ -4090,7 +3875,7 @@ function populatePolls(space_url) {
 
                 } else if (sel_action_val == 'tags') {
                     var tags = postPolls.tags;
-					checkFlagItem == false
+                    checkFlagItem == false
                     console.log("tags: " + tags);
                     poll_row = poll_row + '<tr>' +
                         '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" id="poll_cb' + index + '" name="poll_cb" class="poll_cb" onclick="javascript:checkUncheck(this.name);" value="' + postPolls.fileUrl + '">' + '</td>' +
@@ -4129,8 +3914,8 @@ function populatePolls(space_url) {
         }
         poll_row = poll_row + '</table>';
         document.getElementById("poll_div").innerHTML = poll_row;
-	//	alert("after mainCheckedItems.length = "+mainCheckedItems.length);
-	//	alert("after mainUncheckItems.length = "+mainUncheckItems.length);
+        //	alert("after mainCheckedItems.length = "+mainCheckedItems.length);
+        //	alert("after mainUncheckItems.length = "+mainUncheckItems.length);
         javascript: showTab();
         javascript: highlightTab();
     });
@@ -4139,20 +3924,20 @@ function populatePolls(space_url) {
 function startUpdatingCategories() {
     //alert("catagory selectionn....");
     //alert("browserName = "+browserName);
-	//positioning the components
-	$("#catFrom").css("margin-top", "-50px");
-	$("#catFrom").css("margin-left", "240px");
-	$("#cat_from_space").css("margin-top", "0px");
-	$("#selCat").css("margin-top", "30px");
-	$("#catTo").css("margin-top", "55px");
-	$("#selected_items_categories").css("margin-top", "120px");
-	$("#cat_from_space").css("margin-left", "180px");
-	$("#selCat").css("margin-left", "220px");
-	$("#catTo").css("margin-left", "290px");
-	
-	$("#cat_updating_text").css("margin-left", "-320px");
-		
-		
+    //positioning the components
+    $("#catFrom").css("margin-top", "-50px");
+    $("#catFrom").css("margin-left", "240px");
+    $("#cat_from_space").css("margin-top", "0px");
+    $("#selCat").css("margin-top", "30px");
+    $("#catTo").css("margin-top", "55px");
+    $("#selected_items_categories").css("margin-top", "120px");
+    $("#cat_from_space").css("margin-left", "180px");
+    $("#selCat").css("margin-left", "220px");
+    $("#catTo").css("margin-left", "290px");
+
+    $("#cat_updating_text").css("margin-left", "-320px");
+
+
     $("#selection_menu").hide();
     $("#stylized").show();
     $("#change_selection_div").show();
@@ -4173,7 +3958,7 @@ function startUpdatingCategories() {
     //$("#refresh_app_button").show();
     //$("#refresh_app").show();
     $("#cat_updating_text").show();
-	$("#catTo").text(selected_cat);
+    $("#catTo").text(selected_cat);
     $("#cat_select_items_button").hide();
 
 
@@ -4214,8 +3999,8 @@ function startUpdatingCategories() {
     //alert("mainUncheckItems.length = "+mainUncheckItems.length);
     //console.log("mainUncheckItems.length = "+mainUncheckItems.length);
     //***********************************
-	
-   // filterCheckedUncheckCatgUrl1();
+
+    // filterCheckedUncheckCatgUrl1();
 
 
     catIndex = 0;
@@ -4361,6 +4146,7 @@ function filterCheckedUncheckCatgUrl1() {
 
 
 }
+
 function updateCategoriesForNewContents1() {
     //alert("Into the updateCategories for new contents");
     console.log("Into the updateCategories for new contents");
@@ -4426,7 +4212,7 @@ function updateCategoriesForNewContents1() {
             }
 
             //console.log("toUpdateCategories = "+toUpdateCategories);
-           // alert("Title = " + contentCatResponseObj.subject);
+            // alert("Title = " + contentCatResponseObj.subject);
             var title = contentCatResponseObj.subject;
             title = title.replace('&amp;', '&');
             title = title.replace('&lt;', '<');
@@ -4538,17 +4324,17 @@ function removeCategoriesForContents() {
         }
         if (errorReferenceCatArray.length > 0 || errorDeReferenceCatArray.length > 0) {
             alert('Message:\n\nYou have insufficient rights to update all the content selected.\n\nYou need to have group administration or space moderation rights to update content with restricted authorship (e.g. discussions started by other users).\n\nPlease contact your group or space admin to get the necessary rights.');
-             $("#refresh_app_button").show();
-			$("#refresh_app").show();
+            $("#refresh_app_button").show();
+            $("#refresh_app").show();
         } else {
 
             console.log("Category " + selected_cat + " succesfully updated");
             //alert("Category "+selected_cat+" succesfully updated");
             var tempRedirectionUrl = source_html_url + '/content?filterID=contentstatus[published]~category[' + selected_cat + ']';
-			catRedirectUrl = source_html_url + '/content?filterID=contentstatus[published]~category[' + selected_cat + ']';
+            catRedirectUrl = source_html_url + '/content?filterID=contentstatus[published]~category[' + selected_cat + ']';
             console.log("temRedirectionUrl = " + tempRedirectionUrl);
-           $("#refresh_app_button").show();
-			$("#refresh_app").show();
+            $("#refresh_app_button").show();
+            $("#refresh_app").show();
             if ($("#cat_from_space").text() != 'Change Category in Space')
                 $("#cat_from_space").show();
             else
@@ -4561,7 +4347,7 @@ function removeCategoriesForContents() {
                 $("#cat_from_project").show();
             else
                 $("#cat_from_project").hide();
-           
+
             //$('#catTo').css("margin-top", "230px");
             var str = 'Updating categories has completed. Please click   <a id="content_url" href=' + tempRedirectionUrl + '>here </a>  to review the result.';
             //var str = 'Updating categories has completed. Please click   <a href="" id="content_url" >here </a>  to review the result.';
@@ -4575,9 +4361,10 @@ function removeCategoriesForContents() {
 
 
 }
+
 function startFromBeginning() {
-	//alert("url ="+document.referrer);
-	window.location = document.referrer;
+    //alert("url ="+document.referrer);
+    window.location = document.referrer;
 }
 $('#content_url').click(function () {
     alert("opening in a new tab");
@@ -4585,8 +4372,8 @@ $('#content_url').click(function () {
     window.open($(this).prop(catRedirectUrl));
     return false;
 });
-	   
-	   
+
+
 //**********************End of code for catergories******************
 
 //**********************Code Tags***********************
@@ -4662,9 +4449,9 @@ $(function () {
 ///--end
 
 function populateContentforTags(space_url, blog_url) {
-	
+
     alert("Please wait , as this operation may take some time . Press ok");
-	addId = new Array();
+    addId = new Array();
     arrayIndex = 0;
     contentCheckedIndex = 0;
     contentUnCheckedIndex = 0;
@@ -4921,20 +4708,20 @@ function populatePollsForTags(space_url) {
 
 
         if (fromRequestAction == 'fromSpaceRequestAction') {
-           // $('#all_selected_items').css("margin-top", "80px");
-           // $('#selected_items').css("margin-top", "80px");
-           // $("#tagFrom").css("margin-top", "-30px");
-           // $("#tag_from_space").css("margin-top", "10px");
+            // $('#all_selected_items').css("margin-top", "80px");
+            // $('#selected_items').css("margin-top", "80px");
+            // $("#tagFrom").css("margin-top", "-30px");
+            // $("#tag_from_space").css("margin-top", "10px");
             $("#tag_place").css("margin-top", "30px");
-			$("#selTag").css("margin-left", '200px');
-         //   $("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 35 + 'px');
+            $("#selTag").css("margin-left", '200px');
+            //   $("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 35 + 'px');
             //$("#selTag").css("margin-top", "60px");
-          //  $("#tag_sel").css("margin-top", "90px");
-          //  $("#add_tag_button").css("margin-top", "90px");
-           // $("#tag_place").css("margin-left", '-65px');
-           // $("#tagFrom").css("margin-left", '235px');
-           // $("#selTag").css("margin-left", '205px');
-          //  $("#tag_sel").css("margin-left", '-75px');
+            //  $("#tag_sel").css("margin-top", "90px");
+            //  $("#add_tag_button").css("margin-top", "90px");
+            // $("#tag_place").css("margin-left", '-65px');
+            // $("#tagFrom").css("margin-left", '235px');
+            // $("#selTag").css("margin-left", '205px');
+            //  $("#tag_sel").css("margin-left", '-75px');
             $("#selTag").text("Enter Tag");
 
 
@@ -4974,23 +4761,23 @@ function populatePollsForTags(space_url) {
             $("#tag_from_group").hide();
             $("#tag_from_project").hide();
         } else if (fromRequestAction == 'fromGroupRequestAction') {
-          //  $('#all_selected_items').css("margin-top", "80px");
-           // $('#selected_items').css("margin-top", "80px");
-           // $("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 35 + 'px');
+            //  $('#all_selected_items').css("margin-top", "80px");
+            // $('#selected_items').css("margin-top", "80px");
+            // $("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 35 + 'px');
             //$("#selTag").css("margin-top", "60px");
-           // $("#tag_sel").css("margin-top", "90px");
-           // $("#add_tag_button").css("margin-top", "90px");
-           // $("#tag_place").css("margin-left", '-65px');
-           // $("#tagFrom").css("margin-left", '235px');
-           // $("#selTag").css("margin-left", '205px');
-           // $("#tag_sel").css("margin-left", '-75px');
-		   $("#tag_place").css("margin-top", "30px");
-			$("#selTag").css("margin-left", '200px');
-			$("#add_tag_button").hide();
-			$("#add_tag_button").show();
-			$("#add_tag_button").hide();
-			$("#add_tag_button").show();
-			$("#add_tag_button").css("margin-left", '390px');
+            // $("#tag_sel").css("margin-top", "90px");
+            // $("#add_tag_button").css("margin-top", "90px");
+            // $("#tag_place").css("margin-left", '-65px');
+            // $("#tagFrom").css("margin-left", '235px');
+            // $("#selTag").css("margin-left", '205px');
+            // $("#tag_sel").css("margin-left", '-75px');
+            $("#tag_place").css("margin-top", "30px");
+            $("#selTag").css("margin-left", '200px');
+            $("#add_tag_button").hide();
+            $("#add_tag_button").show();
+            $("#add_tag_button").hide();
+            $("#add_tag_button").show();
+            $("#add_tag_button").css("margin-left", '390px');
             $("#selTag").text("Enter Tag");
             $("#tagTo").text("Assign tag to this content:").append('<br/>');
             document.getElementById("catTo").style.display = "inline";
@@ -5021,27 +4808,27 @@ function populatePollsForTags(space_url) {
             $("#dwn_place").hide();
             $("#tag_place").show();
             document.getElementById("tag_from_group").innerHTML = '<span id="myId" style="text-decoration:underline;">Group</span>' + ': ' + global_from_place_name;
-          //  $("#tag_place").css("margin-top", "40px");
+            //  $("#tag_place").css("margin-top", "40px");
             $("#tag_from_space").hide();
             $("#tag_from_group").show();
             $("#tag_from_project").hide();
             $("#add_tag").hide();
         } else {
             //$('#all_selected_items').css("margin-top", "80px");
-           // $('#selected_items').css("margin-top", "80px");
-           // $("#tagFrom").css("margin-top", "-30px");
-           // $("#tag_from_project").css("margin-top", "10px");
-           // $("#tag_place").css("margin-top", "40px");
+            // $('#selected_items').css("margin-top", "80px");
+            // $("#tagFrom").css("margin-top", "-30px");
+            // $("#tag_from_project").css("margin-top", "10px");
+            // $("#tag_place").css("margin-top", "40px");
             //$("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 35 + 'px');
             //$("#selTag").css("margin-top", "60px");
             //$("#tag_sel").css("margin-top", "90px");
             //$("#add_tag_button").css("margin-top", "90px");
-           // $("#tag_place").css("margin-left", '-65px');
+            // $("#tag_place").css("margin-left", '-65px');
             //$("#tagFrom").css("margin-left", '235px');
-          //  $("#selTag").css("margin-left", '205px');
-           // $("#tag_sel").css("margin-left", '-75px');
-		   $("#tag_place").css("margin-top", "30px");
-			$("#selTag").css("margin-left", '200px');
+            //  $("#selTag").css("margin-left", '205px');
+            // $("#tag_sel").css("margin-left", '-75px');
+            $("#tag_place").css("margin-top", "30px");
+            $("#selTag").css("margin-left", '200px');
             $("#selTag").text("Enter Tag");
             $("#tagTo").text("Assign tag to this content:").append('<br/>');
             document.getElementById("tagTo").style.display = "inline";
@@ -5076,24 +4863,25 @@ function populatePollsForTags(space_url) {
             $("#dwn_place").hide();
             $("#tag_place").show();
             document.getElementById("tag_from_project").innerHTML = '<span id="myId" style="text-decoration:underline;">Project</span>' + ': ' + global_from_place_name;
-         //   $("#tag_place").css("margin-top", "40px");
+            //   $("#tag_place").css("margin-top", "40px");
             $("#tag_from_space").hide();
             $("#tag_from_group").hide();
             $("#tag_from_project").show();
         }
     });
-	
-	
+
+
 
 }
+
 function tagSel() {
 
     selected_cat = '';
 
-     contentCheckedIndex = 0;
-     contentUnCheckedIndex = 0;
-     mainCheckedItems = new Array();
-     mainUncheckItems = new Array();
+    contentCheckedIndex = 0;
+    contentUnCheckedIndex = 0;
+    mainCheckedItems = new Array();
+    mainUncheckItems = new Array();
     addId = new Array();
     catSelection = true;
     var str = '';
@@ -5109,25 +4897,23 @@ function tagSel() {
     } else {
 
         $('#selTag').text("Tag");
-       // $("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 40 + 'px');
+        // $("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 40 + 'px');
         $("#selTag").css("margin-left", '180px');
         $('#selTag').show();
-		$("#tagTo").show();
-		$("#tagTo").hide();
-		//alert("fromRequestAction = "+fromRequestAction);
-		if (fromRequestAction == 'fromGroupRequestAction'){
-			$("#tagTo").css("margin-left", '235px');
-			//$("#add_tag_button").css("margin-left", '390px');
-		}
-		else if (fromRequestAction == 'fromSpaceRequestAction'){
-			$("#tagTo").css("margin-left", '235px');
-			//$("#add_tag_button").css("margin-left", '390px');
-		}
-		else {
-			$("#tagTo").css("margin-left", '235px');
-			$("#add_tag_button").css("margin-left", '390px');
-		}
-		
+        $("#tagTo").show();
+        $("#tagTo").hide();
+        //alert("fromRequestAction = "+fromRequestAction);
+        if (fromRequestAction == 'fromGroupRequestAction') {
+            $("#tagTo").css("margin-left", '235px');
+            //$("#add_tag_button").css("margin-left", '390px');
+        } else if (fromRequestAction == 'fromSpaceRequestAction') {
+            $("#tagTo").css("margin-left", '235px');
+            //$("#add_tag_button").css("margin-left", '390px');
+        } else {
+            $("#tagTo").css("margin-left", '235px');
+            $("#add_tag_button").css("margin-left", '390px');
+        }
+
         //$("#add_tag").css("margin-top", parseInt($("#selTag").css("margin-top")) + 20 + 'px');
         //$("#tagTo").css("margin-top", parseInt($("#add_tag").css("margin-top")) + 30 + 'px');
         //$("#tagTo").css("margin-left", parseInt($("#cmdu").css("margin-left")) - 20 + 'px');
@@ -5166,7 +4952,7 @@ function startUpdatingTags() {
     $("#tag_from_project").css("margin-top", "-10px");
     $("#tag_from_space").css("margin-left", "170px");
     //$("#tag_from_group").css("margin-top", "-250px");
-   // $("#tag_from_project").css("margin-top", "-250px");
+    // $("#tag_from_project").css("margin-top", "-250px");
     $("#selTag").show();
     $('#selTag').text("Selected Tag");
     $('#selTag').text("Selected Place");
@@ -5203,21 +4989,21 @@ function startUpdatingTags() {
 
     $("#selected_items").hide();
     $("#selected_items_categories").show();
-	$("#tag_from_space").hide();
-	$("#tag_from_group").hide();
-	$("#tag_from_project").hide();
-	if ($("#tag_from_space").text() != 'Manage Tags in Space')
-                $("#tag_from_space").show();
-            else
-                $("#tag_from_space").hide();
-            if ($("#tag_from_group").text() != 'Manage Tags in Group')
-                $("#tag_from_group").show();
-            else
-                $("#tag_from_group").hide();
-            if ($("#tag_from_project").text() != 'Manage Tags in Project')
-                $("#tag_from_project").show();
-            else
-                $("#tag_from_project").hide();
+    $("#tag_from_space").hide();
+    $("#tag_from_group").hide();
+    $("#tag_from_project").hide();
+    if ($("#tag_from_space").text() != 'Manage Tags in Space')
+        $("#tag_from_space").show();
+    else
+        $("#tag_from_space").hide();
+    if ($("#tag_from_group").text() != 'Manage Tags in Group')
+        $("#tag_from_group").show();
+    else
+        $("#tag_from_group").hide();
+    if ($("#tag_from_project").text() != 'Manage Tags in Project')
+        $("#tag_from_project").show();
+    else
+        $("#tag_from_project").hide();
 
     if (browserName == "MSIE") {
         var ieSpan = '<span id="ieSpan" style="font-family:Tahoma;font-size:12px;font-color:#3778C7;"></span>';
@@ -5248,9 +5034,9 @@ function startUpdatingTags() {
     }
 
     //alert("mainCheckedItems.length = "+mainCheckedItems.length);
-    console.log("mainCheckedItems.length = "+mainCheckedItems.length);
-   // alert("mainUncheckItems.length = "+mainUncheckItems.length);
-    console.log("mainUncheckItems.length = "+mainUncheckItems.length);
+    console.log("mainCheckedItems.length = " + mainCheckedItems.length);
+    // alert("mainUncheckItems.length = "+mainUncheckItems.length);
+    console.log("mainUncheckItems.length = " + mainUncheckItems.length);
     //***********************************
     filterCheckedUncheckTagUrl1();
 
@@ -5262,7 +5048,7 @@ function startUpdatingTags() {
 
 function filterCheckedUncheckTagUrl1() {
 
-   // alert("Into filterCheckedUncheckTagUrl1");
+    // alert("Into filterCheckedUncheckTagUrl1");
     checkItemArrayUpdated = new Array();
     uncheckedItemArrayUpdated = new Array();
     checkedItemsArray = new Array();
@@ -5400,6 +5186,7 @@ function filterCheckedUncheckTagUrl1() {
     updateTagsForNewContents1();
 
 }
+
 function updateTagsForNewContents1() {
     //alert("Into the updateCategories for new contents");
     console.log("Into the updateTagsForNewContents1 for new contents");
@@ -5572,24 +5359,24 @@ function removeTagsForContents() {
         }
         if (errorReferenceCatArray.length > 0 || errorDeReferenceCatArray.length > 0) {
             alert('Message:\n\nYou have insufficient rights to update all the content selected.\n\nYou need to have group administration or space moderation rights to update content with restricted authorship (e.g. discussions started by other users).\n\nPlease contact your group or space admin to get the necessary rights.');
-           $("#refresh_app_button").show();
-			$("#refresh_app").show();
+            $("#refresh_app_button").show();
+            $("#refresh_app").show();
 
         } else {
             //alert("inside else ");
-             $("#refresh_app_button").show();
-			$("#refresh_app").show();
-      
-			
-           /// $('#selTag').css("margin-top", "-200px");
-           // $('#selTag').css("margin-left", "200px");
-          //  $("#selTag").show();
-           // $('#tag_sel').css("margin-top", "-190px");
-           // $('#tag_sel').css("margin-left", "250px");
+            $("#refresh_app_button").show();
+            $("#refresh_app").show();
+
+
+            /// $('#selTag').css("margin-top", "-200px");
+            // $('#selTag').css("margin-left", "200px");
+            //  $("#selTag").show();
+            // $('#tag_sel').css("margin-top", "-190px");
+            // $('#tag_sel').css("margin-left", "250px");
             //$("#tag_sel").show();
-           // $('#add_tag_button').css("margin-top", "-190px");
-           // $('#add_tag_button').css("margin-left", "390px");
-           // $("#add_tag_button").show();
+            // $('#add_tag_button').css("margin-top", "-190px");
+            // $('#add_tag_button').css("margin-left", "390px");
+            // $("#add_tag_button").show();
 
             for (var index = 0; index < errorReferenceCatArray.length; index++) {
                 console.log("Could Not Reference " + errorReferenceCatArray[index]);
