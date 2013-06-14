@@ -4880,7 +4880,10 @@ function populatePollsForTags(space_url) {
         }
     });
 	
-	function tagSel() {
+	
+
+}
+function tagSel() {
 
     selected_cat = '';
 
@@ -4903,13 +4906,13 @@ function populatePollsForTags(space_url) {
     } else {
 
         $('#selTag').text("Tag");
-        //$("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 40 + 'px');
+       // $("#selTag").css("margin-top", parseInt($("#tag_place").css("margin-top")) + 40 + 'px');
        // $("#selTag").css("margin-left", '180px');
         $('#selTag').show();
-       // $("#add_tag").css("margin-top", parseInt($("#selTag").css("margin-top")) + 20 + 'px');
+        //$("#add_tag").css("margin-top", parseInt($("#selTag").css("margin-top")) + 20 + 'px');
         //$("#tagTo").css("margin-top", parseInt($("#add_tag").css("margin-top")) + 30 + 'px');
         //$("#tagTo").css("margin-left", parseInt($("#cmdu").css("margin-left")) - 20 + 'px');
-       // $("#tag_select_items_button").css("margin-top", parseInt($("#tagTo").css("margin-top")) + 30 + 'px');
+        $("#tag_select_items_button").css("margin-top", parseInt($("#tagTo").css("margin-top")) + 30 + 'px');
         $("#tagTo").text("Assign tag to this content:").append('<br/>');
         $("#tagTo").show();
         $("#tag_select_items_button").show();
@@ -4921,7 +4924,7 @@ function populatePollsForTags(space_url) {
 
         $("#tag_sel").hide();
         document.getElementById("add_tag").innerHTML = $('#tag_sel').val();
-       // $("#add_tag").css("margin-left", '250px');
+        //$("#add_tag").css("margin-left", '250px');
         $("#add_tag").show();
         getDocs(space_url);
         getFiles(space_url);
@@ -4930,8 +4933,6 @@ function populatePollsForTags(space_url) {
         getPolls(space_url);
         getBlogs(blog_url);
     }
-
-}
 
 }
 </script>
