@@ -3507,8 +3507,10 @@ function populateContent() {
                             checkFlagItem = true;
                         }
                         if (checkFlagItem == false && !(selected_tag == '')) {
-                            mainUncheckItems[contentUnCheckedIndex] = postFiles.fileUrl;
+						    mainUncheckItems[contentUnCheckedIndex] = postFiles.fileUrl;
+							alert("uncheck #####"+mainUncheckItems[contentUnCheckedIndex]);
                             contentUnCheckedIndex++;
+							
                         }
 
                     }
