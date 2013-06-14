@@ -3509,7 +3509,7 @@ function populateContent() {
 					 if (checkFlagItem == false && !(selected_tag == '')) {
                             mainUncheckItems[contentUnCheckedIndex] = postFiles.fileUrl;
                             contentUnCheckedIndex++;
-                        }
+                     }
 
                 } else {
                     files_row = files_row + '<tr>' +
@@ -3526,7 +3526,7 @@ function populateContent() {
         // writing the files table to the files tab.
         document.getElementById("files_div").innerHTML = files_row;
 		  alert("mainCheckedItems.length = "+mainCheckedItems.length);
-    alert("mainUncheckItems.length = "+mainUncheckItems.length);
+		alert("mainUncheckItems.length = "+mainUncheckItems.length);
         //populateBlogContent(space_url, blog_url);
     });
 
