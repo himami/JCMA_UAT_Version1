@@ -70,6 +70,7 @@ var contentUnCheckedIndex =0;
 var catSelection = false;
 var catIndex = 0;
 var catRedirectUrl='';
+var globalCatRedirectionURL;
 //end
 //for tags
 var tagSelection = false;
@@ -4281,7 +4282,7 @@ function removeCategoriesForContents() {
             console.log("Category " + selected_cat + " succesfully updated");
             //alert("Category "+selected_cat+" succesfully updated");
             var tempRedirectionUrl = source_html_url + '/content?filterID=contentstatus[published]~category[' + selected_cat + ']';
-
+			globalCatRedirectionURL = tempRedirectionUrl
             console.log("temRedirectionUrl = " + tempRedirectionUrl);
            $("#refresh_app_button").show();
 			$("#refresh_app").show();
@@ -4297,10 +4298,10 @@ function removeCategoriesForContents() {
                 $("#cat_from_project").show();
             else
                 $("#cat_from_project").hide();
-            $('#cat_sel').css("margin-left", "250px");
-            $('#selected_items').css("margin-top", "145px");
+           
             //$('#catTo').css("margin-top", "230px");
-            var str = 'Updating categories has completed. Please click   <a href=' + tempRedirectionUrl + '>here </a>  to review the result.';
+            //var str = 'Updating categories has completed. Please click   <a id="content_url" href=' + tempRedirectionUrl + '>here </a>  to review the result.';
+            var str = 'Updating categories has completed. Please click   <a id="content_url" >here </a>  to review the result.';
             document.getElementById("frame1").contentDocument.body.innerHTML = "Note:<br><br><span id='mySpan' style='font-weight:bold;'>" + str.fontcolor("#3778C7") + "</span>";
 
         }
@@ -4311,6 +4312,15 @@ function removeCategoriesForContents() {
 
 
 }
+
+$(document).ready(function () {
+    $('#NewTab').click(function () {
+        $(this).target = "_blank";
+        window.open($(this).prop('href'));
+        return false;
+    });
+});​
+
 function startFromBeginning() {
 	alert("url ="+document.referrer);
 	window.location = document.referrer;
