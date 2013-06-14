@@ -3483,6 +3483,7 @@ function populateContent() {
                     }
                 } else if (sel_action_val == 'tags') {
                     var tags = postFiles.tags;
+					checkFlagItem == false
                     console.log("tags: " + tags);
                     files_row = files_row + '<tr>' +
                         '<td style="border:1px ;border: 1px solid #000000;text-align:right;padding:2px;">' + '<input type="checkbox" id="file_cb' + index + '" name="file_cb" class="file_cb" onclick="javascript:checkUncheck(this.name);" value="' + postFiles.fileUrl + '">' + '</td>' +
@@ -3618,6 +3619,7 @@ function populateBlogContent(space_url, blog_url) {
                     }
                 } else if (sel_action_val == 'tags') {
                     var tags = postBlogs.tags;
+					checkFlagItem == false
                     console.log("tags: " + tags);
                     blog_row = blog_row + '<tr>' +
                         '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" id="blog_cb' + index + '" name="blog_cb" class="blog_cb" onclick="javascript:checkUncheck(this.name);" value="' + postBlogs.fileUrl + '">' + '</td>' +
@@ -3742,6 +3744,7 @@ function populateDocContent(space_url) {
 
                 } else if (sel_action_val == 'tags') {
                     var tags = postDoc.tags;
+					checkFlagItem == false
                     console.log("tags: " + tags);
                     docs_row = docs_row + '<tr>' +
                         '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" id="doc_cb' + index + '" name="doc_cb" class="doc_cb" onclick="javascript:checkUncheck(this.name);" value="' + postDoc.docUrl + '">' + '</td>' +
@@ -3864,6 +3867,7 @@ function populateDiscussions(space_url) {
                     }
                 } else if (sel_action_val == 'tags') {
                     var tags = postDisc.tags;
+					checkFlagItem == false
                     console.log("tags: " + tags);
                     disc_row = disc_row + '<tr>' +
                         '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" id="disc_cb' + index + '" name="disc_cb" class="disc_cb" onclick="javascript:checkUncheck(this.name);" value="' + postDisc.discUrl + '">' + '</td>' +
@@ -3987,6 +3991,7 @@ function populateIdeas(space_url) {
 
                 } else if (sel_action_val == 'tags') {
                     var tags = postIdea.tags;
+					checkFlagItem == false
                     console.log("tags: " + tags);
                     idea_row = idea_row + '<tr>' +
                         '<td style="border:1px ;border: 1px solid #000000;text-align:right;padding:2px;">' + '<input type="checkbox" id="idea_cb' + index + '" name="idea_cb" class="idea_cb" onclick="javascript:checkUncheck(this.name);" value="' + postIdea.ideaUrl + '">' + '</td>' +
@@ -4109,6 +4114,7 @@ function populatePolls(space_url) {
 
                 } else if (sel_action_val == 'tags') {
                     var tags = postPolls.tags;
+					checkFlagItem == false
                     console.log("tags: " + tags);
                     poll_row = poll_row + '<tr>' +
                         '<td style="border:1px solid black;border: 1px solid #000000;text-align: right;padding: 2px;">' + '<input type="checkbox" id="poll_cb' + index + '" name="poll_cb" class="poll_cb" onclick="javascript:checkUncheck(this.name);" value="' + postPolls.fileUrl + '">' + '</td>' +
