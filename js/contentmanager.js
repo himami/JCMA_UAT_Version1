@@ -1,3 +1,23 @@
+/*
+Copyright : Accenture India
+Author : Accenture Interactive
+Description : This file does all the necessary Java Script actions* for Copy,Upload,Move,Delete,
+	  Download,Manage Categories & Manage Tags
+	  
+	  The functionality for Move & Delete are performed by movedelete.js
+	  
+	  The Java Script Actions performed for the each use case are as follows
+	  Copy - Hide & Show the ui components & Start Copying done by startCopying().
+	  Move - Hide & Show the ui components.Triggering move is done by movedelete.js
+	  Upload - Hide & Show the ui components. Triggering for upload is done as POST form action
+	  Delete - Hide & Show the ui components. Triggering delete is done by movedelete.js
+	  Download - Hide & Show the ui components. Triggering for download is done as POST form action
+	  Manage Categories - Hide & Show the ui components & Start Copying done by 
+						  startUpdatingCategories().
+	  Manage Tags - Hide & Show the ui components & Start Copying done by 
+						  startUpdatingTags().
+			  
+*/
 var browserName = '';
 var loggedUser = '';
 var loggedUserName = '';
@@ -108,7 +128,10 @@ function onPageLoad() {
     });
 
 }
-
+/*
+	Triggered on changing the Bulk Action combobox. This function does the hide/show of the 
+	ui components for copy,move,delete,upload,download,Manage Tags,Manage Categories
+*/
 function selected_action() {
     // Check which action is selected by user copy/move/delete/upload/download &
     // hide show elements accordingly.
