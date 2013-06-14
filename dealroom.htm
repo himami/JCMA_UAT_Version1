@@ -2981,6 +2981,31 @@ function catFetch(response) {
 
     $('select option[value="val1"]').attr("selected", true);
 }
+
+function categSel()
+{
+
+selected_cat=document.getElementById('cat_sel').value;
+//alert("selected_cat = "+selected_cat);
+if (selected_cat=="val1")
+{
+$("#cat_select_items_button").hide();
+$("#catTo").hide();
+}
+else
+{
+//*********************Hide and show for resetting the position of the element
+$("#cat_select_items_button").show();
+$("#catTo").show();
+$("#cat_select_items_button").hide();
+$("#catTo").hide();
+//***************************************End***************
+$("#cat_select_items_button").show();
+$("#catTo").show();
+}
+
+}
+//**********************End of code for catergories******************
 </script>
 </head>
 
