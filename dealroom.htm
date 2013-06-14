@@ -2767,6 +2767,8 @@ Select Bulk Action:
 <option value="delete">Delete</option>
 <option value="uploadd">Upload</option>
 <option value="download">Download</option>
+<option value="tags">Manage Tags</option>
+<option value="categs">Manage Categories</option>
 </select> 
 </td>
 </tr>
@@ -2948,7 +2950,45 @@ style="display:none;margin-left:-80px;position:absolute; margin-top:110px;">
 </td>
 </tr>
 </table>
-
+<div id="catShow">
+<label id ="catFrom" style="display:none;margin-left:250px;position:absolute; margin-top:-30px;"><br/>Manage Categories In:</label>
+<tr>
+<tr>
+<label id="cat_from_space" class="xlabel" style="width:250px;height:33px;margin-left:200px;position:absolute; margin-top:10px;font-weight:normal;text-align:center;display:none;">Change Category in Space</label>
+<label id="cat_from_group" class="xlabel" style="width:250px;height:33px;margin-left:200px;position:absolute; margin-top:10px;font-weight:normal;text-align:center;display:none;">Change Category in Group</label>
+<label id="cat_from_project" class="xlabel" style="width:250px;height:33px;margin-left:200px;position:absolute; margin-top:10px;font-weight:normal;text-align:center;display:none;">Change Category in Project</label>
+</tr>
+<td>
+<br/>
+<select name="cat_place" id="cat_place" onchange="javascript:catFromPlace();" 
+style="display:none;margin-left:-65px;position:absolute;margin-top:0px;">
+<option value="select_one">Select Place</option>
+<option value="select_space">Select Space</option>
+<option value="select_group">Select Group</option>
+<option value="select_project">Select Project</option>
+</select> 
+</td>
+</tr>
+<tr>
+<tr>
+<label id ="selCat" style="display:none;margin-left:230px;position:absolute; margin-top:60px;"><br/>Select Category:</label>
+</tr>
+<td>
+<br/>
+<select name="cat_sel" id="cat_sel" onchange="javascript:categSel();" 
+style="display:none;margin-left:-80px;position:absolute; margin-top:90px;width:150px;">
+</select> 
+</td>
+</tr>
+<tr>
+<span id ="catTo" style="display:none;margin-left:210px;font-weight:bold;position:absolute; margin-top:125px;"></span>
+</tr>
+<tr>
+<input type="button" id="cat_select_items_button" value="Select Contents" name="select_items" style="display:none;margin-left:255px;font-weight:bold;position:absolute; margin-top:155px;" onclick="javascript:populateContent1()"/>
+</tr>
+<tr>
+</tr>
+</div>
 </div>
 
 <div id="selection_menu" class="myform" style="
