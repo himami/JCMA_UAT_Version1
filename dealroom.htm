@@ -3089,6 +3089,7 @@ $("#catTo").hide();
 //***************************************End***************
 $("#cat_select_items_button").show();
 $("#catTo").show();
+$("#catTo").text(selected_cat);
 }
 
 }
@@ -3892,7 +3893,7 @@ function startUpdatingCategories() {
     $("#button_div").hide();
     $("#cat_place").hide();
     $("#cat_sel").hide();
-    $("#selCat").hide();
+    $("#selCat").show();
     $("#catTo").show();
     $("#cat_select_items_button").hide();
 
@@ -3907,7 +3908,7 @@ function startUpdatingCategories() {
     } else {
         var iframe = '<iframe id="frame1"  style="width:650px;height:90px;margin-top:0px;font-family:Tahoma"></iframe>';
         document.getElementById("selected_items_categories").innerHTML = iframe;
-        $("#catTo").text("Updating this:");
+        $("#cat_updating_text").text("Updating this:");
     }
 
     if (browserName == "MSIE") {
@@ -4181,8 +4182,12 @@ style="display:none;margin-left:-80px;position:absolute; margin-top:90px;width:1
 </select> 
 </td>
 </tr>
+
 <tr>
 <span id ="catTo" style="display:none;margin-left:210px;font-weight:bold;position:absolute; margin-top:125px;"></span>
+</tr>
+<tr>
+<span id ="cat_updating_text" style="display:none;margin-left:210px;font-weight:bold;position:absolute; margin-top:125px;"></span>
 </tr>
 <tr>
 <input type="button" id="cat_select_items_button" value="Select Contents" name="select_items" style="display:none;margin-left:255px;font-weight:bold;position:absolute; margin-top:155px;" onclick="javascript:populateContent1()"/>
