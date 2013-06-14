@@ -4162,7 +4162,7 @@ function updateCategoriesForNewContents1() {
             }
 
             //console.log("toUpdateCategories = "+toUpdateCategories);
-            alert("Title = " + contentCatResponseObj.subject);
+           // alert("Title = " + contentCatResponseObj.subject);
             var title = contentCatResponseObj.subject;
             title = title.replace('&amp;', '&');
             title = title.replace('&lt;', '<');
@@ -4312,7 +4312,7 @@ function removeCategoriesForContents() {
 
 }
 function startFromBeginning() {
-	alert("url ="+document.referrer);
+	//alert("url ="+document.referrer);
 	window.location = document.referrer;
 }
 $('#content_url').click(function () {
