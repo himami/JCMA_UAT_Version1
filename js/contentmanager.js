@@ -1811,6 +1811,10 @@ function toSpaceRequest() {
     osapi.jive.corev3.places.requestPicker(params);
 }
 
+/**
+	This function accepts the place url and opens as place-request picker dialog  box for
+	to -Group .Base on the place selected it hide/shows the ui components
+*/
 function toGroupRequest() {
     var to_place_name = '';
     document.getElementById("to_project").innerHTML = msg2;
@@ -1949,6 +1953,10 @@ function toGroupRequest() {
     osapi.jive.corev3.places.requestPicker(params);
 }
 
+/**
+	This function accepts the place url and opens as place-request picker dialog  box for
+	to -project .Base on the place selected it hide/shows the ui components
+*/
 function toProjectRequest() {
     var to_place_name = '';
     document.getElementById("to_project").innerHTML = msg2;
@@ -2086,7 +2094,9 @@ function toProjectRequest() {
 
     osapi.jive.corev3.places.requestPicker(params);
 }
-
+/**
+	Used to get the files and populate in the table
+*/
 function getFiles(space_url) {
     // fetches the files from the selected space/group/project using the SPACE_URL.
 
@@ -2150,6 +2160,9 @@ function getFiles(space_url) {
     });
 };
 
+/**
+	Used to get the blogs and populate in the table
+*/
 function getBlogs(blog_url) {
     // getting the blogs from the selected space/group/project using the BLOG_URL.
 
@@ -2209,7 +2222,9 @@ function getBlogs(blog_url) {
     });
 };
 
-
+/**
+	Used to get the Docs and populate in the table
+*/
 function getDocs(space_url) {
 
     osapi.jive.corev3.documents.get({
@@ -2260,6 +2275,9 @@ function getDocs(space_url) {
     });
 };
 
+/**
+	Used to get the Discussion and populate in the table
+*/
 function getDiscussions(space_url) {
 
     osapi.jive.corev3.discussions.get({
@@ -2309,7 +2327,9 @@ function getDiscussions(space_url) {
     });
 
 };
-
+/**
+	Used to get the Idea and populate in the table
+*/
 function getIdeas(space_url) {
 
     osapi.jive.corev3.ideas.get({
@@ -2359,6 +2379,9 @@ function getIdeas(space_url) {
     });
 };
 
+/**
+	Used to get the Polls and populate in the table
+*/
 function getPolls(space_url) {
     osapi.jive.corev3.polls.get({
         fields: '@all',
