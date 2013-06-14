@@ -4731,8 +4731,14 @@ $(function () {
 ///--end
 
 function populateContentforTags(space_url, blog_url) {
-
+	
     alert("Please wait , as this operation may take some time . Press ok");
+	addId = new Array();
+    arrayIndex = 0;
+    contentCheckedIndex = 0;
+    contentUnCheckedIndex = 0;
+    mainCheckedItems = new Array();
+    mainUncheckItems = new Array();
     osapi.jive.corev3.contents.get({
         type: 'file',
         fields: '@all',
