@@ -703,7 +703,7 @@ $('#button_div').hide();
 else if(sel_action_val=="tags"){
 src_space_name='';
 dest_space_name='';
-/*$("#tagShow").show();
+$("#tagShow").show();
 $("#catShow").hide();
 $("#deleteTo").hide();
 $("#tag_select_items_button").hide();
@@ -772,110 +772,7 @@ $("#to_group").hide();
 $("#to_project").hide();
 $('#select_items_button').hide();	
 $('#start_copying_button').val('Start Deleting');
-$('#start_copying_button').unbind('click').click(function(){startDeleting();});*/
-//$("#cat_place").css("margin-top", 0);
-//Show the items related to categories and hide the others
-$("#cmdu").text("Manage Tags");
-$("#catShow").hide();
-$("#catFrom").hide();
-$("#cat_place").hide();
-$("#selCat").hide();
-$("#cat_sel").hide();
-$("#catTo").hide();
-$("#cat_select_items_button").hide();
-$("#cat_from_space").hide();
-$("#cat_from_group").hide();
-$("#cat_from_project").hide();
-$("#selected_items_categories").hide();
-$("#refresh_app_button").hide();
-$("#refresh_app").hide();
-$("#newUpSel").hide();
-$("#start_copying_button").hide();
-$("#start_uploading").hide();
-$("#change_contents").hide();
-//*********************End*********************
-//hide the finale tags items also 
-$("#finalTagShow").hide();
-$("#finale_tagFrom").hide();
-$("#finale_tag_from_space").hide();
-$("#finale_tag_from_group").hide();
-$("#finale_tag_from_project").hide();
-$("#finalSelTag").hide();
-$("#finale_tag_sel").hide();
-$("#finale_add_tag").hide();
-$("#tag_select_items_button").hide();
-$("#finale_finalTagTo").hide();
-//End
-//Hide all the items with regard to Manage Tags*************
-$("#tagShow").show();
-$("#tagFrom").show();
-$("#tag_place").show();
-$("#selTag").hide();
-$("#tag_sel").hide();
-$("#tagTo").hide();
-$("#tag_from_space").hide();
-$("#tag_from_group").hide();
-$("#tag_from_project").hide();
-$("#add_tag_button").hide();
-$("#tag_select_items_button").hide();
-document.getElementById("cat_place").style.display="inline";
-//*************End****************
-
-//Hide all the items with regard to download
-$("#dwnShow").hide();
-$("#dwnFrom").hide();
-$("#dwn_from_space").hide();
-$("#dwn_from_group").hide();
-$("#dwn_from_project").hide();
-$("#dwn_place").hide();
-$("#dwnTo").hide();
-$("#dwn_select_items_button").hide();
-
-$("#tab_items").show();
-$("#change_selection_div").hide();
-$("#selected_items_categories").hide();
-$('#select_items_button').hide();
-$("#showDiv").hide();
-$("#copyTo").hide();
-document.getElementById("del_place").style.display="inline";
-document.getElementById("del_select_items_button").style.display="inline";
-document.getElementById("up_select_items_button").style.display="inline";
-document.getElementById("up_place").style.display="inline";
-//*******************hide all items with regard to delete
-$("#delShow").hide();
-$("#deleteFrom").hide();
-$("#del_from_space").hide();
-$("#del_from_group").hide();
-$("#del_from_project").hide();
-$("#del_place").hide();
-$("#deleteTo").hide();
-$("#del_select_items_button").hide();
-
-//*************Hide all elements with regard to upload
-$("#upShow").hide();
-$("#up_place").hide();
-$('#upFrom').hide();
-$("#up_select_items_button").hide();
-$("#up_from_space").hide();
-$("#up_from_group").hide();
-$("#up_from_project").hide();
-$("#upTo").hide();
-
-
-document.getElementById("deleteFrom").style.display="inline";
-document.getElementById("upFrom").style.display="inline";
-
-$('#from_label').hide();
-$('#to_label').hide();
-$('#from_space').hide();
-$('#from_group').hide();
-$('#from_project').hide();
-$('#to_space').hide();
-$('#to_group').hide();
-$('#to_project').hide();
-$('#from_place').hide();
-$('#to_place').hide();
-$('#button_div').hide();
+$('#start_copying_button').unbind('click').click(function(){startDeleting();});
 }
 else if(sel_action_val=="select_action"){
 src_space_name='';
@@ -5373,10 +5270,10 @@ function startUpdatingTags() {
         //console.log("unchecked items : "+mainUncheckItems[index]);
     }
 
-    //alert("mainCheckedItems.length = "+mainCheckedItems.length);
+    alert("mainCheckedItems.length = "+mainCheckedItems.length);
     console.log("mainCheckedItems.length = "+mainCheckedItems.length);
-    //alert("mainUncheckItems.length = "+mainUncheckItems.length);
-   // console.log("mainUncheckItems.length = "+mainUncheckItems.length);
+    alert("mainUncheckItems.length = "+mainUncheckItems.length);
+    console.log("mainUncheckItems.length = "+mainUncheckItems.length);
     //***********************************
     filterCheckedUncheckTagUrl1();
 
@@ -5388,7 +5285,7 @@ function startUpdatingTags() {
 
 function filterCheckedUncheckTagUrl1() {
 
-   // alert("Into filterCheckedUncheckTagUrl1");
+    alert("Into filterCheckedUncheckTagUrl1");
     checkItemArrayUpdated = new Array();
     uncheckedItemArrayUpdated = new Array();
     checkedItemsArray = new Array();
@@ -5735,7 +5632,6 @@ function removeTagsForContents() {
 
             /*document.getElementById("frame1").contentDocument.body.innerHTML = "Updating is in Progress.<br>Please leave this window open until the updating process has been completed.<br><br><span id='mySpan' style='font-weight:bold;'>"+"'Moving completed. Please click   <a href='+tempRedirectionUrl+'>here </a>  for the new location of your content.'.fontcolor("#3778C7")+"</span>";*/
             var str = 'Updating tags is completed. Please click   <a href=' + tempRedirectionUrl + '>here </a>  for the new location of your content.';
-          //  var str = 'Updating tags is completed. Please click   <a href="\"javascript:window.open(\'' + tempRedirectionUrl + '\');\">here </a>  for the new location of your content.';
             document.getElementById("frame1").contentDocument.body.innerHTML = "Note.<br><br><span id='mySpan' style='font-weight:bold;'>" + str.fontcolor("#3778C7") + "</span>";
         }
 
