@@ -1261,6 +1261,14 @@ document.getElementById("cat_from_space").innerHTML='<span id="myId" style="text
 $("#cat_place").css("margin-top", "40px");
 categoryTest();
 }
+else if(sel_action_val=="tags")
+{
+//alert("Inside tags...");
+tagPopulatList =  new Array();
+completeTagIndex = 0;
+fromRequestAction = 'fromGroupRequestAction';
+populateContentforTags(space_url,blog_url);
+}
 else if(sel_action_val=="select_action")
 {
 //action when user changes the action to default value.
@@ -1477,6 +1485,15 @@ document.getElementById("cat_place").style.display="inline";
 document.getElementById("cat_from_space").innerHTML='<span id="myId" style="text-decoration:underline;">Space</span>'+': '+from_place_name;
 $("#cat_place").css("margin-top", "40px");
 categoryTest();
+}
+else if(sel_action_val=="tags")
+{
+
+// actions when the user choses to download files.
+//alert("Inside tags...");
+tagPopulatList =  new Array();
+completeTagIndex = 0;
+fromRequestAction = 'fromProjectRequestAction';
 }
 else if(sel_action_val=="select_action")
 {
@@ -4788,6 +4805,8 @@ function populatePollsForTags(space_url) {
            // $("#tagFrom").css("margin-left", '235px');
            // $("#selTag").css("margin-left", '205px');
            // $("#tag_sel").css("margin-left", '-75px');
+		   $("#tag_place").css("margin-top", "30px");
+			$("#selTag").css("margin-left", '200px');
             $("#selTag").text("Enter Tag");
             $("#tagTo").text("Assign tag to this content:").append('<br/>');
             document.getElementById("catTo").style.display = "inline";
@@ -4837,6 +4856,8 @@ function populatePollsForTags(space_url) {
             //$("#tagFrom").css("margin-left", '235px');
           //  $("#selTag").css("margin-left", '205px');
            // $("#tag_sel").css("margin-left", '-75px');
+		   $("#tag_place").css("margin-top", "30px");
+			$("#selTag").css("margin-left", '200px');
             $("#selTag").text("Enter Tag");
             $("#tagTo").text("Assign tag to this content:").append('<br/>');
             document.getElementById("tagTo").style.display = "inline";
